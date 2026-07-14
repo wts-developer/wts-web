@@ -51,6 +51,11 @@ EMBED_CSS = """
 .wts-estimator-app .full-width-summary-section,
 .wts-estimator-app .full-width-term-section,
 .wts-estimator-app .market-comparison-section { display: none; }
+/* Everything is $675/credit for now: hide the start-term picker (and its
+   stale rate-increase note) and the advanced options. CONFIG already has
+   futureRate equal to currentRate, so the math is $675 regardless. */
+.wts-estimator-app .field:has(> #startTerm),
+.wts-estimator-app details.advanced { display: none; }
 /* wts.edu's next section overlaps upward with an angled (skewed) top edge;
    reserve room so it doesn't clip the last card of the estimator. */
 .wts-estimator-app .wrap { padding-bottom: 150px; }
