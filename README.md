@@ -33,17 +33,23 @@ python3 -m http.server 8437 -d projects/tuition-estimator/dist
 
 (Claude Code users: `.claude/launch.json` defines the same server.)
 
-## Sharing links (GitHub Pages)
+## Sharing
 
-`.github/workflows/pages.yml` publishes every project's `dist/` on push to
-`main`. One-time setup: repo **Settings → Pages → Source: GitHub Actions**.
-
-- Mockup: `https://wts-developer.github.io/wts-web/tuition-estimator/`
-- Widget: `https://wts-developer.github.io/wts-web/tuition-estimator/wts-cost-estimator.js`
-- Standalone estimator: `https://wts-developer.github.io/wts-web/tuition-estimator/calculator-standalone.html`
-
-Alternatively, any file in a public repo is served by jsDelivr, e.g.
-`https://cdn.jsdelivr.net/gh/wts-developer/wts-web@main/projects/tuition-estimator/dist/wts-cost-estimator.js`.
-
-To share as a file instead of a link, send `projects/tuition-estimator/dist/index.html` —
+**As a file (works today):** send `projects/tuition-estimator/dist/index.html` —
 it is fully self-contained apart from assets it loads from production CDNs.
+
+**As a link:** this repo is currently **private**, which rules out GitHub
+Pages (free plan) and jsDelivr. Options:
+
+- Connect the repo to **Cloudflare Pages or Netlify** (free tiers deploy from
+  private repos): build command `python3 projects/tuition-estimator/build.py`,
+  publish directory `projects/tuition-estimator/dist`. This also yields the
+  stable public URL for `wts-cost-estimator.js` that the production Webflow
+  embed needs.
+- Or make the repo public, enable **Settings → Pages → Source: GitHub
+  Actions**, and `.github/workflows/pages.yml` publishes on every push to
+  `main` at `https://wts-developer.github.io/wts-web/tuition-estimator/`
+  (jsDelivr also works for public repos).
+
+Once hosting exists, replace `WIDGET_URL` in
+`projects/tuition-estimator/webflow/embed-snippet.html` with the real URL.

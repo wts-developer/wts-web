@@ -17,7 +17,7 @@ comparison) exist only on the standalone page.
 
 | File | Purpose |
 |---|---|
-| `index.html` | The mockup: a captured copy of the live tuition page with the widget injected after the hero. Share as a link (GitHub Pages) or attach the file to a ticket — it loads Webflow assets from production CDNs, so it needs internet but no server. |
+| `index.html` | The mockup: a captured copy of the live tuition page with the widget injected after the hero. Attach the file to a ticket or share as a hosted link (see the root README's Sharing section) — it loads Webflow assets from production CDNs, so it needs internet but no server. |
 | `wts-cost-estimator.js` | The embeddable widget, one file, no dependencies. `<div id="wts-cost-estimator"></div>` + one `<script>` tag renders the estimator in a Shadow DOM (zero CSS collisions with the host page). |
 | `calculator-standalone.html` | The full estimator on its own page — parity with the Apps Script prototype, including the summary/per-term/market sections. |
 

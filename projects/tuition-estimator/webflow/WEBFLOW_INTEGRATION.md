@@ -1,7 +1,7 @@
 # Adding the Online Program Cost Estimator to wts.edu (Webflow)
 
 This is the integration guide that accompanies the clickable mockup
-(`dist/index.html`, or the hosted copy — see the repo README for the link).
+(`dist/index.html` — attached to the ticket, or hosted per the repo README).
 The mockup is the current production tuition page with **one addition**: the
 cost estimator, placed between the hero and the "Westminster Scholarships and
 Tuition" section. Everything else on the page is untouched.
@@ -16,15 +16,23 @@ Tuition" section. Everything else on the page is untouched.
 
    ```html
    <div id="wts-cost-estimator"></div>
-   <script src="https://wts-developer.github.io/wts-web/tuition-estimator/wts-cost-estimator.js" defer></script>
+   <script src="WIDGET_URL/wts-cost-estimator.js" defer></script>
    ```
 
 4. Publish. That's the whole integration.
 
-If you'd rather not depend on our hosting, download `wts-cost-estimator.js`
-(~105 KB, single file) and serve it from any host you control, then point the
-`src` at it. It exceeds Webflow's inline custom-code character limit, so it
-does need to be hosted as a file rather than pasted inline.
+### Hosting the widget file
+
+`wts-cost-estimator.js` (~105 KB, one self-contained file, in this repo at
+`projects/tuition-estimator/dist/` and attached to the ticket) needs to be
+served from a URL — it exceeds Webflow's inline custom-code character limit,
+and Webflow's asset manager doesn't accept `.js` uploads. Either works:
+
+- **You host it** on any static hosting the wts.edu team already controls,
+  and point the snippet's `src` at it. Nothing about the file is
+  host-specific, and it never needs server-side logic.
+- **We host it** (e.g. Cloudflare Pages / Netlify tied to this repo) and give
+  you a stable URL to drop in.
 
 ### What the widget does
 
