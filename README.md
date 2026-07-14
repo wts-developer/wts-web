@@ -9,7 +9,7 @@ for integration into the production Webflow site.
 | Project | Status | What it is |
 |---|---|---|
 | [projects/tuition-estimator](projects/tuition-estimator/) | ✅ ready | Living, clickable mockup of the [tuition page](https://www.wts.edu/admissions/tuition-financial-aid) with the Online Program Cost Estimator embedded front-and-center, plus a one-tag embeddable widget for Webflow |
-| [projects/tuition-chat-widget](projects/tuition-chat-widget/) | 🚧 planned | Show/hideable chat dialog snippet for the tuition page, backed by the Hedwig admissions bot |
+| [projects/tuition-chat-widget](projects/tuition-chat-widget/) | ✅ ready | Floating bottom-right chat dialog for the tuition page — one-tag Shadow-DOM embed, answered by the Hedwig web-chat API (`hedwig-admissions-slackbot` repo, `hedwig/webchat/`) |
 
 ## Conventions
 
@@ -41,6 +41,8 @@ python3 -m http.server 8437 -d projects/tuition-estimator/dist
 - Mockup: `https://wts-developer.github.io/wts-web/tuition-estimator/`
 - Widget: `https://wts-developer.github.io/wts-web/tuition-estimator/wts-cost-estimator.js`
 - Standalone estimator: `https://wts-developer.github.io/wts-web/tuition-estimator/calculator-standalone.html`
+- Chat mockup: `https://wts-developer.github.io/wts-web/tuition-chat-widget/`
+- Chat widget: `https://wts-developer.github.io/wts-web/tuition-chat-widget/wts-tuition-chat.js`
 
 Alternatively, any file in a public repo is served by jsDelivr, e.g.
 `https://cdn.jsdelivr.net/gh/wts-developer/wts-web@main/projects/tuition-estimator/dist/wts-cost-estimator.js`.

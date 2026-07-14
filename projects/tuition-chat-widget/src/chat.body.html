@@ -1,0 +1,52 @@
+<div class="wts-chat">
+  <button class="wts-chat__launcher" type="button"
+          aria-label="Open tuition assistant chat" aria-expanded="false">
+    <svg class="icon-chat" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H9.9L5.7 19.6c-.66.5-1.7.03-1.7-.8V5.5Z"
+            fill="currentColor"/>
+      <circle cx="8.6" cy="9.6" r="1.15" fill="#8c2233"/>
+      <circle cx="12"  cy="9.6" r="1.15" fill="#8c2233"/>
+      <circle cx="15.4" cy="9.6" r="1.15" fill="#8c2233"/>
+    </svg>
+    <svg class="icon-close" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <section class="wts-chat__panel" role="dialog" aria-label="Westminster tuition assistant">
+    <header class="wts-chat__header">
+      <span class="wts-chat__logo" aria-hidden="true">
+        <!-- Placeholder mark: a Westminster-style "W" shield until the bot
+             gets its own identity. Swap for the official asset later. -->
+        <svg viewBox="0 0 32 32">
+          <path d="M16 2 28 7v9c0 7.5-5 12.3-12 14C9 28.3 4 23.5 4 16V7l12-5Z"
+                fill="#8c2233"/>
+          <path d="M8.5 10h3l1.6 8 2.3-8h1.2l2.3 8 1.6-8h3l-3.2 13h-2.4L16 15.6 14.1 23h-2.4L8.5 10Z"
+                fill="#fff"/>
+        </svg>
+      </span>
+      <div class="wts-chat__heading">
+        <div class="wts-chat__title">Tuition Assistant</div>
+        <div class="wts-chat__subtitle">Westminster Theological Seminary</div>
+      </div>
+      <button class="wts-chat__close" type="button" aria-label="Close chat">&#215;</button>
+    </header>
+
+    <div class="wts-chat__messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
+
+    <form class="wts-chat__composer">
+      <input class="wts-chat__input" type="text" autocomplete="off"
+             maxlength="500" placeholder="Ask about tuition costs&#8230;"
+             aria-label="Type your tuition question" />
+      <button class="wts-chat__send" type="submit" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3.4 11.05 20 4.13c.7-.3 1.4.4 1.1 1.1l-6.92 16.6c-.32.77-1.44.7-1.66-.1l-1.9-6.85-6.85-1.9c-.8-.22-.87-1.34-.1-1.66Z" fill="currentColor"/>
+        </svg>
+      </button>
+    </form>
+    <div class="wts-chat__disclaimer">
+      Automated answers based on published tuition rates &mdash; confirm details
+      with an admissions counselor.
+    </div>
+  </section>
+</div>
