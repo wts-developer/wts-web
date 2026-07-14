@@ -1,12 +1,8 @@
 name: Deploy GitHub Pages
 
-# Manual-only while the repo is private: GitHub Pages can't publish from a
-# private repo on the free plan, so a push trigger would just fail on every
-# push. If the repo goes public, enable Settings -> Pages -> Source: GitHub
-# Actions and restore the push trigger:
-#   push:
-#     branches: [main]
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
