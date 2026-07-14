@@ -1,0 +1,415 @@
+
+  <main class="wrap">
+    <div class="brand-frame">
+      <section class="print-only print-header" aria-label="Printed estimate heading">
+        <div class="print-brand-line">
+          <span>Westminster Theological Seminary</span>
+          <span>Online Programs</span>
+        </div>
+        <h1>WTS Online Program Cost Estimate</h1>
+        <p class="print-intro">A personalized planning estimate based on the information entered in the estimator.</p>
+        <div class="print-meta-grid">
+          <div><span>Program</span><strong id="printProgram">MATS</strong></div>
+          <div><span>Program credits</span><strong id="printCredits">36</strong></div>
+          <div><span>Expected pace</span><strong id="printPace">1 course per term</strong></div>
+          <div><span>Start term</span><strong id="printStartTerm">June 2026</strong></div>
+          <div><span>Anticipated completion</span><strong id="printCompletionTerm">March 2029</strong></div>
+          <div><span>Prepared</span><strong id="printDate"></strong></div>
+        </div>
+      </section>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <div class="eyebrow">Westminster Theological Seminary</div>
+          <h1 id="page-title">WTS Online Program Cost Estimator</h1>
+          <p class="hero-copy">
+            Estimate your full-program cost after outside support and WTS matching scholarships.
+          </p>
+        </div>
+        <div class="hero-info-stack">
+          <aside class="hero-card" aria-label="Estimator assumptions">
+            <div class="small">Key Information</div>
+            <div class="hero-stat"><span>MATS Match</span><strong>$5,000 lifetime match</strong></div>
+            <div class="hero-stat"><span>MAC Match</span><strong>25% match</strong></div>
+            <div class="hero-stat"><span>MDiv / MAR Match</span><strong>1 credit per course</strong></div>
+          </aside>
+          <div class="scholarship-availability-note" role="note">
+            <strong>Scholarships are limited.</strong> Students must apply, and eligibility does not guarantee that a matching scholarship will be awarded.
+          </div>
+        </div>
+      </section>
+
+      <section class="section program-section">
+        <h2 class="section-heading">Choose Your Program</h2>
+        <div class="program-switch" aria-label="Program selection">
+          <button type="button" id="matsBtn" class="program-card" aria-pressed="true">
+            <div class="name">MATS</div>
+            <div class="code">36 credits</div>
+            <div class="desc">Dollar-for-dollar match up to $5,000.</div>
+          </button>
+          <button type="button" id="macBtn" class="program-card" aria-pressed="false">
+            <div class="name">MAC</div>
+            <div class="code">61 credits</div>
+            <div class="desc">25% matching scholarship with optional SBC course recognition.</div>
+          </button>
+          <button type="button" id="mdivBtn" class="program-card" aria-pressed="false">
+            <div class="name">MDiv</div>
+            <div class="code">111 credits</div>
+            <div class="desc">Matching scholarship estimated across 43 courses.</div>
+          </button>
+          <button type="button" id="marBtn" class="program-card" aria-pressed="false">
+            <div class="name">MAR</div>
+            <div class="code">74 credits</div>
+            <div class="desc">Matching scholarship estimated across 23 courses.</div>
+          </button>
+        </div>
+      </section>
+
+      <section class="main-grid">
+        <aside class="left-column">
+          <div class="panel input-panel">
+            <div class="panel-header">
+            <h2 class="panel-title">Financial Information</h2>
+            
+          </div>
+          <div class="panel-body">
+            <div class="field">
+              <label for="fundsRaised">Church, donor, or employer support over full program</label>
+              <input id="fundsRaised" type="number" min="0" step="100" value="0" />
+              <div class="amount-buttons" aria-label="Quick support amounts">
+                <button type="button" class="quick-amount" data-amount="0">$0</button>
+                <button type="button" class="quick-amount" data-amount="2500">$2,500</button>
+                <button type="button" class="quick-amount" data-amount="5000">$5,000</button>
+                <button type="button" class="quick-amount" data-amount="10000">$10,000</button>
+              </div>
+              <div class="help">Enter the total support you expect over the full program. WTS matching support is applied automatically. For MDiv and MAR, the match is estimated at one credit of tuition per course across approximately 43 MDiv courses or 23 MAR courses.</div>
+            </div>
+
+            <div class="field">
+              <label for="startTerm">When do you plan to start?</label>
+              <select id="startTerm">
+                <option value="2026-09">September 2026</option>
+                <option value="2027-01">January 2027</option>
+                <option value="2027-03">March 2027</option>
+                <option value="2027-06">June 2027</option>
+                <option value="2027-09">September 2027</option>
+              </select>
+              <div class="help">Tuition increases to $750/credit beginning in the June 2027 term.</div>
+            </div>
+
+            <div class="field mac-only" id="sbcScholarshipBlock" hidden>
+              <div class="label-title">Would you like to have SBC courses recognized for credit in the MAC?</div>
+              <div class="choice-row" role="group" aria-label="SBC course recognition selection">
+                <button type="button" id="sbcScholarshipYes" class="choice" aria-pressed="false">
+                  <strong>Yes</strong>
+                  <span>Select SBC courses may count for up to 15 credits in the MAC.</span>
+                </button>
+                <button type="button" id="sbcScholarshipNo" class="choice" aria-pressed="true">
+                  <strong>No / Not sure</strong>
+                  <span>Do not include SBC course recognition in this estimate.</span>
+                </button>
+              </div>
+
+              <div class="sub-panel" id="sbcDetails" hidden>
+                <p class="sub-panel-title">SBC courses to recognize</p>
+                <div class="help" style="margin-bottom:12px;">
+                  Select the SBC courses you would like WTS to recognize. You may select up to 15 total credits. The recognition fee is $1,300 per selected SBC course.
+                </div>
+
+                <div class="course-select" id="sbcCourseList" role="group" aria-label="SBC courses for WTS recognition">
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 151" data-title="Dynamics of Biblical Change" data-credits="3">
+                    <span><strong>PTC 151</strong> Dynamics of Biblical Change</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 178" data-title="Helping Relationships" data-credits="3">
+                    <span><strong>PTC 178</strong> Helping Relationships</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 222" data-title="Counseling &amp; Physiology" data-credits="3">
+                    <span><strong>PTC 222</strong> Counseling &amp; Physiology</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 243" data-title="Theology &amp; Secular Psychology" data-credits="2">
+                    <span><strong>PTC 243</strong> Theology &amp; Secular Psychology</span>
+                    <em>2 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 251" data-title="Marriage Counseling" data-credits="3">
+                    <span><strong>PTC 251</strong> Marriage Counseling</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 261" data-title="Applied Theology of the Person" data-credits="3">
+                    <span><strong>PTC 261</strong> Applied Theology of the Person</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 301" data-title="Everyday Problems in Counseling" data-credits="3">
+                    <span><strong>PTC 301</strong> Everyday Problems in Counseling</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 372" data-title="Counseling Observation" data-credits="3">
+                    <span><strong>PTC 372</strong> Counseling Observation</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 394" data-title="Complex Problems in Counseling" data-credits="3">
+                    <span><strong>PTC 394</strong> Complex Problems in Counseling</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 523" data-title="Counseling in the Local Church" data-credits="2">
+                    <span><strong>PTC 523</strong> Counseling in the Local Church</span>
+                    <em>2 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 621" data-title="Ethics in Biblical Counseling" data-credits="2">
+                    <span><strong>PTC 621</strong> Ethics in Biblical Counseling</span>
+                    <em>2 credits</em>
+                  </label>
+                </div>
+
+                <div class="recognition-note" id="sbcSelectionNote">Selected: 0 credits across 0 courses. Up to 15 credits may be recognized.</div>
+
+                <label for="sbcCoverage" class="tooltip-label" style="margin-top:14px;">
+                  Possible recognition fee scholarship coverage
+                  <span class="info-tooltip" tabindex="0" aria-label="Limited scholarship funds are available that may cover part or all of your SBC course recognition fees. Use the slider to see the impact this scholarship may have on your total MAC cost.">
+                    ?
+                    <span class="tooltip-box" role="tooltip">Limited scholarship funds are available that may cover part or all of your SBC course recognition fees. Use the slider to see the impact this scholarship may have on your total MAC cost.</span>
+                  </span>
+                </label>
+                <div class="range-row">
+                  <input id="sbcCoverage" type="range" min="0" max="100" step="5" value="100" />
+                  <span class="range-value" id="sbcCoverageLabel">100%</span>
+                </div>
+                <div class="recognition-note" id="sbcFeeNote">Estimated possible recognition fee scholarship: $0</div>
+              </div>
+            </div>
+
+            <details class="advanced">
+              <summary>Advanced options</summary>
+              <div class="field" style="margin-top:16px;">
+                <label for="creditsPerTerm">Expected pace</label>
+                <select id="creditsPerTerm">
+                  <option value="3">1 course per term / 3 credits</option>
+                  <option value="6">2 courses per term / 6 credits</option>
+                  <option value="9">3 courses per term / 9 credits</option>
+                  <option value="custom">Custom credits per term</option>
+                </select>
+              </div>
+
+              <div class="field" id="customCreditsField" style="display:none;">
+                <label for="customCredits">Custom credits per term</label>
+                <input id="customCredits" type="number" min="1" max="15" step="1" value="3" />
+              </div>
+            </details>
+
+            <p class="fine-print">This estimate updates automatically as you change your answers.</p>
+          </div>
+          </div>
+
+        </aside>
+
+        <section class="results-section">
+          <article class="result-card" aria-label="Estimated cost after support">
+            <div class="result-label">Your Estimated Cost After Support</div>
+            <div class="result-value" id="netPrice">$24,300</div>
+            <div class="result-caption" id="resultCaption">For the selected program after outside support and estimated Westminster matching scholarship.</div>
+
+            <div class="result-mini-grid">
+              <div class="mini">
+                <div class="mini-label">WTS Match</div>
+                <div class="mini-value" id="miniMatch">$0</div>
+              </div>
+              <div class="mini" id="miniRemainingCard">
+                <div class="mini-label">More Support Eligible For Match</div>
+                <div class="mini-value" id="miniRemaining">$0</div>
+              </div>
+              <div class="mini">
+                <div class="mini-label">WTS Tuition Remaining</div>
+                <div class="mini-value" id="miniGross">$24,300</div>
+              </div>
+              <div class="mini mac-only-row" id="miniCreditsCard" hidden>
+                <div class="mini-label">WTS Credits Remaining</div>
+                <div class="mini-value" id="miniCreditsRemaining">61</div>
+              </div>
+              <div class="mini mac-only-row" id="miniSbcCard" hidden>
+                <div class="mini-label">Possible SBC Fee Scholarship</div>
+                <div class="mini-value" id="miniSbcScholarship">$0</div>
+              </div>
+            </div>
+          </article>
+
+          <div class="summary-chart-grid">
+            <aside class="pie-card" aria-label="Cost and scholarship mix chart">
+              <h2 class="pie-title">Cost &amp; Scholarship Mix</h2>
+              <div class="pie-wrap">
+                <svg class="pie-svg" viewBox="0 0 220 220" role="img" aria-labelledby="pieTitle pieDesc">
+                  <title id="pieTitle">Cost and scholarship mix</title>
+                  <desc id="pieDesc">Share of total estimated cost paid by the student, covered by outside support, and covered by WTS scholarship support.</desc>
+                  <path id="sliceStudent" class="pie-slice student" d=""></path>
+                  <path id="sliceRaised" class="pie-slice raised" d=""></path>
+                  <path id="sliceMatch" class="pie-slice match" d=""></path>
+                  <text id="labelStudent" class="pie-label" x="110" y="110">0%</text>
+                  <text id="labelRaised" class="pie-label" x="110" y="110">0%</text>
+                  <text id="labelMatch" class="pie-label" x="110" y="110">0%</text>
+                </svg>
+              </div>
+              <div class="legend">
+                <div class="legend-item">
+                  <span class="dot student"></span>
+                  <span><strong>Student</strong></span>
+                  <span class="amount" id="legendStudent">$24,300</span>
+                </div>
+                <div class="legend-item">
+                  <span class="dot raised"></span>
+                  <span><strong>Support</strong></span>
+                  <span class="amount" id="legendRaised">$0</span>
+                </div>
+                <div class="legend-item">
+                  <span class="dot match"></span>
+                  <span><strong>WTS Scholarship Support</strong></span>
+                  <span class="amount" id="legendMatch">$0</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+        </section>
+      </section>
+
+      <section class="print-only print-explainer" aria-label="How to read this estimate">
+        <h2>How to Read This Estimate</h2>
+        <div class="print-explainer-grid">
+          <p><strong>Outside support</strong> is the full-program amount expected from a church, donor, or employer.</p>
+          <p><strong>WTS matching support</strong> is calculated automatically up to the selected program's limit.</p>
+          <p><strong>Estimated cost after support</strong> is the remaining amount the student would be responsible for under these assumptions.</p>
+        </div>
+        <p class="print-scholarship-note"><strong>Important:</strong> Matching scholarships are limited, require an application, and are not guaranteed.</p>
+      </section>
+      <section class="full-width-summary-section">
+        <div class="table-block horizontal-summary">
+            <div class="table-header">
+              <h2>Estimate Summary</h2>
+              <span id="summaryModeLabel">Scholarship included</span>
+            </div>
+            <div class="summary-strip" aria-label="Estimate summary">
+              <div class="summary-tile mac-only-row" id="summaryCreditsRecognizedRow" hidden>
+                <span class="tile-label">SBC credits recognized</span>
+                <span class="tile-value" id="summaryCreditsRecognized">0</span>
+              </div>
+              <div class="summary-tile mac-only-row" id="summaryCreditsRemainingRow" hidden>
+                <span class="tile-label">WTS credits remaining</span>
+                <span class="tile-value" id="summaryCreditsRemaining">61</span>
+              </div>
+              <div class="summary-tile">
+                <span class="tile-label">WTS tuition remaining</span>
+                <span class="tile-value" id="summaryGross">$24,300</span>
+              </div>
+              <div class="summary-tile">
+                <span class="tile-label">Support you raise</span>
+                <span class="tile-value" id="summaryRaised">-$0</span>
+              </div>
+              <div class="summary-tile">
+                <span class="tile-label">WTS matching scholarship</span>
+                <span class="tile-value" id="summaryMatch">-$0</span>
+              </div>
+              <div class="summary-tile" id="summaryRemainingMatchRow">
+                <span class="tile-label">More support eligible for match</span>
+                <span class="tile-value" id="summaryRemainingMatch">$5,000</span>
+              </div>
+              <div class="summary-tile mac-only-row" id="summarySbcFeeRow" hidden>
+                <span class="tile-label">SBC recognition fee</span>
+                <span class="tile-value" id="summarySbcFee">$0</span>
+              </div>
+              <div class="summary-tile mac-only-row" id="summarySbcScholarshipRow" hidden>
+                <span class="tile-label">Possible SBC fee scholarship</span>
+                <span class="tile-value" id="summarySbcScholarship">-$0</span>
+              </div>
+              <div class="summary-tile total">
+                <span class="tile-label">Estimated cost after support</span>
+                <span class="tile-value" id="summaryNet">$24,300</span>
+              </div>
+            </div>
+            <div class="notice">
+              <strong>Planning estimate only.</strong> This is not a final scholarship award, financial aid offer, or bill. Final tuition, fees, scholarships, and payment options are determined by Westminster Theological Seminary after application and scholarship review.
+            </div>
+          </div>
+      </section>
+
+      <section class="full-width-term-section">
+        <div class="table-block term-block">
+          <div class="table-header">
+            <h2>Estimated WTS Tuition By Term</h2>
+            <span id="termCountLabel">12 terms</span>
+          </div>
+          <p class="print-only print-table-note">Support and matching scholarship amounts are allocated proportionally across terms for planning purposes. Actual billing and scholarship posting may differ.</p>
+          <div class="table-scroll">
+            <table aria-label="Term by term estimate">
+              <thead>
+                <tr>
+                  <th>Term</th>
+                  <th class="money">Credits</th>
+                  <th class="money">WTS tuition</th>
+                  <th class="money">Support raised</th>
+                  <th class="money">WTS match</th>
+                  <th class="money">Estimated cost after support</th>
+                </tr>
+              </thead>
+              <tbody id="termTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="action-row">
+            <a class="btn primary" id="emailLink" href="#">Email Me This Estimate</a>
+            <a class="btn secondary" href="mailto:admissions@wts.edu?subject=Scholarship%20Review%20Request">Request Scholarship Review</a>
+            <button type="button" class="btn secondary" onclick="preparePrint(); window.print()">Print Estimate</button>
+          </div>
+      </section>
+
+      <section class="market-comparison-section">
+        <div class="table-block market-block">
+          <div class="table-header">
+            <div>
+              <h2>Online Program Cost Comparison</h2>
+              <p class="table-subtitle" id="comparisonSubtitle">Comparable online or mostly online theological, ministry, and counseling programs using an effective all-in per-credit charge.</p>
+            </div>
+            <span id="comparisonTypeLabel">Program comparison</span>
+          </div>
+
+          <div class="comparison-callout" id="comparisonCallout">
+            This comparison converts published tuition and mandatory recurring fees into an effective per-credit charge for each institution.
+          </div>
+
+          <div class="table-scroll">
+            <table aria-label="Online program cost comparison">
+              <thead>
+                <tr>
+                  <th class="money">Rank</th>
+                  <th>Institution</th>
+                  <th>Comparable program</th>
+                  <th class="money">Credits</th>
+                  <th class="money">Effective charge / credit</th>
+                  <th class="money">Estimated tuition + fees</th>
+                  <th>Included fees and delivery note</th>
+                </tr>
+              </thead>
+              <tbody id="comparisonTable"></tbody>
+            </table>
+          </div>
+
+          <p class="comparison-note">
+            Comparison excludes books, housing, travel, application fees, graduation fees, and individual scholarship awards unless noted. Mandatory recurring enrollment, technology, service, and similar fees are spread across the credits required for each degree to create the effective per-credit charge. DTS, Covenant, SBTS, Gordon-Conwell, and RTS figures are based on published tuition/program information available when this tool was prepared. Published tuition and fee information should be verified periodically, as institutional rates and policies may change.
+          </p>
+          <p class="print-only print-comparison-note">Competitor estimates include published tuition and mandatory recurring fees. They exclude books, travel, application and graduation fees, and individual financial aid. Verify current institutional rates before enrollment.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  

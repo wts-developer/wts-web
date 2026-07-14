@@ -1,0 +1,3009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WTS Online Program Cost Estimator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+
+    :root {
+      --wts-red: #8c2233;
+      --wts-red-dark: #6e1726;
+      --wts-gold: #bd8b41;
+      --wts-gray: #56575a;
+      --wts-paper: #f7f6f3;
+      --wts-ink: #202124;
+      --lx-forest: #02434d;
+      --accent: var(--wts-red);
+      --accent-dark: var(--wts-red-dark);
+      --accent-soft: #f5e9eb;
+      --chart-student: var(--wts-gray);
+      --chart-raised: var(--wts-gold);
+      --chart-match: var(--accent);
+      --serif: "Kepler Std Display", "Kepler Std", Georgia, "Times New Roman", serif;
+      --sans: "Lato", Arial, Helvetica, sans-serif;
+      --mono: "Input Mono Compressed", "Input Mono", "Roboto Mono", "Courier New", monospace;
+      --border: rgba(86, 87, 90, .18);
+      --shadow: 0 18px 50px rgba(31, 32, 35, .10);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--wts-ink);
+      background:
+        radial-gradient(circle at 10% 8%, rgba(189, 139, 65, .16), transparent 32rem),
+        radial-gradient(circle at 90% 0%, rgba(140, 34, 51, .11), transparent 30rem),
+        linear-gradient(180deg, #fbfaf8 0%, #f2f0ec 100%);
+      line-height: 1.45;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: clamp(18px, 3vw, 44px);
+    }
+
+    .brand-frame {
+      border-left: 1px solid rgba(86,87,90,.24);
+      padding-left: clamp(18px, 3vw, 32px);
+      position: relative;
+    }
+
+    .brand-frame::before {
+      content: "WTS";
+      position: absolute;
+      top: 10px;
+      left: -13px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .32em;
+      color: rgba(86,87,90,.7);
+      background: #fbfaf8;
+      padding: 10px 0;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
+      gap: clamp(22px, 4vw, 46px);
+      align-items: end;
+      min-height: 295px;
+      border-radius: var(--radius-xl);
+      padding: clamp(26px, 5vw, 56px);
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "W";
+      position: absolute;
+      right: -60px;
+      top: -95px;
+      font-family: var(--serif);
+      font-size: clamp(18rem, 31vw, 28rem);
+      line-height: 1;
+      color: rgba(255,255,255,.055);
+      pointer-events: none;
+    }
+
+    .hero > * { position: relative; z-index: 1; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      font-family: var(--mono);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: rgba(255,255,255,.78);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 38px;
+      height: 1px;
+      background: var(--wts-gold);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(2.8rem, 7vw, 5.8rem);
+      letter-spacing: -.055em;
+      line-height: .92;
+      max-width: 900px;
+    }
+
+    .hero-copy {
+      max-width: 660px;
+      margin: 22px 0 0;
+      color: rgba(255,255,255,.84);
+      font-size: clamp(1rem, 1.35vw, 1.18rem);
+    }
+
+    .hero-card {
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 24px;
+      background: rgba(255,255,255,.10);
+      backdrop-filter: blur(8px);
+      padding: 22px;
+    }
+
+    .small {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.74);
+      margin-bottom: 14px;
+    }
+
+    .hero-stat {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255,255,255,.15);
+    }
+
+    .hero-stat:first-of-type { border-top: 0; padding-top: 0; }
+    .hero-stat span { color: rgba(255,255,255,.78); }
+    .hero-stat strong { color: white; font-family: var(--mono); white-space: nowrap; }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    .section-heading {
+      margin: 0 0 14px;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -.045em;
+      line-height: 1;
+    }
+
+    .section-note {
+      color: var(--wts-gray);
+      margin: -4px 0 18px;
+      max-width: 720px;
+    }
+
+    .program-switch {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .program-card {
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: rgba(255,255,255,.82);
+      box-shadow: 0 8px 24px rgba(31,32,35,.05);
+      padding: 22px;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .program-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .program-card[aria-pressed="true"] { border-color: var(--accent); background: #fff; }
+
+    .program-card .code {
+      font-family: var(--mono);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-size: .72rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .program-card .name {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.65rem);
+      line-height: 1;
+      letter-spacing: -.04em;
+      margin-bottom: 10px;
+    }
+
+    .program-card .desc {
+      color: var(--wts-gray);
+      font-size: .96rem;
+      max-width: 54ch;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      margin-top: 24px;
+    }
+
+    .panel, .card {
+      background: rgba(255,255,255,.94);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(140,34,51,.07), rgba(189,139,65,.08)), #fff;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(1.7rem, 2.5vw, 2.1rem);
+      line-height: 1;
+      letter-spacing: -.04em;
+      font-weight: 400;
+    }
+
+    .panel-kicker {
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--wts-gray);
+    }
+
+    .panel-body { padding: 22px; }
+
+    .field { margin-bottom: 20px; }
+
+    label, .label-title {
+      display: block;
+      font-weight: 900;
+      color: var(--wts-ink);
+      margin-bottom: 7px;
+    }
+
+    .help {
+      margin-top: 7px;
+      color: var(--wts-gray);
+      font-size: .88rem;
+    }
+
+    select, input {
+      width: 100%;
+      border: 1px solid rgba(86,87,90,.32);
+      border-radius: var(--radius-md);
+      padding: 13px;
+      font: 700 1rem var(--sans);
+      background: #fff;
+      color: var(--wts-ink);
+    }
+
+    select:focus, input:focus, button:focus {
+      outline: 3px solid color-mix(in srgb, var(--accent) 24%, transparent);
+      outline-offset: 2px;
+    }
+
+    .choice-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .choice {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: #fff;
+      padding: 14px;
+      cursor: pointer;
+      text-align: left;
+      min-height: 78px;
+    }
+
+    .choice[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .choice strong {
+      display: block;
+      font-size: .98rem;
+      margin-bottom: 4px;
+    }
+
+    .choice span {
+      display: block;
+      color: var(--wts-gray);
+      font-size: .88rem;
+      line-height: 1.35;
+    }
+
+    .amount-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .quick-amount {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      padding: 10px 8px;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-weight: 700;
+      color: var(--wts-ink);
+    }
+
+    .quick-amount:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    details.advanced {
+      margin-top: 4px;
+      border-top: 1px solid rgba(86,87,90,.16);
+      padding-top: 18px;
+    }
+
+    details.advanced summary {
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--accent);
+      list-style-position: outside;
+    }
+
+    .result-card {
+      position: relative;
+      border-radius: var(--radius-xl);
+      padding: clamp(24px, 4vw, 38px);
+      color: #fff;
+      background: linear-gradient(160deg, var(--accent-dark), var(--accent));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .result-card::after {
+      content: "W";
+      position: absolute;
+      right: -36px;
+      bottom: -86px;
+      font-family: var(--serif);
+      font-size: 16rem;
+      line-height: 1;
+      color: rgba(255,255,255,.06);
+    }
+
+    .result-card > * { position: relative; z-index: 1; }
+
+    .result-label {
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: rgba(255,255,255,.8);
+      font-size: .72rem;
+    }
+
+    .result-value {
+      margin: 12px 0 10px;
+      font-family: var(--serif);
+      font-size: clamp(3.1rem, 6vw, 5.2rem);
+      letter-spacing: -.055em;
+      line-height: .9;
+      white-space: nowrap;
+    }
+
+    .result-caption {
+      max-width: 52ch;
+      color: rgba(255,255,255,.84);
+      font-size: 1.05rem;
+    }
+
+    .result-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .mini {
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 16px;
+      background: rgba(255,255,255,.1);
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .mini .mini-label {
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: rgba(255,255,255,.72);
+      font-size: .64rem;
+      margin-bottom: 8px;
+    }
+
+    .mini .mini-value {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: clamp(1rem, 1.6vw, 1.25rem);
+      white-space: nowrap;
+    }
+
+
+    .summary-chart-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .horizontal-summary {
+      margin-top: 20px;
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0;
+      background: #fff;
+    }
+
+    .summary-tile {
+      min-width: 0;
+      padding: 16px 18px;
+      border-right: 1px solid rgba(86,87,90,.14);
+    }
+
+    .summary-tile:last-child {
+      border-right: 0;
+    }
+
+    .summary-tile .tile-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: .66rem;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--wts-gray);
+      margin-bottom: 8px;
+      line-height: 1.25;
+    }
+
+    .summary-tile .tile-value {
+      display: block;
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: clamp(.95rem, 1.35vw, 1.18rem);
+      color: var(--wts-ink);
+      white-space: nowrap;
+    }
+
+    .summary-tile.total {
+      background: var(--accent-soft);
+    }
+
+    .summary-tile.total .tile-label {
+      color: var(--accent-dark);
+    }
+
+    .summary-tile.total .tile-value {
+      color: var(--accent);
+      font-size: clamp(1.05rem, 1.55vw, 1.35rem);
+    }
+
+    .summary-tile.match-opportunity {
+      background: rgba(189,139,65,.16);
+      box-shadow: inset 0 0 0 1px rgba(189,139,65,.38);
+    }
+
+    .summary-tile.match-opportunity .tile-label::after {
+      content: " • still eligible";
+      color: var(--wts-gray);
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .horizontal-summary .notice {
+      margin: 0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 0;
+    }
+
+    .summary-tile[hidden] {
+      display: none !important;
+    }
+
+
+    .table-block {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: baseline;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(86,87,90,.05), rgba(189,139,65,.08));
+    }
+
+    .table-header h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(1.65rem, 2.5vw, 2rem);
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+
+    .table-header span {
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--wts-gray);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      text-align: right;
+    }
+
+    .summary-list { display: grid; }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(86,87,90,.14);
+    }
+
+    .summary-row:last-child { border-bottom: 0; }
+    .summary-row span:first-child { min-width: 0; overflow-wrap: anywhere; }
+
+    .amount {
+      font-family: var(--mono);
+      font-weight: 700;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .summary-row.total {
+      font-size: 1.14rem;
+      font-weight: 900;
+    }
+
+    .summary-row.total .amount { color: var(--accent); }
+
+    .pie-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      min-width: 0;
+    }
+
+    .pie-title {
+      margin: 0 0 14px;
+      font-family: var(--serif);
+      font-weight: 400;
+      letter-spacing: -.035em;
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .pie-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 230px;
+      max-width: 100%;
+      margin: 0 auto 16px;
+    }
+
+    .pie-svg {
+      width: 220px;
+      height: 220px;
+      overflow: visible;
+      filter: drop-shadow(0 12px 28px rgba(31,32,35,.09));
+    }
+
+    .pie-slice { stroke: #fff; stroke-width: 2; }
+    .pie-slice.student { fill: var(--chart-student); }
+    .pie-slice.raised { fill: var(--chart-raised); }
+    .pie-slice.match { fill: var(--chart-match); }
+
+    .pie-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      fill: #fff;
+      text-anchor: middle;
+      dominant-baseline: central;
+      paint-order: stroke;
+      stroke: rgba(31,32,35,.25);
+      stroke-width: 2.5px;
+      stroke-linejoin: round;
+    }
+
+    .pie-label.hidden { display: none; }
+
+    .legend {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .legend-item {
+      display: grid;
+      grid-template-columns: 12px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+      font-size: .9rem;
+      color: var(--wts-gray);
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 5px;
+    }
+
+    .dot.student { background: var(--chart-student); }
+    .dot.raised { background: var(--chart-raised); }
+    .dot.match { background: var(--chart-match); }
+
+    .legend strong {
+      color: var(--wts-ink);
+      font-weight: 900;
+    }
+
+    .legend .amount {
+      font-size: .88rem;
+    }
+
+    .notice {
+      margin-top: 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(189,139,65,.36);
+      background: rgba(189,139,65,.11);
+      padding: 16px 18px;
+      color: #3b3429;
+      font-size: .94rem;
+    }
+
+    .term-block {
+      margin-top: 20px;
+    }
+
+    .table-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--wts-gray);
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      vertical-align: bottom;
+      white-space: normal;
+    }
+
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid rgba(86,87,90,.12);
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    td.money, th.money {
+      text-align: right;
+      white-space: nowrap;
+      font-family: var(--mono);
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 12px 16px;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: 1.2;
+      font-weight: 900;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease;
+      text-align: center;
+      color: var(--wts-ink);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn.primary { background: var(--accent); color: white; }
+    .btn.primary:hover { background: var(--accent-dark); }
+
+    .btn.secondary {
+      background: white;
+      border-color: var(--border);
+    }
+
+    .fine-print {
+      margin: 14px 0 0;
+      color: var(--wts-gray);
+      font-size: .85rem;
+    }
+
+
+    .mac-only[hidden] {
+      display: none !important;
+    }
+
+    .sub-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,.72);
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .sub-panel-title {
+      margin: 0 0 8px;
+      font-weight: 900;
+      color: var(--wts-ink);
+    }
+
+    .range-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    input[type="range"] {
+      padding: 0;
+      accent-color: var(--accent);
+    }
+
+    .range-value {
+      min-width: 76px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #fff;
+      padding: 8px 10px;
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .recognition-note {
+      margin-top: 10px;
+      color: var(--wts-gray);
+      font-size: .88rem;
+      line-height: 1.35;
+    }
+
+    .tooltip-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+
+    .info-tooltip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(86,87,90,.32);
+      background: #fff;
+      color: var(--accent);
+      font-size: .78rem;
+      font-weight: 900;
+      cursor: help;
+      line-height: 1;
+    }
+
+    .tooltip-box {
+      position: absolute;
+      right: 0;
+      left: auto;
+      bottom: calc(100% + 10px);
+      transform: translateY(4px);
+      z-index: 10;
+      width: min(300px, calc(100vw - 56px));
+      max-width: 300px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(86,87,90,.18);
+      background: #fff;
+      color: var(--wts-ink);
+      box-shadow: 0 12px 34px rgba(31,32,35,.16);
+      font-size: .84rem;
+      font-weight: 700;
+      line-height: 1.35;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .14s ease, transform .14s ease, visibility .14s ease;
+    }
+
+    .tooltip-box::after {
+      content: "";
+      position: absolute;
+      right: 3px;
+      left: auto;
+      top: 100%;
+      transform: none;
+      border: 7px solid transparent;
+      border-top-color: #fff;
+    }
+
+    .info-tooltip:hover .tooltip-box,
+    .info-tooltip:focus .tooltip-box,
+    .info-tooltip:focus-within .tooltip-box {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 700px) {
+      .tooltip-label {
+        align-items: flex-start;
+      }
+
+      .tooltip-box {
+        right: -4px;
+        width: min(280px, calc(100vw - 44px));
+      }
+    }
+
+    .mac-only-row {
+      transition: opacity .18s ease;
+    }
+
+    .mac-only-row[hidden] {
+      display: none !important;
+    }
+
+
+    .course-select {
+      display: grid;
+      gap: 8px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .course-option {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      padding: 11px 12px;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .course-option:has(input:checked) {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .course-option input {
+      width: auto;
+      margin-top: 3px;
+      accent-color: var(--accent);
+    }
+
+    .course-option span {
+      min-width: 0;
+      line-height: 1.25;
+    }
+
+    .course-option strong {
+      font-family: var(--mono);
+      font-size: .82rem;
+      margin-right: 4px;
+    }
+
+    .course-option em {
+      font-style: normal;
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--wts-gray);
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .course-option.disabled {
+      opacity: .48;
+      cursor: not-allowed;
+    }
+
+
+    .mini.match-opportunity {
+      border-color: var(--wts-gold);
+      background: linear-gradient(135deg, rgba(189,139,65,.24), rgba(255,255,255,.10));
+      box-shadow: 0 0 0 3px rgba(189,139,65,.18);
+    }
+
+    .mini.match-opportunity .mini-label::after {
+      content: " opportunity";
+      color: rgba(255,255,255,.86);
+    }
+
+    .summary-row.match-opportunity {
+      margin: 6px -8px;
+      padding: 14px 8px;
+      border-radius: 12px;
+      border-bottom: 0;
+      background: rgba(189,139,65,.16);
+      box-shadow: inset 0 0 0 1px rgba(189,139,65,.38);
+    }
+
+    .summary-row.match-opportunity span:first-child::after {
+      content: " — still eligible";
+      color: var(--wts-gray);
+      font-weight: 700;
+    }
+
+    @media (max-width: 1020px) {
+      .hero, .main-grid, .summary-chart-grid { grid-template-columns: 1fr; }
+      .result-mini-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .brand-frame { border-left: 0; padding-left: 0; }
+      .brand-frame::before { display: none; }
+      .program-switch, .choice-row, .amount-buttons, .action-row { grid-template-columns: 1fr; }
+      .hero { min-height: auto; }
+      .result-value { white-space: normal; font-size: clamp(2.8rem, 14vw, 4.2rem); }
+      .summary-row { grid-template-columns: 1fr; gap: 4px; }
+      .amount { text-align: left; }
+      .table-header { display: block; }
+      .table-header span { display: block; text-align: left; margin-top: 8px; }
+      .legend-item { grid-template-columns: 12px minmax(0, 1fr); }
+      .legend .amount { grid-column: 2; }
+    }
+
+
+    @media (max-width: 1020px) {
+      .summary-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .summary-tile {
+        border-right: 0;
+        border-bottom: 1px solid rgba(86,87,90,.14);
+      }
+
+      .summary-tile:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .summary-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+    .lower-estimate-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      margin-top: 20px;
+    }
+
+    .lower-estimate-grid .horizontal-summary {
+      margin-top: 0;
+    }
+
+    .left-estimate-column .summary-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .left-estimate-column .summary-tile {
+      border-right: 0;
+      border-bottom: 1px solid rgba(86,87,90,.14);
+      padding: 14px 18px;
+    }
+
+    .left-estimate-column .summary-tile:last-child {
+      border-bottom: 0;
+    }
+
+    .left-estimate-column .summary-tile .tile-value {
+      font-size: 1rem;
+    }
+
+    .left-estimate-column .summary-tile.total .tile-value {
+      font-size: 1.15rem;
+    }
+
+    .right-term-column .term-block {
+      margin-top: 0;
+    }
+
+
+    @media (max-width: 1020px) {
+      .lower-estimate-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+    .left-column {
+      display: grid;
+      gap: 20px;
+      align-content: start;
+      min-width: 0;
+    }
+
+    .left-column .horizontal-summary {
+      margin-top: 0;
+      width: 100%;
+    }
+
+    .left-column .summary-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .left-column .summary-tile {
+      border-right: 0;
+      border-bottom: 1px solid rgba(86,87,90,.14);
+      padding: 14px 18px;
+    }
+
+    .left-column .summary-tile:last-child {
+      border-bottom: 0;
+    }
+
+    .left-column .summary-tile .tile-value {
+      font-size: 1rem;
+    }
+
+    .left-column .summary-tile.total .tile-value {
+      font-size: 1.15rem;
+    }
+
+    .results-section .term-block {
+      margin-top: 20px;
+    }
+
+
+    .lower-estimate-grid {
+      display: contents;
+    }
+
+
+    .full-width-term-section {
+      margin-top: 24px;
+      width: 100%;
+    }
+
+    .full-width-term-section .term-block {
+      width: 100%;
+      margin-top: 0;
+    }
+
+    .full-width-term-section .action-row {
+      max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+
+    .full-width-summary-section {
+      margin-top: 24px;
+      width: 100%;
+    }
+
+    .full-width-summary-section .horizontal-summary {
+      width: 100%;
+      margin-top: 0;
+    }
+
+    .full-width-summary-section .summary-strip {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .full-width-summary-section .summary-tile {
+      border-right: 1px solid rgba(86,87,90,.14);
+      border-bottom: 0;
+      padding: 16px 18px;
+    }
+
+    .full-width-summary-section .summary-tile:last-child {
+      border-right: 0;
+    }
+
+    .full-width-summary-section .summary-tile[hidden] {
+      display: none !important;
+    }
+
+    .full-width-summary-section .notice {
+      margin-top: 0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 0;
+    }
+
+    @media (max-width: 1020px) {
+      .full-width-summary-section .summary-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .full-width-summary-section .summary-tile {
+        border-right: 0;
+        border-bottom: 1px solid rgba(86,87,90,.14);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .full-width-summary-section .summary-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+    .results-section .summary-chart-grid {
+      grid-template-columns: 1fr;
+      width: 100%;
+    }
+
+    .results-section .pie-card {
+      width: 100%;
+    }
+
+    .results-section .pie-card {
+      display: grid;
+      grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
+      grid-template-areas:
+        "title title"
+        "chart legend";
+      column-gap: 28px;
+      row-gap: 8px;
+      align-items: center;
+    }
+
+    .results-section .pie-title {
+      grid-area: title;
+    }
+
+    .results-section .pie-wrap {
+      grid-area: chart;
+      margin: 0 auto;
+    }
+
+    .results-section .pie-card .legend {
+      grid-area: legend;
+      align-self: center;
+      margin-top: 0;
+    }
+
+    @media (max-width: 700px) {
+      .results-section .pie-card {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "title"
+          "chart"
+          "legend";
+      }
+
+      .results-section .pie-wrap {
+        margin: 0 auto 16px;
+      }
+    }
+
+
+    .program-switch {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @media (max-width: 1180px) {
+      .program-switch {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+
+    .market-comparison-section {
+      margin-top: 24px;
+      width: 100%;
+    }
+
+    .market-block {
+      width: 100%;
+    }
+
+    .table-subtitle {
+      margin: 6px 0 0;
+      color: var(--wts-gray);
+      font-size: .95rem;
+      line-height: 1.35;
+      font-family: var(--sans);
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .comparison-callout {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--accent-soft);
+      color: var(--wts-ink);
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .comparison-note {
+      margin: 0;
+      padding: 14px 18px 18px;
+      color: var(--wts-gray);
+      font-size: .86rem;
+      line-height: 1.45;
+      border-top: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .comparison-row-current {
+      background: var(--accent-soft);
+    }
+
+    .comparison-row-current td:first-child {
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    .comparison-program-note {
+      color: var(--wts-gray);
+      font-size: .86rem;
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+
+    .comparison-source-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .comparison-source-link:hover {
+      text-decoration: underline;
+    }
+
+
+    body.program-mar .mini.match-opportunity,
+    body.program-mar .summary-tile.match-opportunity,
+    body.program-mar .summary-row.match-opportunity {
+      border-color: #8c2233;
+      background: rgba(140,34,51,.16);
+      box-shadow: 0 0 0 3px rgba(140,34,51,.18);
+    }
+
+    body.program-mar .mini.match-opportunity .mini-label::after,
+    body.program-mar .summary-tile.match-opportunity .tile-label::after {
+      color: rgba(255,255,255,.92);
+    }
+
+
+    .pie-slice.student { fill: #56575a !important; }
+    .pie-slice.raised { fill: #8c2233 !important; }
+    .pie-slice.match { fill: #bd8b41 !important; }
+
+    .dot.student { background: #56575a !important; }
+    .dot.raised { background: #8c2233 !important; }
+    .dot.match { background: #bd8b41 !important; }
+
+
+     
+    .section-heading,
+    .panel-title,
+    .table-header h2,
+    .pie-title {
+      font-family: var(--sans);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .section-heading { font-size: 1.35rem; margin-bottom: 14px; }
+    .panel-title, .table-header h2, .pie-title { font-size: 1.05rem; }
+
+    .program-card .name {
+      font-family: var(--sans);
+      font-size: 1.2rem;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .program-card .code {
+      font-family: var(--sans);
+      font-size: .84rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--wts-gray);
+      margin-bottom: 8px;
+    }
+
+    .program-card .desc,
+    .help,
+    .fine-print,
+    .result-caption,
+    .comparison-program-note,
+    .comparison-note,
+    .hero-copy {
+      font-family: var(--sans);
+      line-height: 1.45;
+    }
+
+    .hero-card .small,
+    .mini-label,
+    .tile-label,
+    .table-header span {
+      letter-spacing: .04em;
+    }
+
+    .panel-body { padding-top: 20px; }
+    .field + .field { margin-top: 22px; }
+
+
+    .hero-info-stack {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .scholarship-availability-note {
+      padding: 12px 14px;
+      border: 1px solid rgba(86,87,90,.22);
+      border-radius: 12px;
+      background: #f7f7f7;
+      color: var(--wts-gray);
+      font-size: .86rem;
+      line-height: 1.45;
+    }
+
+    .scholarship-availability-note strong {
+      color: var(--wts-ink);
+    }
+
+
+    .print-only { display: none; }
+
+    @media print {
+      @page {
+        size: Letter portrait;
+        margin: 1in;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      html, body {
+        background: #fff !important;
+        color: #252629;
+        font-size: 9.5pt;
+        line-height: 1.35;
+      }
+
+      body { margin: 0; }
+
+      .wrap {
+        max-width: none;
+        padding: 0;
+      }
+
+      .brand-frame {
+        border: 0;
+        padding: 0;
+      }
+
+      .brand-frame::before { display: none !important; }
+
+      .hero,
+      .program-section,
+      .left-column,
+      .action-row,
+      .mini.mac-only-row,
+      .market-block .comparison-source-link,
+      .market-block .comparison-note,
+      .market-block th:nth-child(5),
+      .market-block td:nth-child(5),
+      .market-block th:nth-child(7),
+      .market-block td:nth-child(7) {
+        display: none !important;
+      }
+
+      .print-only { display: block !important; }
+
+      .print-header {
+        margin: 0 0 14pt;
+        padding: 0 0 11pt;
+        border-bottom: 2pt solid #8c2233;
+        break-after: avoid;
+      }
+
+      .print-brand-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12pt;
+        margin-bottom: 5pt;
+        color: #56575a;
+        font-family: var(--sans);
+        font-size: 7.5pt;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+      }
+
+      .print-header h1 {
+        margin: 0;
+        font-family: var(--serif);
+        font-size: 21pt;
+        line-height: 1.08;
+        color: #252629;
+      }
+
+      .print-intro {
+        margin: 4pt 0 9pt;
+        color: #56575a;
+        font-size: 9pt;
+      }
+
+      .print-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        border: .7pt solid #d7d7d8;
+        border-radius: 7pt;
+        overflow: hidden;
+      }
+
+      .print-meta-grid > div {
+        min-width: 0;
+        padding: 7pt 8pt;
+        border-right: .7pt solid #d7d7d8;
+        border-bottom: .7pt solid #d7d7d8;
+        background: #f6f6f6;
+      }
+
+      .print-meta-grid > div:nth-child(3n) { border-right: 0; }
+      .print-meta-grid > div:nth-last-child(-n+3) { border-bottom: 0; }
+
+      .print-meta-grid span {
+        display: block;
+        margin-bottom: 2pt;
+        color: #56575a;
+        font-size: 6.8pt;
+        font-weight: 800;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+      }
+
+      .print-meta-grid strong {
+        display: block;
+        overflow-wrap: anywhere;
+        font-size: 8.6pt;
+        line-height: 1.2;
+      }
+
+      .main-grid {
+        display: block !important;
+        margin: 0;
+      }
+
+      .results-section {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1.14fr) minmax(190pt, .86fr);
+        gap: 10pt;
+        align-items: stretch;
+        margin: 0 0 10pt;
+      }
+
+      .result-card,
+      .table-block,
+      .pie-card {
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+
+      .result-card {
+        min-height: 0;
+        padding: 14pt 15pt;
+        border-radius: 9pt;
+      }
+
+      .result-label {
+        font-size: 7.5pt;
+        letter-spacing: .06em;
+      }
+
+      .result-value {
+        margin: 3pt 0 4pt;
+        font-size: 27pt;
+        line-height: 1;
+      }
+
+      .result-caption {
+        max-width: none;
+        margin: 0 0 9pt;
+        font-size: 8.3pt;
+        line-height: 1.3;
+      }
+
+      .result-mini-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5pt;
+      }
+
+      .mini {
+        padding: 7pt;
+        border-radius: 6pt;
+      }
+
+      .mini-label {
+        font-size: 6.4pt;
+        line-height: 1.15;
+      }
+
+      .mini-value { font-size: 10pt; }
+
+      .summary-chart-grid {
+        display: block !important;
+        margin: 0;
+      }
+
+      .pie-card {
+        height: 100%;
+        display: grid !important;
+        grid-template-columns: 105pt minmax(0, 1fr) !important;
+        grid-template-areas:
+          "title title"
+          "chart legend" !important;
+        gap: 4pt 9pt !important;
+        padding: 12pt;
+        border-radius: 9pt;
+      }
+
+      .pie-title {
+        margin: 0;
+        font-size: 10pt;
+      }
+
+      .pie-wrap {
+        width: 100pt;
+        height: 100pt;
+        margin: 0 !important;
+      }
+
+      .pie-svg { width: 100pt; height: 100pt; }
+
+      .pie-label { font-size: 12px; }
+
+      .legend {
+        margin: 0 !important;
+        gap: 5pt;
+      }
+
+      .legend-item {
+        grid-template-columns: 7pt minmax(0, 1fr) auto;
+        gap: 5pt;
+        padding: 4pt 0;
+        font-size: 7.7pt;
+      }
+
+      .print-explainer {
+        margin: 0 0 10pt;
+        padding: 9pt 11pt;
+        border: .8pt solid #d7d7d8;
+        border-left: 3pt solid #bd8b41;
+        border-radius: 7pt;
+        background: #faf8f3;
+        break-inside: avoid;
+      }
+
+      .print-explainer h2 {
+        margin: 0 0 5pt;
+        font-family: var(--sans);
+        font-size: 9.5pt;
+      }
+
+      .print-explainer-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8pt;
+      }
+
+      .print-explainer p {
+        margin: 0;
+        font-size: 7.8pt;
+        line-height: 1.32;
+      }
+
+      .print-scholarship-note {
+        margin-top: 6pt !important;
+        padding-top: 5pt;
+        border-top: .7pt solid #ddd2bf;
+        color: #56575a;
+      }
+
+      .full-width-summary-section {
+        margin: 0;
+        break-inside: avoid;
+      }
+
+      .horizontal-summary {
+        margin: 0;
+        border: .8pt solid #d7d7d8;
+        border-radius: 8pt;
+        overflow: hidden;
+      }
+
+      .horizontal-summary .table-header {
+        padding: 7pt 10pt;
+      }
+
+      .horizontal-summary .table-header h2 { font-size: 10pt; }
+      .horizontal-summary .table-header span { font-size: 7pt; }
+
+      .summary-strip {
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+      }
+
+      .summary-tile {
+        padding: 8pt 7pt !important;
+        border-right: .7pt solid #d7d7d8 !important;
+        border-bottom: 0 !important;
+      }
+
+      .summary-tile:last-child { border-right: 0 !important; }
+
+      .summary-tile .tile-label {
+        min-height: 17pt;
+        margin-bottom: 3pt;
+        font-size: 6.2pt;
+        line-height: 1.15;
+      }
+
+      .summary-tile .tile-value,
+      .summary-tile.total .tile-value {
+        font-size: 10.5pt !important;
+      }
+
+      .horizontal-summary .notice {
+        padding: 7pt 10pt;
+        font-size: 7.3pt;
+        line-height: 1.3;
+      }
+
+      .full-width-term-section {
+        margin-top: 0;
+        break-before: page;
+      }
+
+      .term-block,
+      .market-block {
+        border: 0;
+        border-radius: 0;
+        overflow: visible;
+      }
+
+      .term-block .table-header,
+      .market-block .table-header {
+        padding: 0 0 7pt;
+        border-bottom: 1.2pt solid #56575a;
+      }
+
+      .term-block .table-header h2,
+      .market-block .table-header h2 {
+        font-size: 14pt;
+      }
+
+      .print-table-note,
+      .table-subtitle,
+      .comparison-callout,
+      .comparison-note {
+        font-size: 7.4pt;
+        line-height: 1.3;
+      }
+
+      .print-table-note {
+        margin: 6pt 0;
+        color: #56575a;
+      }
+
+      .table-scroll { overflow: visible !important; }
+
+      table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        font-size: 7.7pt;
+      }
+
+      thead { display: table-header-group; }
+      tfoot { display: table-footer-group; }
+      tr { break-inside: avoid; page-break-inside: avoid; }
+
+      th,
+      td {
+        padding: 4.5pt 4pt;
+        overflow-wrap: anywhere;
+      }
+
+      th {
+        font-size: 6.5pt;
+        line-height: 1.15;
+        background: #f1f1f1 !important;
+      }
+
+      .term-block th:nth-child(1) { width: 18%; }
+      .term-block th:nth-child(2) { width: 9%; }
+      .term-block th:nth-child(3) { width: 17%; }
+      .term-block th:nth-child(4) { width: 17%; }
+      .term-block th:nth-child(5) { width: 15%; }
+      .term-block th:nth-child(6) { width: 24%; }
+
+      .market-comparison-section {
+        margin-top: 0;
+        break-before: page;
+      }
+
+      .market-block .table-header {
+        align-items: end;
+      }
+
+      .market-block .comparison-callout {
+        margin: 6pt 0;
+        padding: 6pt 8pt;
+        border: .7pt solid #d7d7d8;
+        background: #f7f7f7 !important;
+      }
+
+      .market-block table { font-size: 7.2pt; }
+      .market-block th,
+      .market-block td { padding: 4pt 3.5pt; }
+
+      .market-block th:nth-child(1) { width: 7%; }
+      .market-block th:nth-child(2) { width: 29%; }
+      .market-block th:nth-child(3) { width: 31%; }
+      .market-block th:nth-child(4) { width: 10%; }
+      .market-block th:nth-child(6) { width: 23%; }
+
+      .comparison-program-note { font-size: 6.4pt; }
+      .print-comparison-note {
+        margin: 7pt 0 0;
+        padding-top: 6pt;
+        border-top: .7pt solid #d7d7d8;
+        color: #56575a;
+        font-size: 7.2pt;
+        line-height: 1.3;
+      }
+
+      a { color: inherit !important; text-decoration: none !important; }
+      a[href]::after { content: none !important; }
+    }
+  
+  </style>
+</head>
+<body>
+
+  <main class="wrap">
+    <div class="brand-frame">
+      <section class="print-only print-header" aria-label="Printed estimate heading">
+        <div class="print-brand-line">
+          <span>Westminster Theological Seminary</span>
+          <span>Online Programs</span>
+        </div>
+        <h1>WTS Online Program Cost Estimate</h1>
+        <p class="print-intro">A personalized planning estimate based on the information entered in the estimator.</p>
+        <div class="print-meta-grid">
+          <div><span>Program</span><strong id="printProgram">MATS</strong></div>
+          <div><span>Program credits</span><strong id="printCredits">36</strong></div>
+          <div><span>Expected pace</span><strong id="printPace">1 course per term</strong></div>
+          <div><span>Start term</span><strong id="printStartTerm">June 2026</strong></div>
+          <div><span>Anticipated completion</span><strong id="printCompletionTerm">March 2029</strong></div>
+          <div><span>Prepared</span><strong id="printDate"></strong></div>
+        </div>
+      </section>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <div class="eyebrow">Westminster Theological Seminary</div>
+          <h1 id="page-title">WTS Online Program Cost Estimator</h1>
+          <p class="hero-copy">
+            Estimate your full-program cost after outside support and WTS matching scholarships.
+          </p>
+        </div>
+        <div class="hero-info-stack">
+          <aside class="hero-card" aria-label="Estimator assumptions">
+            <div class="small">Key Information</div>
+            <div class="hero-stat"><span>MATS Match</span><strong>$5,000 lifetime match</strong></div>
+            <div class="hero-stat"><span>MAC Match</span><strong>25% match</strong></div>
+            <div class="hero-stat"><span>MDiv / MAR Match</span><strong>1 credit per course</strong></div>
+          </aside>
+          <div class="scholarship-availability-note" role="note">
+            <strong>Scholarships are limited.</strong> Students must apply, and eligibility does not guarantee that a matching scholarship will be awarded.
+          </div>
+        </div>
+      </section>
+
+      <section class="section program-section">
+        <h2 class="section-heading">Choose Your Program</h2>
+        <div class="program-switch" aria-label="Program selection">
+          <button type="button" id="matsBtn" class="program-card" aria-pressed="true">
+            <div class="name">MATS</div>
+            <div class="code">36 credits</div>
+            <div class="desc">Dollar-for-dollar match up to $5,000.</div>
+          </button>
+          <button type="button" id="macBtn" class="program-card" aria-pressed="false">
+            <div class="name">MAC</div>
+            <div class="code">61 credits</div>
+            <div class="desc">25% matching scholarship with optional SBC course recognition.</div>
+          </button>
+          <button type="button" id="mdivBtn" class="program-card" aria-pressed="false">
+            <div class="name">MDiv</div>
+            <div class="code">111 credits</div>
+            <div class="desc">Matching scholarship estimated across 43 courses.</div>
+          </button>
+          <button type="button" id="marBtn" class="program-card" aria-pressed="false">
+            <div class="name">MAR</div>
+            <div class="code">74 credits</div>
+            <div class="desc">Matching scholarship estimated across 23 courses.</div>
+          </button>
+        </div>
+      </section>
+
+      <section class="main-grid">
+        <aside class="left-column">
+          <div class="panel input-panel">
+            <div class="panel-header">
+            <h2 class="panel-title">Financial Information</h2>
+            
+          </div>
+          <div class="panel-body">
+            <div class="field">
+              <label for="fundsRaised">Church, donor, or employer support over full program</label>
+              <input id="fundsRaised" type="number" min="0" step="100" value="0" />
+              <div class="amount-buttons" aria-label="Quick support amounts">
+                <button type="button" class="quick-amount" data-amount="0">$0</button>
+                <button type="button" class="quick-amount" data-amount="2500">$2,500</button>
+                <button type="button" class="quick-amount" data-amount="5000">$5,000</button>
+                <button type="button" class="quick-amount" data-amount="10000">$10,000</button>
+              </div>
+              <div class="help">Enter the total support you expect over the full program. WTS matching support is applied automatically. For MDiv and MAR, the match is estimated at one credit of tuition per course across approximately 43 MDiv courses or 23 MAR courses.</div>
+            </div>
+
+            <div class="field">
+              <label for="startTerm">When do you plan to start?</label>
+              <select id="startTerm">
+                <option value="2026-09">September 2026</option>
+                <option value="2027-01">January 2027</option>
+                <option value="2027-03">March 2027</option>
+                <option value="2027-06">June 2027</option>
+                <option value="2027-09">September 2027</option>
+              </select>
+              <div class="help">Tuition increases to $750/credit beginning in the June 2027 term.</div>
+            </div>
+
+            <div class="field mac-only" id="sbcScholarshipBlock" hidden>
+              <div class="label-title">Would you like to have SBC courses recognized for credit in the MAC?</div>
+              <div class="choice-row" role="group" aria-label="SBC course recognition selection">
+                <button type="button" id="sbcScholarshipYes" class="choice" aria-pressed="false">
+                  <strong>Yes</strong>
+                  <span>Select SBC courses may count for up to 15 credits in the MAC.</span>
+                </button>
+                <button type="button" id="sbcScholarshipNo" class="choice" aria-pressed="true">
+                  <strong>No / Not sure</strong>
+                  <span>Do not include SBC course recognition in this estimate.</span>
+                </button>
+              </div>
+
+              <div class="sub-panel" id="sbcDetails" hidden>
+                <p class="sub-panel-title">SBC courses to recognize</p>
+                <div class="help" style="margin-bottom:12px;">
+                  Select the SBC courses you would like WTS to recognize. You may select up to 15 total credits. The recognition fee is $1,300 per selected SBC course.
+                </div>
+
+                <div class="course-select" id="sbcCourseList" role="group" aria-label="SBC courses for WTS recognition">
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 151" data-title="Dynamics of Biblical Change" data-credits="3">
+                    <span><strong>PTC 151</strong> Dynamics of Biblical Change</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 178" data-title="Helping Relationships" data-credits="3">
+                    <span><strong>PTC 178</strong> Helping Relationships</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 222" data-title="Counseling &amp; Physiology" data-credits="3">
+                    <span><strong>PTC 222</strong> Counseling &amp; Physiology</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 243" data-title="Theology &amp; Secular Psychology" data-credits="2">
+                    <span><strong>PTC 243</strong> Theology &amp; Secular Psychology</span>
+                    <em>2 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 251" data-title="Marriage Counseling" data-credits="3">
+                    <span><strong>PTC 251</strong> Marriage Counseling</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 261" data-title="Applied Theology of the Person" data-credits="3">
+                    <span><strong>PTC 261</strong> Applied Theology of the Person</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 301" data-title="Everyday Problems in Counseling" data-credits="3">
+                    <span><strong>PTC 301</strong> Everyday Problems in Counseling</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 372" data-title="Counseling Observation" data-credits="3">
+                    <span><strong>PTC 372</strong> Counseling Observation</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 394" data-title="Complex Problems in Counseling" data-credits="3">
+                    <span><strong>PTC 394</strong> Complex Problems in Counseling</span>
+                    <em>3 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 523" data-title="Counseling in the Local Church" data-credits="2">
+                    <span><strong>PTC 523</strong> Counseling in the Local Church</span>
+                    <em>2 credits</em>
+                  </label>
+                  <label class="course-option">
+                    <input type="checkbox" class="sbc-course" value="PTC 621" data-title="Ethics in Biblical Counseling" data-credits="2">
+                    <span><strong>PTC 621</strong> Ethics in Biblical Counseling</span>
+                    <em>2 credits</em>
+                  </label>
+                </div>
+
+                <div class="recognition-note" id="sbcSelectionNote">Selected: 0 credits across 0 courses. Up to 15 credits may be recognized.</div>
+
+                <label for="sbcCoverage" class="tooltip-label" style="margin-top:14px;">
+                  Possible recognition fee scholarship coverage
+                  <span class="info-tooltip" tabindex="0" aria-label="Limited scholarship funds are available that may cover part or all of your SBC course recognition fees. Use the slider to see the impact this scholarship may have on your total MAC cost.">
+                    ?
+                    <span class="tooltip-box" role="tooltip">Limited scholarship funds are available that may cover part or all of your SBC course recognition fees. Use the slider to see the impact this scholarship may have on your total MAC cost.</span>
+                  </span>
+                </label>
+                <div class="range-row">
+                  <input id="sbcCoverage" type="range" min="0" max="100" step="5" value="100" />
+                  <span class="range-value" id="sbcCoverageLabel">100%</span>
+                </div>
+                <div class="recognition-note" id="sbcFeeNote">Estimated possible recognition fee scholarship: $0</div>
+              </div>
+            </div>
+
+            <details class="advanced">
+              <summary>Advanced options</summary>
+              <div class="field" style="margin-top:16px;">
+                <label for="creditsPerTerm">Expected pace</label>
+                <select id="creditsPerTerm">
+                  <option value="3">1 course per term / 3 credits</option>
+                  <option value="6">2 courses per term / 6 credits</option>
+                  <option value="9">3 courses per term / 9 credits</option>
+                  <option value="custom">Custom credits per term</option>
+                </select>
+              </div>
+
+              <div class="field" id="customCreditsField" style="display:none;">
+                <label for="customCredits">Custom credits per term</label>
+                <input id="customCredits" type="number" min="1" max="15" step="1" value="3" />
+              </div>
+            </details>
+
+            <p class="fine-print">This estimate updates automatically as you change your answers.</p>
+          </div>
+          </div>
+
+        </aside>
+
+        <section class="results-section">
+          <article class="result-card" aria-label="Estimated cost after support">
+            <div class="result-label">Your Estimated Cost After Support</div>
+            <div class="result-value" id="netPrice">$24,300</div>
+            <div class="result-caption" id="resultCaption">For the selected program after outside support and estimated Westminster matching scholarship.</div>
+
+            <div class="result-mini-grid">
+              <div class="mini">
+                <div class="mini-label">WTS Match</div>
+                <div class="mini-value" id="miniMatch">$0</div>
+              </div>
+              <div class="mini" id="miniRemainingCard">
+                <div class="mini-label">More Support Eligible For Match</div>
+                <div class="mini-value" id="miniRemaining">$0</div>
+              </div>
+              <div class="mini">
+                <div class="mini-label">WTS Tuition Remaining</div>
+                <div class="mini-value" id="miniGross">$24,300</div>
+              </div>
+              <div class="mini mac-only-row" id="miniCreditsCard" hidden>
+                <div class="mini-label">WTS Credits Remaining</div>
+                <div class="mini-value" id="miniCreditsRemaining">61</div>
+              </div>
+              <div class="mini mac-only-row" id="miniSbcCard" hidden>
+                <div class="mini-label">Possible SBC Fee Scholarship</div>
+                <div class="mini-value" id="miniSbcScholarship">$0</div>
+              </div>
+            </div>
+          </article>
+
+          <div class="summary-chart-grid">
+            <aside class="pie-card" aria-label="Cost and scholarship mix chart">
+              <h2 class="pie-title">Cost &amp; Scholarship Mix</h2>
+              <div class="pie-wrap">
+                <svg class="pie-svg" viewBox="0 0 220 220" role="img" aria-labelledby="pieTitle pieDesc">
+                  <title id="pieTitle">Cost and scholarship mix</title>
+                  <desc id="pieDesc">Share of total estimated cost paid by the student, covered by outside support, and covered by WTS scholarship support.</desc>
+                  <path id="sliceStudent" class="pie-slice student" d=""></path>
+                  <path id="sliceRaised" class="pie-slice raised" d=""></path>
+                  <path id="sliceMatch" class="pie-slice match" d=""></path>
+                  <text id="labelStudent" class="pie-label" x="110" y="110">0%</text>
+                  <text id="labelRaised" class="pie-label" x="110" y="110">0%</text>
+                  <text id="labelMatch" class="pie-label" x="110" y="110">0%</text>
+                </svg>
+              </div>
+              <div class="legend">
+                <div class="legend-item">
+                  <span class="dot student"></span>
+                  <span><strong>Student</strong></span>
+                  <span class="amount" id="legendStudent">$24,300</span>
+                </div>
+                <div class="legend-item">
+                  <span class="dot raised"></span>
+                  <span><strong>Support</strong></span>
+                  <span class="amount" id="legendRaised">$0</span>
+                </div>
+                <div class="legend-item">
+                  <span class="dot match"></span>
+                  <span><strong>WTS Scholarship Support</strong></span>
+                  <span class="amount" id="legendMatch">$0</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+        </section>
+      </section>
+
+      <section class="print-only print-explainer" aria-label="How to read this estimate">
+        <h2>How to Read This Estimate</h2>
+        <div class="print-explainer-grid">
+          <p><strong>Outside support</strong> is the full-program amount expected from a church, donor, or employer.</p>
+          <p><strong>WTS matching support</strong> is calculated automatically up to the selected program's limit.</p>
+          <p><strong>Estimated cost after support</strong> is the remaining amount the student would be responsible for under these assumptions.</p>
+        </div>
+        <p class="print-scholarship-note"><strong>Important:</strong> Matching scholarships are limited, require an application, and are not guaranteed.</p>
+      </section>
+      <section class="full-width-summary-section">
+        <div class="table-block horizontal-summary">
+            <div class="table-header">
+              <h2>Estimate Summary</h2>
+              <span id="summaryModeLabel">Scholarship included</span>
+            </div>
+            <div class="summary-strip" aria-label="Estimate summary">
+              <div class="summary-tile mac-only-row" id="summaryCreditsRecognizedRow" hidden>
+                <span class="tile-label">SBC credits recognized</span>
+                <span class="tile-value" id="summaryCreditsRecognized">0</span>
+              </div>
+              <div class="summary-tile mac-only-row" id="summaryCreditsRemainingRow" hidden>
+                <span class="tile-label">WTS credits remaining</span>
+                <span class="tile-value" id="summaryCreditsRemaining">61</span>
+              </div>
+              <div class="summary-tile">
+                <span class="tile-label">WTS tuition remaining</span>
+                <span class="tile-value" id="summaryGross">$24,300</span>
+              </div>
+              <div class="summary-tile">
+                <span class="tile-label">Support you raise</span>
+                <span class="tile-value" id="summaryRaised">-$0</span>
+              </div>
+              <div class="summary-tile">
+                <span class="tile-label">WTS matching scholarship</span>
+                <span class="tile-value" id="summaryMatch">-$0</span>
+              </div>
+              <div class="summary-tile" id="summaryRemainingMatchRow">
+                <span class="tile-label">More support eligible for match</span>
+                <span class="tile-value" id="summaryRemainingMatch">$5,000</span>
+              </div>
+              <div class="summary-tile mac-only-row" id="summarySbcFeeRow" hidden>
+                <span class="tile-label">SBC recognition fee</span>
+                <span class="tile-value" id="summarySbcFee">$0</span>
+              </div>
+              <div class="summary-tile mac-only-row" id="summarySbcScholarshipRow" hidden>
+                <span class="tile-label">Possible SBC fee scholarship</span>
+                <span class="tile-value" id="summarySbcScholarship">-$0</span>
+              </div>
+              <div class="summary-tile total">
+                <span class="tile-label">Estimated cost after support</span>
+                <span class="tile-value" id="summaryNet">$24,300</span>
+              </div>
+            </div>
+            <div class="notice">
+              <strong>Planning estimate only.</strong> This is not a final scholarship award, financial aid offer, or bill. Final tuition, fees, scholarships, and payment options are determined by Westminster Theological Seminary after application and scholarship review.
+            </div>
+          </div>
+      </section>
+
+      <section class="full-width-term-section">
+        <div class="table-block term-block">
+          <div class="table-header">
+            <h2>Estimated WTS Tuition By Term</h2>
+            <span id="termCountLabel">12 terms</span>
+          </div>
+          <p class="print-only print-table-note">Support and matching scholarship amounts are allocated proportionally across terms for planning purposes. Actual billing and scholarship posting may differ.</p>
+          <div class="table-scroll">
+            <table aria-label="Term by term estimate">
+              <thead>
+                <tr>
+                  <th>Term</th>
+                  <th class="money">Credits</th>
+                  <th class="money">WTS tuition</th>
+                  <th class="money">Support raised</th>
+                  <th class="money">WTS match</th>
+                  <th class="money">Estimated cost after support</th>
+                </tr>
+              </thead>
+              <tbody id="termTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="action-row">
+            <a class="btn primary" id="emailLink" href="#">Email Me This Estimate</a>
+            <a class="btn secondary" href="mailto:admissions@wts.edu?subject=Scholarship%20Review%20Request">Request Scholarship Review</a>
+            <button type="button" class="btn secondary" onclick="preparePrint(); window.print()">Print Estimate</button>
+          </div>
+      </section>
+
+      <section class="market-comparison-section">
+        <div class="table-block market-block">
+          <div class="table-header">
+            <div>
+              <h2>Online Program Cost Comparison</h2>
+              <p class="table-subtitle" id="comparisonSubtitle">Comparable online or mostly online theological, ministry, and counseling programs using an effective all-in per-credit charge.</p>
+            </div>
+            <span id="comparisonTypeLabel">Program comparison</span>
+          </div>
+
+          <div class="comparison-callout" id="comparisonCallout">
+            This comparison converts published tuition and mandatory recurring fees into an effective per-credit charge for each institution.
+          </div>
+
+          <div class="table-scroll">
+            <table aria-label="Online program cost comparison">
+              <thead>
+                <tr>
+                  <th class="money">Rank</th>
+                  <th>Institution</th>
+                  <th>Comparable program</th>
+                  <th class="money">Credits</th>
+                  <th class="money">Effective charge / credit</th>
+                  <th class="money">Estimated tuition + fees</th>
+                  <th>Included fees and delivery note</th>
+                </tr>
+              </thead>
+              <tbody id="comparisonTable"></tbody>
+            </table>
+          </div>
+
+          <p class="comparison-note">
+            Comparison excludes books, housing, travel, application fees, graduation fees, and individual scholarship awards unless noted. Mandatory recurring enrollment, technology, service, and similar fees are spread across the credits required for each degree to create the effective per-credit charge. DTS, Covenant, SBTS, Gordon-Conwell, and RTS figures are based on published tuition/program information available when this tool was prepared. Published tuition and fee information should be verified periodically, as institutional rates and policies may change.
+          </p>
+          <p class="print-only print-comparison-note">Competitor estimates include published tuition and mandatory recurring fees. They exclude books, travel, application and graduation fees, and individual financial aid. Verify current institutional rates before enrollment.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  
+
+<script>
+
+    const CONFIG = {
+      programs: {
+        MATS: {
+          name: "MATS",
+          credits: 36,
+          matchType: "fixedCap",
+          fixedCap: 5000,
+          termSystem: "online",
+          theme: { accent: "#56575a", accentDark: "#3f4042", accentSoft: "#ececed" },
+          description: "dollar-for-dollar match up to $5,000"
+        },
+        MAC: {
+          name: "MAC",
+          credits: 61,
+          matchType: "percentCap",
+          percentCap: 0.25,
+          termSystem: "online",
+          theme: { accent: "#02434d", accentDark: "#01343c", accentSoft: "#e4ece9" },
+          description: "dollar-for-dollar match up to 25% of total tuition"
+        },
+        MDiv: {
+          name: "MDiv",
+          credits: 111,
+          matchType: "estimatedCourseCount",
+          estimatedCourses: 43,
+          termSystem: "residential",
+          theme: { accent: "#8c2233", accentDark: "#6e1726", accentSoft: "#f5e9eb" },
+          description: "dollar-for-dollar match estimated at one credit per course across about 43 courses"
+        },
+        MAR: {
+          name: "MAR",
+          credits: 74,
+          matchType: "estimatedCourseCount",
+          estimatedCourses: 23,
+          termSystem: "residential",
+          theme: { accent: "#bd8b41", accentDark: "#8e662f", accentSoft: "#f7efe3" },
+          description: "dollar-for-dollar match estimated at one credit per course across about 23 courses"
+        }
+      },
+      currentRate: 675,
+      futureRate: 675,
+      futureRateStart: "2027-06",
+      termCycle: ["06", "09", "01", "03"],
+      sbcRecognitionFeePerCourse: 1300,
+      sbcMaxCredits: 15
+    };
+
+
+    const MARKET_COMPARISONS = {
+      mdiv: [
+        { institution: "Reformed Theological Seminary", program: "MDiv", credits: 106, rate: 654, feeModel: "rtsGlobal", note: "Includes the $60-per-credit Global technology fee. Hybrid MDiv includes residential requirements.", sourceUrl: "https://rts.edu/admissions/tuition/" },
+        { institution: "Dallas Theological Seminary", program: "ThM", credits: 120, rate: 720, feeModel: "dts", note: "Includes published general, technology, and spiritual-formation fees. Mostly online except preaching requirements.", sourceUrl: "https://www.dts.edu/start-your-journey/tuition-aid/2026-27-tuition-fees" },
+        { institution: "Covenant Theological Seminary", program: "MDiv", credits: 99, rate: 645, feeModel: "covenant", oneTimeFee: 350, note: "Includes $120 enrollment and $190 technology fees per term, plus the one-time $350 Logos license.", sourceUrl: "https://www.covenantseminary.edu/tuition-scholarships" },
+        { institution: "Southern Baptist Theological Seminary", program: "MDiv, non-SBC online rate", credits: 84, rate: 573, feeModel: "sbts", note: "Includes the $200 online enrollment fee per semester and $100 technology fee per online term.", sourceUrl: "https://www.sbts.edu/financial-aid/tuition/" },
+        { institution: "Gordon-Conwell Theological Seminary", program: "MDiv", credits: 90, rate: 675, feeModel: "gcts", note: "Includes published service and technology fees using the latest available student expense worksheet. Tuition uses the published 2026–2027 net rate after Trustee Scholarship.", sourceUrl: "https://www.gordonconwell.edu/admissions/tuition-financial-aid/" }
+      ],
+      counseling: [
+        {
+          institution: "Dallas Theological Seminary",
+          program: "MA in Counseling Ministries",
+          credits: 66,
+          rate: 720,
+          feeModel: "dts",
+          note: "Online nonclinical counseling-ministry degree. Includes published general, technology, and spiritual-formation fees.",
+          sourceUrl: "https://www.dts.edu/academics/degrees-programs/master-of-arts-in-counseling-ministries"
+        },
+        {
+          institution: "Southern Baptist Theological Seminary",
+          program: "MA in Biblical Counseling and Practical Theology",
+          credits: 60,
+          rate: 573,
+          feeModel: "sbts",
+          note: "Fully online, non-licensure biblical counseling degree using the non-SBC online tuition rate. Includes online enrollment and technology fees.",
+          sourceUrl: "https://www.sbts.edu/degree-programs/master-of-arts/master-of-arts-in-biblical-counseling/"
+        },
+        {
+          institution: "Covenant Theological Seminary",
+          program: "MA in Counseling",
+          credits: 75,
+          rate: 645,
+          feeModel: "covenant",
+          oneTimeFee: 525,
+          note: "CACREP-accredited 75-credit counseling degree. Covenant lists this program as residential rather than online; included here for market context. Includes recurring enrollment and technology fees plus the published $525 MAC licensure fee.",
+          sourceUrl: "https://www.covenantseminary.edu/mac"
+        },
+
+        {
+          institution: "Gordon-Conwell Theological Seminary",
+          program: "MA in Christian Counseling",
+          credits: 66,
+          rate: 675,
+          feeModel: "gcts",
+          note: "Primarily online CACREP-accredited clinical counseling degree with annual in-person residency requirements. Includes published service and technology fees.",
+          sourceUrl: "https://www.gordonconwell.edu/degrees/counseling/macc/"
+        }
+      ],
+      ma: [
+        { institution: "Reformed Theological Seminary", program: "MATS", credits: 66, rate: 654, feeModel: "rtsGlobal", note: "Includes the $60-per-credit Global technology fee. Fully online through RTS Global Education.", sourceUrl: "https://rts.edu/admissions/tuition/" },
+        { institution: "Dallas Theological Seminary", program: "MBTS", credits: 36, rate: 720, feeModel: "dts", note: "Includes published general, technology, and spiritual-formation fees. Fully online.", sourceUrl: "https://www.dts.edu/start-your-journey/tuition-aid/2026-27-tuition-fees" },
+        { institution: "Dallas Theological Seminary", program: "MACS", credits: 63, rate: 720, feeModel: "dts", note: "Includes published general, technology, and spiritual-formation fees. Online MA comparison.", sourceUrl: "https://www.dts.edu/start-your-journey/tuition-aid/2026-27-tuition-fees" },
+        { institution: "Covenant Theological Seminary", program: "MATS", credits: 54, rate: 645, feeModel: "covenant", note: "Includes $120 enrollment and $190 technology fees per enrolled term. Fully online.", sourceUrl: "https://www.covenantseminary.edu/tuition-scholarships" },
+        { institution: "Covenant Theological Seminary", program: "MABTS", credits: 66, rate: 645, feeModel: "covenant", oneTimeFee: 350, note: "Includes $120 enrollment and $190 technology fees per term, plus the one-time $350 Logos license. Fully online.", sourceUrl: "https://www.covenantseminary.edu/tuition-scholarships" },
+        { institution: "Southern Baptist Theological Seminary", program: "MA", credits: "48–62", creditRange: [48, 62], rate: 573, feeModel: "sbts", note: "Includes the $200 online enrollment fee per semester and $100 technology fee per online term. Uses the non-SBC online rate.", sourceUrl: "https://www.sbts.edu/financial-aid/tuition/" },
+        { institution: "Gordon-Conwell Theological Seminary", program: "MATS", credits: 60, rate: 675, feeModel: "gcts", note: "Includes published service and technology fees using the latest available student expense worksheet. Tuition uses the published 2026–2027 net rate after Trustee Scholarship.", sourceUrl: "https://www.gordonconwell.edu/admissions/tuition-financial-aid/" }
+      ]
+    };
+
+
+    let selectedProgram = "MATS";
+    const scholarshipIncluded = true;
+    let sbcScholarshipIncluded = false;
+
+    const $ = id => document.getElementById(id);
+    const els = {
+      matsBtn: $("matsBtn"), macBtn: $("macBtn"), mdivBtn: $("mdivBtn"), marBtn: $("marBtn"),
+      fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
+      creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
+      customCredits: $("customCredits"),
+      sbcScholarshipBlock: $("sbcScholarshipBlock"), sbcScholarshipYes: $("sbcScholarshipYes"), sbcScholarshipNo: $("sbcScholarshipNo"),
+      sbcDetails: $("sbcDetails"), sbcCourseList: $("sbcCourseList"), sbcSelectionNote: $("sbcSelectionNote"), sbcCoverage: $("sbcCoverage"), sbcCoverageLabel: $("sbcCoverageLabel"), sbcFeeNote: $("sbcFeeNote"),
+      netPrice: $("netPrice"), resultCaption: $("resultCaption"),
+      miniMatch: $("miniMatch"), miniRemaining: $("miniRemaining"), miniRemainingCard: $("miniRemainingCard"), miniGross: $("miniGross"),
+      miniCreditsCard: $("miniCreditsCard"), miniCreditsRemaining: $("miniCreditsRemaining"),
+      miniSbcCard: $("miniSbcCard"), miniSbcScholarship: $("miniSbcScholarship"),
+      summaryModeLabel: $("summaryModeLabel"),
+      summaryCreditsRecognizedRow: $("summaryCreditsRecognizedRow"), summaryCreditsRemainingRow: $("summaryCreditsRemainingRow"),
+      summaryCreditsRecognized: $("summaryCreditsRecognized"), summaryCreditsRemaining: $("summaryCreditsRemaining"),
+      summaryGross: $("summaryGross"), summaryRaised: $("summaryRaised"),
+      summaryMatch: $("summaryMatch"), summaryRemainingMatch: $("summaryRemainingMatch"), summaryRemainingMatchRow: $("summaryRemainingMatchRow"),
+      summarySbcFeeRow: $("summarySbcFeeRow"), summarySbcScholarshipRow: $("summarySbcScholarshipRow"),
+      summarySbcFee: $("summarySbcFee"), summarySbcScholarship: $("summarySbcScholarship"), summaryNet: $("summaryNet"),
+      legendStudent: $("legendStudent"), legendRaised: $("legendRaised"), legendMatch: $("legendMatch"),
+      comparisonSubtitle: $("comparisonSubtitle"), comparisonTypeLabel: $("comparisonTypeLabel"), comparisonCallout: $("comparisonCallout"), comparisonTable: $("comparisonTable"),
+      termCountLabel: $("termCountLabel"), termTable: $("termTable"), emailLink: $("emailLink"),
+      sliceStudent: $("sliceStudent"), sliceRaised: $("sliceRaised"), sliceMatch: $("sliceMatch"),
+      labelStudent: $("labelStudent"), labelRaised: $("labelRaised"), labelMatch: $("labelMatch"),
+      printProgram: $("printProgram"), printCredits: $("printCredits"), printStartTerm: $("printStartTerm"),
+      printCompletionTerm: $("printCompletionTerm"), printPace: $("printPace"), printDate: $("printDate")
+    };
+
+    function money(value, cents = false) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency", currency: "USD",
+        minimumFractionDigits: cents ? 2 : 0,
+        maximumFractionDigits: cents ? 2 : 0
+      }).format(value);
+    }
+
+    function num(value) {
+      return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(value);
+    }
+
+    function termKey(year, month) {
+      return `${year}-${String(month).padStart(2, "0")}`;
+    }
+
+    function parseTerm(term) {
+      const [year, month] = term.split("-").map(Number);
+      return { year, month };
+    }
+
+    function nextTerm(key) {
+      let { year, month } = parseTerm(key);
+      const monthText = String(month).padStart(2, "0");
+      const idx = CONFIG.termCycle.indexOf(monthText);
+      const nextMonth = CONFIG.termCycle[(idx + 1) % CONFIG.termCycle.length];
+      if (month === 9 && nextMonth === "01") year += 1;
+      return termKey(year, Number(nextMonth));
+    }
+
+    function termLabel(key, termSystem = "online") {
+      const [year, month] = key.split("-").map(Number);
+      const names = termSystem === "residential"
+        ? { 1: "Winter", 3: "Spring", 6: "Summer", 9: "Fall" }
+        : { 1: "January", 3: "March", 6: "June", 9: "September" };
+      return `${names[month]} ${year}`;
+    }
+
+    function rateForTerm(key) {
+      return CONFIG.currentRate;
+    }
+
+    function buildTerms(totalCredits, creditsPerTerm, startTerm, termSystem = "online") {
+      let remaining = totalCredits;
+      let term = startTerm;
+      const rows = [];
+      while (remaining > 0) {
+        const credits = Math.min(remaining, creditsPerTerm);
+        const rate = rateForTerm(term);
+        rows.push({ term, label: termLabel(term, termSystem), credits, rate, tuition: credits * rate });
+        remaining -= credits;
+        term = nextTerm(term);
+      }
+      return rows;
+    }
+
+    function capFor(program, gross, startTerm, creditsPerTerm = 3, rows = []) {
+      if (program.matchType === "fixedCap") return program.fixedCap;
+      if (program.matchType === "percentCap") return gross * program.percentCap;
+      if (program.matchType === "estimatedCourseCount") {
+        return estimatedCourseCountMatchCap(program, rows, startTerm);
+      }
+      return 0;
+    }
+
+    function estimatedCourseCountMatchCap(program, rows, startTerm) {
+      const estimatedCourses = Number(program.estimatedCourses || 0);
+      if (!estimatedCourses) return 0;
+
+      const totalCredits = rows.reduce((sum, row) => sum + Number(row.credits || 0), 0);
+      if (!totalCredits) return estimatedCourses * rateForTerm(startTerm);
+
+      return rows.reduce((sum, row) => {
+        const estimatedCoursesInTerm = estimatedCourses * (Number(row.credits || 0) / totalCredits);
+        return sum + (estimatedCoursesInTerm * rateForTerm(row.term));
+      }, 0);
+    }
+
+    function setTheme(programKey) {
+      const t = CONFIG.programs[programKey].theme;
+      document.documentElement.style.setProperty("--accent", t.accent);
+      document.documentElement.style.setProperty("--accent-dark", t.accentDark);
+      document.documentElement.style.setProperty("--accent-soft", t.accentSoft);
+      document.documentElement.style.setProperty("--chart-match", "#bd8b41");
+    }
+
+    function polarToCartesian(cx, cy, r, angleDeg) {
+      const angleRad = (angleDeg - 90) * Math.PI / 180;
+      return { x: cx + (r * Math.cos(angleRad)), y: cy + (r * Math.sin(angleRad)) };
+    }
+
+    function describeSlice(cx, cy, r, startAngle, endAngle) {
+      
+      
+      if (endAngle - startAngle >= 359.999) {
+        endAngle = startAngle + 359.99;
+      }
+      const start = polarToCartesian(cx, cy, r, endAngle);
+      const end = polarToCartesian(cx, cy, r, startAngle);
+      const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+      return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
+    }
+
+    function positionPieLabel(el, percentage, startAngle, endAngle, radius = 65) {
+      if (!el) return;
+      if (percentage < 4) {
+        el.classList.add("hidden");
+        return;
+      }
+      el.classList.remove("hidden");
+      const mid = startAngle + ((endAngle - startAngle) / 2);
+      const p = polarToCartesian(110, 110, radius, mid);
+      el.setAttribute("x", p.x);
+      el.setAttribute("y", p.y);
+      el.textContent = `${Math.round(percentage)}%`;
+    }
+
+    function updatePieChart(studentPaid, fundsApplied, totalWtsAid, gross) {
+      const values = [
+        { value: Math.max(0, studentPaid), path: els.sliceStudent, label: els.labelStudent },
+        { value: Math.max(0, fundsApplied), path: els.sliceRaised, label: els.labelRaised },
+        { value: Math.max(0, totalWtsAid), path: els.sliceMatch, label: els.labelMatch }
+      ];
+
+      const total = Math.max(gross, 1);
+      let angle = 0;
+
+      values.forEach(item => {
+        const pct = item.value / total;
+        const start = angle;
+        const end = angle + pct * 360;
+        item.path.setAttribute("d", item.value > 0 ? describeSlice(110, 110, 100, start, end) : "");
+        positionPieLabel(item.label, pct * 100, start, end);
+        angle = end;
+      });
+    }
+
+
+    function updateMacOnlyVisibility() {
+      const isMac = selectedProgram === "MAC";
+      [els.sbcScholarshipBlock, els.miniSbcCard, els.miniCreditsCard, els.summaryCreditsRecognizedRow, els.summaryCreditsRemainingRow, els.summarySbcFeeRow, els.summarySbcScholarshipRow].forEach(el => {
+        if (el) el.hidden = !isMac;
+      });
+      if (!isMac) {
+        sbcScholarshipIncluded = false;
+      }
+      if (els.sbcDetails) {
+        els.sbcDetails.hidden = !(isMac && sbcScholarshipIncluded);
+      }
+      if (els.sbcScholarshipYes && els.sbcScholarshipNo) {
+        els.sbcScholarshipYes.setAttribute("aria-pressed", isMac && sbcScholarshipIncluded);
+        els.sbcScholarshipNo.setAttribute("aria-pressed", !(isMac && sbcScholarshipIncluded));
+      }
+    }
+
+    function selectSbcScholarship(value) {
+      sbcScholarshipIncluded = value;
+      updateMacOnlyVisibility();
+      calculate();
+    }
+
+
+    function getSelectedSbcCourses() {
+      return Array.from(document.querySelectorAll(".sbc-course:checked")).map(input => ({
+        code: input.value,
+        title: input.dataset.title,
+        credits: Number(input.dataset.credits || 0)
+      }));
+    }
+
+    function getSelectedSbcCredits() {
+      return getSelectedSbcCourses().reduce((sum, course) => sum + course.credits, 0);
+    }
+
+    function updateSbcCourseAvailability(changedInput = null) {
+      const selectedCredits = getSelectedSbcCredits();
+
+      if (selectedCredits > CONFIG.sbcMaxCredits && changedInput) {
+        changedInput.checked = false;
+      }
+
+      const currentCredits = getSelectedSbcCredits();
+      document.querySelectorAll(".sbc-course").forEach(input => {
+        const credits = Number(input.dataset.credits || 0);
+        const wouldExceed = !input.checked && currentCredits + credits > CONFIG.sbcMaxCredits;
+        input.disabled = wouldExceed;
+        input.closest(".course-option")?.classList.toggle("disabled", wouldExceed);
+      });
+
+      const selectedCourses = getSelectedSbcCourses();
+      if (els.sbcSelectionNote) {
+        els.sbcSelectionNote.textContent = `Selected: ${num(currentCredits)} credits across ${selectedCourses.length} ${selectedCourses.length === 1 ? "course" : "courses"}. Up to 15 credits may be recognized.`;
+      }
+    }
+
+
+    function comparisonGroupForProgram(programKey) {
+      if (programKey === "MDiv") return "mdiv";
+      if (programKey === "MAC") return "counseling";
+      if (programKey === "MAR" || programKey === "MATS") return "ma";
+      return "ma";
+    }
+
+    function formatCredits(value) {
+      return typeof value === "number" ? num(value) : value;
+    }
+
+    function buildComparisonTerms(totalCredits, creditsPerTerm, startTerm) {
+      const terms = [];
+      let remaining = totalCredits;
+      let term = startTerm;
+      while (remaining > 0) {
+        const credits = Math.min(remaining, creditsPerTerm);
+        terms.push({ term, credits });
+        remaining -= credits;
+        term = nextTerm(term);
+      }
+      return terms;
+    }
+
+    function mandatoryFeesForItem(item, totalCredits, creditsPerTerm, startTerm) {
+      const terms = buildComparisonTerms(totalCredits, creditsPerTerm, startTerm);
+
+      if (item.feeModel === "rtsGlobal") return totalCredits * 60;
+      if (item.feeModel === "covenant") return terms.length * 310 + Number(item.oneTimeFee || 0);
+
+      if (item.feeModel === "dts") {
+        return terms.reduce((sum, row) => {
+          const month = Number(row.term.split("-")[1]);
+          const fallOrSpring = month === 9 || month === 3;
+          const generalAndTech = fallOrSpring ? 350 : row.credits * 55;
+          return sum + generalAndTech + 100;
+        }, 0);
+      }
+
+      if (item.feeModel === "sbts") {
+        const technologyFees = terms.length * 100;
+        const semesterKeys = new Set(terms.map(row => {
+          const [year, month] = row.term.split("-").map(Number);
+          if (month === 9 || month === 1) return `${month === 1 ? year - 1 : year}-fall`;
+          if (month === 3) return `${year}-spring`;
+          return `${year}-summer`;
+        }));
+        return technologyFees + semesterKeys.size * 200;
+      }
+
+      if (item.feeModel === "gcts") {
+        return terms.reduce((sum, row) => {
+          const month = Number(row.term.split("-")[1]);
+          return sum + (month === 1 ? 100 : 350);
+        }, 0);
+      }
+
+      return Number(item.oneTimeFee || 0);
+    }
+
+    function marketTotalForCredits(item, totalCredits, creditsPerTerm, startTerm) {
+      const fees = mandatoryFeesForItem(item, totalCredits, creditsPerTerm, startTerm);
+      const tuition = totalCredits * item.rate;
+      const total = tuition + fees;
+      const effectiveRate = totalCredits > 0 ? total / totalCredits : 0;
+      return { tuition, fees, total, effectiveRate };
+    }
+
+    function formatMarketTotal(item, creditsPerTerm, startTerm) {
+      if (item.creditRange) {
+        const low = marketTotalForCredits(item, item.creditRange[0], creditsPerTerm, startTerm);
+        const high = marketTotalForCredits(item, item.creditRange[1], creditsPerTerm, startTerm);
+        return {
+          display: `${money(low.total)}–${money(high.total)}`,
+          effectiveRateDisplay: `${money(low.effectiveRate)}–${money(high.effectiveRate)} / cr`,
+          feeDisplay: `${money(low.fees)}–${money(high.fees)} fees included`
+        };
+      }
+
+      const result = marketTotalForCredits(item, Number(item.credits), creditsPerTerm, startTerm);
+      return {
+        display: money(result.total),
+        effectiveRateDisplay: `${money(result.effectiveRate)} / cr`,
+        feeDisplay: `${money(result.fees)} fees included`
+      };
+    }
+
+    function renderMarketComparison(wtsGross, wtsNet, program, selectedProgram, wtsCreditsRemaining, creditsPerTerm, startTerm) {
+      if (!els.comparisonTable) return;
+
+      const group = comparisonGroupForProgram(selectedProgram);
+      const rows = MARKET_COMPARISONS[group] || [];
+
+      const selectedLabel = group === "mdiv"
+        ? "MDiv / pastoral ministry comparison"
+        : group === "counseling"
+          ? "Counseling program comparison"
+          : "MA / theological studies comparison";
+      els.comparisonTypeLabel.textContent = selectedLabel;
+
+      const subtitle = group === "counseling"
+        ? "Comparable online or mostly online counseling programs using an effective all-in per-credit charge."
+        : group === "mdiv"
+          ? "Comparable online or mostly online MDiv and pastoral ministry programs using an effective all-in per-credit charge."
+          : "Comparable online or mostly online theological studies programs using an effective all-in per-credit charge.";
+      els.comparisonSubtitle.textContent = subtitle;
+
+      els.comparisonCallout.textContent = `Programs are ranked from lowest to highest estimated tuition and mandatory fees for the full program. Your WTS ${program.name} position updates automatically based on the personalized estimate above.`;
+
+      const entries = [
+        {
+          isWts: true,
+          institution: "Westminster Theological Seminary",
+          program: program.name,
+          creditsDisplay: num(wtsCreditsRemaining),
+          effectiveRateDisplay: `${money(CONFIG.currentRate)} / cr`,
+          totalDisplay: money(wtsNet),
+          sortTotal: wtsNet,
+          rateNote: "No recurring term fees",
+          totalNote: "Personalized estimate",
+          note: "Online or mostly online WTS pathway, after entered support and WTS match. WTS charges no recurring term fees.",
+          sourceUrl: null
+        },
+        ...rows.map(item => {
+          const total = formatMarketTotal(item, creditsPerTerm, startTerm);
+
+          let sortTotal;
+          if (item.creditRange) {
+            const low = marketTotalForCredits(item, item.creditRange[0], creditsPerTerm, startTerm);
+            const high = marketTotalForCredits(item, item.creditRange[1], creditsPerTerm, startTerm);
+            sortTotal = (low.total + high.total) / 2;
+          } else {
+            sortTotal = marketTotalForCredits(item, Number(item.credits), creditsPerTerm, startTerm).total;
+          }
+
+          return {
+            isWts: false,
+            institution: item.institution,
+            program: item.program,
+            creditsDisplay: formatCredits(item.credits),
+            effectiveRateDisplay: total.effectiveRateDisplay,
+            totalDisplay: total.display,
+            sortTotal,
+            rateNote: "Tuition + recurring fees",
+            totalNote: total.feeDisplay,
+            note: item.note,
+            sourceUrl: item.sourceUrl
+          };
+        })
+      ];
+
+      entries.sort((a, b) => {
+        if (a.sortTotal !== b.sortTotal) return a.sortTotal - b.sortTotal;
+        return a.institution.localeCompare(b.institution);
+      });
+
+      els.comparisonTable.innerHTML = entries.map((entry, index) => `
+        <tr class="${entry.isWts ? "comparison-row-current" : ""}">
+          <td class="money"><strong>${index + 1}</strong></td>
+          <td>${entry.institution}</td>
+          <td>
+            ${entry.program}
+            <div class="comparison-program-note">
+              ${entry.isWts
+                ? "Your current estimate in this tool"
+                : `<a class="comparison-source-link" href="${entry.sourceUrl}" target="_blank" rel="noopener">Source</a>`}
+            </div>
+          </td>
+          <td class="money">${entry.creditsDisplay}</td>
+          <td class="money">
+            <strong>${entry.effectiveRateDisplay}</strong>
+            <div class="comparison-program-note">${entry.rateNote}</div>
+          </td>
+          <td class="money">
+            <strong>${entry.totalDisplay}</strong>
+            <div class="comparison-program-note">${entry.totalNote}</div>
+          </td>
+          <td>${entry.note}</td>
+        </tr>
+      `).join("");
+    }
+
+    function calculate() {
+      updateMacOnlyVisibility();
+      const program = CONFIG.programs[selectedProgram];
+      const creditsPerTerm = els.creditsPerTerm.value === "custom"
+        ? Math.max(1, Number(els.customCredits.value || 3))
+        : Number(els.creditsPerTerm.value);
+
+      const startTerm = els.startTerm.value;
+      const fundsRaisedRequested = Math.max(0, Number(els.fundsRaised.value || 0));
+      const additionalAid = 0;
+      const selectedSbcCourses = selectedProgram === "MAC" ? getSelectedSbcCourses() : [];
+      const sbcCourses = selectedSbcCourses.length;
+      const sbcCoveragePct = selectedProgram === "MAC" ? Math.min(100, Math.max(0, Number(els.sbcCoverage?.value || 100))) : 0;
+      const sbcRecognitionFee = sbcCourses * CONFIG.sbcRecognitionFeePerCourse;
+      const sbcCreditsRecognized = selectedProgram === "MAC" ? selectedSbcCourses.reduce((sum, course) => sum + course.credits, 0) : 0;
+      const wtsCreditsRemaining = Math.max(0, program.credits - sbcCreditsRecognized);
+      const sbcRecognitionScholarship = selectedProgram === "MAC" && sbcScholarshipIncluded ? sbcRecognitionFee * (sbcCoveragePct / 100) : 0;
+      const sbcRecognitionFeeStudentPaid = Math.max(0, sbcRecognitionFee - sbcRecognitionScholarship);
+      const rows = buildTerms(wtsCreditsRemaining, creditsPerTerm, startTerm, program.termSystem);
+      const gross = rows.reduce((sum, row) => sum + row.tuition, 0);
+
+      const fundsApplied = Math.min(fundsRaisedRequested, gross);
+      const matchCap = capFor(program, gross, startTerm, creditsPerTerm, rows);
+      const standardMatch = scholarshipIncluded ? Math.min(fundsApplied, matchCap, Math.max(0, gross - fundsApplied)) : 0;
+      const totalWtsAid = scholarshipIncluded ? Math.min(standardMatch + additionalAid, Math.max(0, gross - fundsApplied)) : 0;
+      const studentPaid = Math.max(0, gross - fundsApplied - totalWtsAid);
+      const totalOutOfPocket = studentPaid + sbcRecognitionFeeStudentPaid;
+      const remainingEligibleMatch = scholarshipIncluded ? Math.max(0, matchCap - standardMatch) : 0;
+
+      const pieStudentPaid = totalOutOfPocket;
+      const pieWtsScholarshipSupport = totalWtsAid + sbcRecognitionScholarship;
+      const pieTotal = gross + sbcRecognitionFee;
+
+      updatePieChart(pieStudentPaid, fundsApplied, pieWtsScholarshipSupport, pieTotal);
+
+      els.netPrice.textContent = money(totalOutOfPocket);
+      els.resultCaption.textContent = selectedProgram === "MAC" && sbcCourses > 0
+        ? `For the ${program.name} program after outside support, automatic WTS match, and selected SBC course recognition assumptions.`
+        : `For the ${program.name} program after outside support and automatic WTS matching support.`;
+      els.miniMatch.textContent = money(totalWtsAid);
+      els.miniRemaining.textContent = scholarshipIncluded ? money(remainingEligibleMatch) : "$0";
+      els.miniGross.textContent = money(gross);
+      els.miniCreditsRemaining.textContent = num(wtsCreditsRemaining);
+      els.miniSbcScholarship.textContent = money(sbcRecognitionScholarship);
+      els.sbcCoverageLabel.textContent = `${sbcCoveragePct}%`;
+      els.sbcFeeNote.textContent = `Recognition fee: ${money(sbcRecognitionFee)} for ${sbcCourses} selected ${sbcCourses === 1 ? "course" : "courses"}. Estimated possible recognition fee scholarship: ${money(sbcRecognitionScholarship)}.`;
+      updateSbcCourseAvailability();
+
+      els.summaryModeLabel.textContent = "Matching scholarship applied automatically";
+      els.summaryCreditsRecognized.textContent = num(sbcCreditsRecognized);
+      els.summaryCreditsRemaining.textContent = num(wtsCreditsRemaining);
+      els.summaryGross.textContent = money(gross);
+      els.summaryRaised.textContent = `-${money(fundsApplied)}`;
+      els.summaryMatch.textContent = `-${money(totalWtsAid)}`;
+      els.summaryRemainingMatch.textContent = scholarshipIncluded ? money(remainingEligibleMatch) : "$0";
+      const showMatchOpportunity = scholarshipIncluded && remainingEligibleMatch > 0;
+      els.miniRemainingCard.classList.toggle("match-opportunity", showMatchOpportunity);
+      els.summaryRemainingMatchRow.classList.toggle("match-opportunity", showMatchOpportunity);
+      els.summarySbcFee.textContent = money(sbcRecognitionFee);
+      els.summarySbcScholarship.textContent = `-${money(sbcRecognitionScholarship)}`;
+      els.summaryNet.textContent = money(totalOutOfPocket);
+      renderMarketComparison(gross, totalOutOfPocket, program, selectedProgram, wtsCreditsRemaining, creditsPerTerm, startTerm);
+
+      els.legendStudent.textContent = money(pieStudentPaid);
+      els.legendRaised.textContent = money(fundsApplied);
+      els.legendMatch.textContent = money(pieWtsScholarshipSupport);
+
+      els.termCountLabel.textContent = `${rows.length} ${rows.length === 1 ? "term" : "terms"}`;
+
+      const raisedRatio = gross > 0 ? fundsApplied / gross : 0;
+      const matchRatio = gross > 0 ? totalWtsAid / gross : 0;
+
+      els.termTable.innerHTML = rows.map(row => {
+        const raised = row.tuition * raisedRatio;
+        const match = row.tuition * matchRatio;
+        const net = Math.max(0, row.tuition - raised - match);
+        return `
+          <tr>
+            <td>${row.label || termLabel(row.term, program.termSystem)}</td>
+            <td class="money">${num(row.credits)}</td>
+            <td class="money">${money(row.tuition)}</td>
+            <td class="money">${money(raised)}</td>
+            <td class="money">${money(match)}</td>
+            <td class="money"><strong>${money(net)}</strong></td>
+          </tr>
+        `;
+      }).join("");
+
+      const subject = encodeURIComponent(`WTS ${program.name} tuition estimate`);
+      const body = encodeURIComponent(
+        `WTS ${program.name} Tuition Estimate\n\n` +
+        `Program: ${program.name}\n` +
+        `Program credits: ${program.credits}\n` +
+        `SBC courses selected: ${selectedSbcCourses.map(course => `${course.code} (${course.credits} credits)`).join(", ") || "None"}\n` +
+        `SBC credits recognized: ${num(sbcCreditsRecognized)}\n` +
+        `WTS credits remaining: ${num(wtsCreditsRemaining)}\n` +
+        `WTS tuition remaining: ${money(gross)}\n` +
+        `SBC recognition fee: ${money(sbcRecognitionFee)}\n` +
+        `Possible SBC recognition fee scholarship: ${money(sbcRecognitionScholarship)}\n` +
+        `Support raised: ${money(fundsApplied)}\n` +
+        `WTS matching scholarship: Automatically applied to eligible support\n` +
+        `WTS matching scholarship: ${money(totalWtsAid)}\n` +
+        `Estimated cost after support: ${money(totalOutOfPocket)}\n\n` +
+        `This estimate is for planning purposes only and is not a final scholarship award, financial aid offer, or bill. Matching scholarships and SBC recognition fee scholarships are limited, require application or review, and are not guaranteed.`
+      );
+      els.emailLink.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    function preparePrint() {
+      const program = CONFIG.programs[selectedProgram];
+      const selectedSbcCredits = selectedProgram === "MAC" ? getSelectedSbcCredits() : 0;
+      const creditsRemaining = Math.max(0, program.credits - selectedSbcCredits);
+      const paceOption = els.creditsPerTerm.options[els.creditsPerTerm.selectedIndex];
+
+      const creditsPerTerm = els.creditsPerTerm.value === "custom"
+        ? Math.max(1, Number(els.customCredits.value || 3))
+        : Number(els.creditsPerTerm.value);
+      const completionRows = buildTerms(
+        creditsRemaining,
+        creditsPerTerm,
+        els.startTerm.value,
+        program.termSystem
+      );
+      const completionTerm = completionRows.length
+        ? completionRows[completionRows.length - 1].term
+        : els.startTerm.value;
+
+      if (els.printProgram) els.printProgram.textContent = program.name;
+      if (els.printCredits) els.printCredits.textContent = num(creditsRemaining);
+      if (els.printStartTerm) els.printStartTerm.textContent = termLabel(els.startTerm.value, program.termSystem);
+      if (els.printCompletionTerm) els.printCompletionTerm.textContent = termLabel(completionTerm, program.termSystem);
+      if (els.printPace) {
+        els.printPace.textContent = els.creditsPerTerm.value === "custom"
+          ? `${num(creditsPerTerm)} credits per term`
+          : paceOption.textContent.split(" / ")[0];
+      }
+      if (els.printDate) {
+        els.printDate.textContent = new Intl.DateTimeFormat("en-US", {
+          month: "long", day: "numeric", year: "numeric"
+        }).format(new Date());
+      }
+
+      document.title = `WTS ${program.name} Cost Estimate`;
+    }
+
+    window.addEventListener("beforeprint", preparePrint);
+
+    function selectProgram(key) {
+      selectedProgram = key;
+      setTheme(key);
+
+      document.body.classList.remove("program-mats", "program-mac", "program-mdiv", "program-mar");
+      document.body.classList.add(`program-${key.toLowerCase()}`);
+
+      els.matsBtn.setAttribute("aria-pressed", key === "MATS");
+      els.macBtn.setAttribute("aria-pressed", key === "MAC");
+      els.mdivBtn.setAttribute("aria-pressed", key === "MDiv");
+      els.marBtn.setAttribute("aria-pressed", key === "MAR");
+
+      els.matsBtn.classList.toggle("active", key === "MATS");
+      els.macBtn.classList.toggle("active", key === "MAC");
+      els.mdivBtn.classList.toggle("active", key === "MDiv");
+      els.marBtn.classList.toggle("active", key === "MAR");
+
+      updateMacOnlyVisibility();
+      calculate();
+    }
+
+    els.matsBtn.addEventListener("click", () => selectProgram("MATS"));
+    els.macBtn.addEventListener("click", () => selectProgram("MAC"));
+    els.mdivBtn.addEventListener("click", () => selectProgram("MDiv"));
+    els.marBtn.addEventListener("click", () => selectProgram("MAR"));
+    els.sbcScholarshipYes.addEventListener("click", () => selectSbcScholarship(true));
+    els.sbcScholarshipNo.addEventListener("click", () => selectSbcScholarship(false));
+
+    document.querySelectorAll(".quick-amount").forEach(button => {
+      button.addEventListener("click", () => {
+        els.fundsRaised.value = button.dataset.amount;
+        calculate();
+      });
+    });
+
+    [els.fundsRaised, els.startTerm, els.creditsPerTerm, els.customCredits, els.sbcCoverage].forEach(el => {
+      if (!el) return;
+      el.addEventListener("input", calculate);
+      el.addEventListener("change", calculate);
+    });
+
+    els.creditsPerTerm.addEventListener("change", () => {
+      els.customCreditsField.style.display = els.creditsPerTerm.value === "custom" ? "block" : "none";
+      calculate();
+    });
+
+
+    document.querySelectorAll(".sbc-course").forEach(input => {
+      input.addEventListener("change", () => {
+        updateSbcCourseAvailability(input);
+        calculate();
+      });
+    });
+
+    document.body.classList.add(`program-${selectedProgram.toLowerCase()}`);
+    setTheme(selectedProgram);
+    updateMacOnlyVisibility();
+    calculate();
+    preparePrint();
+  
+</script>
+</body>
+</html>
