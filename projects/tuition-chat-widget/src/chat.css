@@ -38,8 +38,8 @@
 /* ---- Launcher ------------------------------------------------------ */
 /* First impression is a labeled pill ("Get instant answers") so the
    entry point is unmissable on a content-heavy page. Once the visitor
-   has opened the chat (this visit), it collapses to the quieter icon
-   circle - the label has done its job by then. */
+   opens the chat it collapses to the quieter icon circle for the rest
+   of that page view; a fresh page load brings the pill back. */
 
 .wts-chat__launcher {
   position: fixed;

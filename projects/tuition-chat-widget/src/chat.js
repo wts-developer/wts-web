@@ -257,12 +257,11 @@ function runChat(root, app, config) {
     launcher.setAttribute("aria-label",
       open ? "Close tuition assistant chat" : "Open tuition assistant chat");
     state.open = open;
-    if (open && !state.engaged) {
-      // Engagement collapses the labeled launcher pill to the quieter
-      // icon circle for the rest of the visit.
-      state.engaged = true;
-      app.classList.add("wts-chat--engaged");
-    }
+    // Opening collapses the labeled launcher pill to the quieter icon
+    // circle. Deliberately not persisted: a fresh page load gets the
+    // full "Get instant answers" pill back, so the entry point stays
+    // prominent on every page of the visit.
+    if (open) app.classList.add("wts-chat--engaged");
     saveState();
     if (open) {
       fitAllPres();
@@ -297,7 +296,6 @@ function runChat(root, app, config) {
     }
   });
 
-  if (state.engaged) app.classList.add("wts-chat--engaged");
   restoreTranscript();
   if (state.open) setOpen(true);
 }
