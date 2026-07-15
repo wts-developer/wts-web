@@ -42,12 +42,12 @@
         <h2 class="section-heading">Choose Your Program</h2>
         <div class="program-switch" aria-label="Program selection">
           <button type="button" id="matsBtn" class="program-card" aria-pressed="true">
-            <div class="name">MATS</div>
+            <div class="name">MATS <span class="online-badge">Online</span></div>
             <div class="desc">Master of Arts in Theological Studies</div>
             <div class="code">36 credits</div>
           </button>
           <button type="button" id="macBtn" class="program-card" aria-pressed="false">
-            <div class="name">MAC</div>
+            <div class="name">MAC <span class="online-badge">Online</span></div>
             <div class="desc">Master of Arts in Counseling</div>
             <div class="code">61 credits</div>
           </button>
@@ -61,8 +61,19 @@
             <div class="desc">Master of Arts in Religion</div>
             <div class="code">74 credits</div>
           </button>
+          <button type="button" id="mdivCampusBtn" class="program-card" aria-pressed="false">
+            <div class="name">MDiv <span class="online-badge campus">On Campus</span></div>
+            <div class="desc">Master of Divinity</div>
+            <div class="code">111 credits</div>
+            <div class="funded-note">Tuition 100% funded</div>
+          </button>
+          <button type="button" id="marCampusBtn" class="program-card" aria-pressed="false">
+            <div class="name">MAR <span class="online-badge campus">On Campus</span></div>
+            <div class="desc">Master of Arts in Religion</div>
+            <div class="code">74 credits</div>
+            <div class="funded-note">Tuition 100% funded</div>
+          </button>
         </div>
-        <p class="section-note program-footnote">MDiv and MAR estimates are for the online programs. The residential MDiv and MAR are 100% funded, with no out-of-pocket tuition for admitted students.</p>
       </section>
 
       <section class="main-grid">
@@ -83,14 +94,9 @@
                 <button type="button" class="quick-amount" data-amount="10000">$10,000</button>
               </div>
               <details class="advanced scholarship-reference">
-                <summary>What WTS scholarship support is available?</summary>
-                <ul class="scholarship-list">
-                  <li><strong>MATS:</strong> dollar-for-dollar match on outside support, up to $5,000.</li>
-                  <li><strong>MAC:</strong> dollar-for-dollar match on outside support, up to 25% of total tuition.</li>
-                  <li><strong>MDiv:</strong> dollar-for-dollar match on outside support, estimated at one credit per course (about 43 courses).</li>
-                  <li><strong>MAR:</strong> dollar-for-dollar match on outside support, estimated at one credit per course (about 23 courses).</li>
-                </ul>
-                <p class="help">Scholarships are limited and require an application; eligibility does not guarantee an award. Matching support is applied to your estimate automatically.</p>
+                <summary>What Westminster scholarship support is available?</summary>
+                <ul class="scholarship-list" id="scholarshipList"></ul>
+                <p class="help">Scholarship support for the program selected above. Scholarships are limited and require an application; eligibility does not guarantee an award. Matching support is applied to your estimate automatically.</p>
               </details>
             </div>
 
@@ -232,11 +238,11 @@
 
             <div class="result-mini-grid">
               <div class="mini">
-                <div class="mini-label">WTS Scholarship Support</div>
+                <div class="mini-label">Westminster Scholarship Support</div>
                 <div class="mini-value" id="miniMatch">$0</div>
               </div>
               <div class="mini" id="miniRemainingCard">
-                <div class="mini-label">Eligible For More Support</div>
+                <div class="mini-label">Support Westminster Will Still Match</div>
                 <div class="mini-value" id="miniRemaining">$0</div>
               </div>
               <div class="mini">
@@ -281,7 +287,7 @@
                   </div>
                   <div class="legend-item">
                     <span class="dot match"></span>
-                    <span><strong>WTS Scholarship Support</strong></span>
+                    <span><strong>Westminster Scholarship Support</strong></span>
                     <span class="amount" id="legendMatch">$0</span>
                   </div>
                 </div>

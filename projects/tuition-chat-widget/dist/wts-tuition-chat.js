@@ -48,10 +48,13 @@
     var STORAGE_KEY = "wtsTuitionChat.v1";
     var MAX_TRANSCRIPT = 40;
 
+    // Cost-framed questions only: the engine answers duration questions
+    // ("how long at N courses/term?") with a cost-first reply that reads
+    // mismatched, so don't suggest that phrasing until the engine has a
+    // duration-first framing.
     var SUGGESTIONS = [
       "How much does the MATS cost if I raise $3,000?",
       "What would the MAC cost me with 6 transfer credits?",
-      "How long does the oMAR take at 2 courses per term?",
     ];
 
     var WELCOME =
