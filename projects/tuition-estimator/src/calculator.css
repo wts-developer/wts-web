@@ -15,7 +15,7 @@
       --chart-match: var(--accent);
       --serif: "Kepler Std Display", "Kepler Std", Georgia, "Times New Roman", serif;
       --sans: "Lato", Arial, Helvetica, sans-serif;
-      --mono: "Input Mono Compressed", "Input Mono", "Roboto Mono", "Courier New", monospace;
+      --mono: "Lato", Arial, Helvetica, sans-serif;
       --border: rgba(86, 87, 90, .18);
       --shadow: 0 18px 50px rgba(31, 32, 35, .10);
       --radius-xl: 28px;
@@ -43,24 +43,7 @@
     }
 
     .brand-frame {
-      border-left: 1px solid rgba(86,87,90,.24);
-      padding-left: clamp(18px, 3vw, 32px);
       position: relative;
-    }
-
-    .brand-frame::before {
-      content: "WTS";
-      position: absolute;
-      top: 10px;
-      left: -13px;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: .32em;
-      color: rgba(86,87,90,.7);
-      background: #fbfaf8;
-      padding: 10px 0;
     }
 
     .hero {
@@ -186,6 +169,10 @@
       width: 100%;
       text-align: left;
       cursor: pointer;
+      /* buttons don't inherit page font/color by default, and iOS Safari
+         paints unstyled button text blue */
+      font-family: var(--sans);
+      color: var(--wts-ink);
       border: 1px solid var(--border);
       border-radius: 24px;
       background: rgba(255,255,255,.82);
@@ -203,7 +190,7 @@
       text-transform: uppercase;
       font-size: .72rem;
       color: var(--accent);
-      margin-bottom: 8px;
+      margin-top: 10px;
     }
 
     .program-card .name {
@@ -363,6 +350,23 @@
       list-style-position: outside;
     }
 
+    .scholarship-reference {
+      margin-top: 14px;
+    }
+
+    .scholarship-list {
+      margin: 12px 0 6px;
+      padding-left: 18px;
+      color: var(--wts-gray);
+      font-size: .93rem;
+      display: grid;
+      gap: 8px;
+    }
+
+    .scholarship-list strong {
+      color: var(--wts-ink);
+    }
+
     .result-card {
       position: relative;
       border-radius: var(--radius-xl);
@@ -441,13 +445,6 @@
       white-space: nowrap;
     }
 
-
-    .summary-chart-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
-      gap: 20px;
-      align-items: stretch;
-    }
 
     .horizontal-summary {
       margin-top: 20px;
@@ -593,36 +590,45 @@
 
     .summary-row.total .amount { color: var(--accent); }
 
-    .pie-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      min-width: 0;
+    /* Cost & Scholarship Mix — an inset panel inside the results card, so the
+       estimate and the mix read as one container. */
+    .mix-panel {
+      margin-top: 22px;
+      background: rgba(255,255,255,.96);
+      border-radius: 18px;
+      padding: 20px 24px;
+      color: var(--wts-ink);
     }
 
-    .pie-title {
-      margin: 0 0 14px;
-      font-family: var(--serif);
-      font-weight: 400;
-      letter-spacing: -.035em;
-      font-size: 1.8rem;
-      line-height: 1;
+    .mix-title {
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--wts-gray);
+      font-size: .72rem;
+      margin-bottom: 16px;
+    }
+
+    .mix-content {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: clamp(20px, 4vw, 44px);
+      align-items: center;
+      justify-content: center;
     }
 
     .pie-wrap {
       position: relative;
       display: grid;
       place-items: center;
-      width: 230px;
+      width: 180px;
       max-width: 100%;
-      margin: 0 auto 16px;
+      margin: 0 auto;
     }
 
     .pie-svg {
-      width: 220px;
-      height: 220px;
+      width: 180px;
+      height: 180px;
       overflow: visible;
       filter: drop-shadow(0 12px 28px rgba(31,32,35,.09));
     }
@@ -982,11 +988,6 @@
       box-shadow: 0 0 0 3px rgba(189,139,65,.18);
     }
 
-    .mini.match-opportunity .mini-label::after {
-      content: " opportunity";
-      color: rgba(255,255,255,.86);
-    }
-
     .summary-row.match-opportunity {
       margin: 6px -8px;
       padding: 14px 8px;
@@ -1003,14 +1004,13 @@
     }
 
     @media (max-width: 1020px) {
-      .hero, .main-grid, .summary-chart-grid { grid-template-columns: 1fr; }
+      .hero, .main-grid { grid-template-columns: 1fr; }
       .result-mini-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 700px) {
-      .brand-frame { border-left: 0; padding-left: 0; }
-      .brand-frame::before { display: none; }
       .program-switch, .choice-row, .amount-buttons, .action-row { grid-template-columns: 1fr; }
+      .mix-content { grid-template-columns: 1fr; justify-items: stretch; }
       .hero { min-height: auto; }
       .result-value { white-space: normal; font-size: clamp(2.8rem, 14vw, 4.2rem); }
       .summary-row { grid-template-columns: 1fr; gap: 4px; }
@@ -1206,56 +1206,6 @@
     }
 
 
-    .results-section .summary-chart-grid {
-      grid-template-columns: 1fr;
-      width: 100%;
-    }
-
-    .results-section .pie-card {
-      width: 100%;
-    }
-
-    .results-section .pie-card {
-      display: grid;
-      grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
-      grid-template-areas:
-        "title title"
-        "chart legend";
-      column-gap: 28px;
-      row-gap: 8px;
-      align-items: center;
-    }
-
-    .results-section .pie-title {
-      grid-area: title;
-    }
-
-    .results-section .pie-wrap {
-      grid-area: chart;
-      margin: 0 auto;
-    }
-
-    .results-section .pie-card .legend {
-      grid-area: legend;
-      align-self: center;
-      margin-top: 0;
-    }
-
-    @media (max-width: 700px) {
-      .results-section .pie-card {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-          "title"
-          "chart"
-          "legend";
-      }
-
-      .results-section .pie-wrap {
-        margin: 0 auto 16px;
-      }
-    }
-
-
     .program-switch {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
@@ -1358,22 +1308,23 @@
 
 
      
+    /* Headings use the site's Kepler serif, matching wts.edu display type. */
     .section-heading,
     .panel-title,
-    .table-header h2,
-    .pie-title {
-      font-family: var(--sans);
-      font-weight: 800;
-      letter-spacing: 0;
+    .table-header h2 {
+      font-family: var(--serif);
+      font-weight: 400;
+      letter-spacing: -.02em;
     }
 
-    .section-heading { font-size: 1.35rem; margin-bottom: 14px; }
-    .panel-title, .table-header h2, .pie-title { font-size: 1.05rem; }
+    .section-heading { font-size: 2.1rem; margin-bottom: 14px; }
+    .panel-title, .table-header h2 { font-size: 1.45rem; }
 
     .program-card .name {
-      font-family: var(--sans);
-      font-size: 1.2rem;
-      font-weight: 900;
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      letter-spacing: -.02em;
       margin-bottom: 4px;
     }
 
@@ -1384,7 +1335,7 @@
       letter-spacing: 0;
       text-transform: none;
       color: var(--wts-gray);
-      margin-bottom: 8px;
+      margin-top: 8px;
     }
 
     .program-card .desc,

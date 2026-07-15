@@ -7,11 +7,12 @@ The goal is a ticket-ready demonstration of the change we're asking for, plus a
 drop-in widget that makes the Webflow integration as close to copy-paste as
 possible.
 
-The embedded estimator shows exactly four blocks: **Choose Your Program**,
-**Financial Information** (outside support + start term), **Your Estimated
-Cost After Support**, and **Cost & Scholarship Mix**. The longer-form sections
-of the original prototype (estimate summary, per-term table, market
-comparison) exist only on the standalone page.
+The embedded estimator shows **Choose Your Program**, **Financial
+Information** (outside support, with a collapsible reference list of the
+per-program WTS scholarship support), and a combined results card holding
+**Your Estimated Cost After Support** and the **Cost & Scholarship Mix**
+chart. The longer-form sections of the original prototype (estimate summary,
+per-term table, market comparison) exist only on the standalone page.
 
 ## Outputs (`dist/`, committed)
 
@@ -31,8 +32,11 @@ python3 -m http.server 8437 -d dist   # then open http://localhost:8437
 ## How it works
 
 - `src/calculator.{css,body.html,js}` are the estimator's stylesheet, markup,
-  and logic, extracted **verbatim** from the Apps Script prototype. Keep them
-  pristine — all embed-specific rewrites happen in `build.py` at build time:
+  and logic. They started as a verbatim extraction from the Apps Script
+  prototype and are now the **canonical source**: the July 2026 marketing
+  feedback round (site-matching fonts, simplified program cards, generic
+  scholarship wording, merged estimate/mix card) was applied here directly.
+  Embed-specific rewrites still happen in `build.py` at build time:
   - CSS: `:root` → `:host`, `body` selectors → `.wts-estimator-app`, embed-only
     rules appended (hide the prototype's hero and long-form sections).
   - JS: `document.getElementById/querySelectorAll` → shadow-root equivalents,
@@ -45,8 +49,12 @@ python3 -m http.server 8437 -d dist   # then open http://localhost:8437
 
 ## Updating the estimator from the Apps Script prototype
 
-The prototype lives in Google Apps Script (deployment `AKfycbwQKu…`). After
-publishing a change there, re-extract:
+**Warning:** `src/` has diverged from the prototype (see above), so a blind
+re-extraction now overwrites local design changes. Re-extract into a scratch
+directory and diff, or port prototype changes over by hand.
+
+The prototype lives in Google Apps Script (deployment `AKfycbwQKu…`). The
+original extraction recipe:
 
 ```sh
 curl -sL "https://script.google.com/macros/s/AKfycbwQKuhhVUufIxEDeWdmWSOIjbEncauZOeKen2EczoTDsr74gaJVuOceeAGGaWQCpNIbJg/exec" -o /tmp/calc-shell.html

@@ -554,8 +554,8 @@
 
       els.netPrice.textContent = money(totalOutOfPocket);
       els.resultCaption.textContent = selectedProgram === "MAC" && sbcCourses > 0
-        ? `For the ${program.name} program after outside support, automatic WTS match, and selected SBC course recognition assumptions.`
-        : `For the ${program.name} program after outside support and automatic WTS matching support.`;
+        ? `For the ${program.name} program after outside support, WTS scholarship support, and selected SBC course recognition assumptions.`
+        : `For the ${program.name} program after outside support and WTS scholarship support.`;
       els.miniMatch.textContent = money(totalWtsAid);
       els.miniRemaining.textContent = scholarshipIncluded ? money(remainingEligibleMatch) : "$0";
       els.miniGross.textContent = money(gross);

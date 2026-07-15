@@ -29,11 +29,11 @@ body_html = read("src/calculator.body.html")
 logic_src = read("src/calculator.js")
 captured_page = read("src/wts-tuition-page.html")
 
-# Lato is the calculator's UI face; Roboto Mono backs the label/figure face.
-# Kepler (headline serif) is already served site-wide by wts.edu's Typekit kit.
+# Lato is the calculator's UI face, matching the rest of wts.edu. Kepler
+# (headline serif) is already served site-wide by wts.edu's Typekit kit.
 FONTS_URL = (
     "https://fonts.googleapis.com/css2"
-    "?family=Lato:wght@300;400;700;900&family=Roboto+Mono:wght@400;500&display=swap"
+    "?family=Lato:wght@300;400;700;900&display=swap"
 )
 
 # ---------------------------------------------------------------------
@@ -55,7 +55,7 @@ EMBED_CSS = """
    stale rate-increase note) and the advanced options. CONFIG already has
    futureRate equal to currentRate, so the math is $675 regardless. */
 .wts-estimator-app .field:has(> #startTerm),
-.wts-estimator-app details.advanced { display: none; }
+.wts-estimator-app details.advanced:not(.scholarship-reference) { display: none; }
 /* wts.edu's next section overlaps upward with an angled (skewed) top edge;
    reserve room so it doesn't clip the last card of the estimator. */
 .wts-estimator-app .wrap { padding-bottom: 150px; }
@@ -221,6 +221,15 @@ embed_block = f"""
 mockup = captured_page.replace(ANCHOR, embed_block + ANCHOR, 1)
 # Resolve the captured page's relative URLs against production.
 mockup = mockup.replace("<head>", '<head><base href="https://www.wts.edu/">', 1)
+# Capture artifact fix: the hero copy starts at opacity 0 and relies on a
+# Webflow interaction to fade in, which doesn't always fire in this captured
+# copy (notably on mobile), leaving the above-the-fold section blank. Force it
+# visible; the production page is unaffected. Not part of the proposed change.
+mockup = mockup.replace(
+    "</head>",
+    "<style>.tuition-hero-new [data-w-id][style*=\"opacity\"] { opacity: 1 !important; }</style></head>",
+    1,
+)
 mockup = mockup.replace("<title>", "<title>[MOCKUP] ", 1)
 mockup = mockup.replace(
     "<!DOCTYPE html>",

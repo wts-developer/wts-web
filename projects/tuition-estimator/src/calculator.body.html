@@ -43,23 +43,23 @@
         <div class="program-switch" aria-label="Program selection">
           <button type="button" id="matsBtn" class="program-card" aria-pressed="true">
             <div class="name">MATS</div>
+            <div class="desc">Master of Arts in Theological Studies</div>
             <div class="code">36 credits</div>
-            <div class="desc">Dollar-for-dollar match up to $5,000.</div>
           </button>
           <button type="button" id="macBtn" class="program-card" aria-pressed="false">
             <div class="name">MAC</div>
+            <div class="desc">Master of Arts in Counseling</div>
             <div class="code">61 credits</div>
-            <div class="desc">25% matching scholarship with optional SBC course recognition.</div>
           </button>
           <button type="button" id="mdivBtn" class="program-card" aria-pressed="false">
             <div class="name">MDiv</div>
+            <div class="desc">Master of Divinity</div>
             <div class="code">111 credits</div>
-            <div class="desc">Matching scholarship estimated across 43 courses.</div>
           </button>
           <button type="button" id="marBtn" class="program-card" aria-pressed="false">
             <div class="name">MAR</div>
+            <div class="desc">Master of Arts in Religion</div>
             <div class="code">74 credits</div>
-            <div class="desc">Matching scholarship estimated across 23 courses.</div>
           </button>
         </div>
       </section>
@@ -81,7 +81,16 @@
                 <button type="button" class="quick-amount" data-amount="5000">$5,000</button>
                 <button type="button" class="quick-amount" data-amount="10000">$10,000</button>
               </div>
-              <div class="help">Enter the total support you expect over the full program. WTS matching support is applied automatically. For MDiv and MAR, the match is estimated at one credit of tuition per course across approximately 43 MDiv courses or 23 MAR courses.</div>
+              <details class="advanced scholarship-reference">
+                <summary>What WTS scholarship support is available?</summary>
+                <ul class="scholarship-list">
+                  <li><strong>MATS:</strong> dollar-for-dollar match on outside support, up to $5,000.</li>
+                  <li><strong>MAC:</strong> dollar-for-dollar match on outside support, up to 25% of total tuition.</li>
+                  <li><strong>MDiv:</strong> dollar-for-dollar match on outside support, estimated at one credit per course (about 43 courses).</li>
+                  <li><strong>MAR:</strong> dollar-for-dollar match on outside support, estimated at one credit per course (about 23 courses).</li>
+                </ul>
+                <p class="help">Scholarships are limited and require an application; eligibility does not guarantee an award. Matching support is applied to your estimate automatically.</p>
+              </details>
             </div>
 
             <div class="field">
@@ -218,19 +227,19 @@
           <article class="result-card" aria-label="Estimated cost after support">
             <div class="result-label">Your Estimated Cost After Support</div>
             <div class="result-value" id="netPrice">$24,300</div>
-            <div class="result-caption" id="resultCaption">For the selected program after outside support and estimated Westminster matching scholarship.</div>
+            <div class="result-caption" id="resultCaption">For the selected program after outside support and WTS scholarship support.</div>
 
             <div class="result-mini-grid">
               <div class="mini">
-                <div class="mini-label">WTS Match</div>
+                <div class="mini-label">WTS Scholarship Support</div>
                 <div class="mini-value" id="miniMatch">$0</div>
               </div>
               <div class="mini" id="miniRemainingCard">
-                <div class="mini-label">More Support Eligible For Match</div>
+                <div class="mini-label">Eligible For More Support</div>
                 <div class="mini-value" id="miniRemaining">$0</div>
               </div>
               <div class="mini">
-                <div class="mini-label">WTS Tuition Remaining</div>
+                <div class="mini-label">Tuition Before Support</div>
                 <div class="mini-value" id="miniGross">$24,300</div>
               </div>
               <div class="mini mac-only-row" id="miniCreditsCard" hidden>
@@ -242,42 +251,42 @@
                 <div class="mini-value" id="miniSbcScholarship">$0</div>
               </div>
             </div>
-          </article>
 
-          <div class="summary-chart-grid">
-            <aside class="pie-card" aria-label="Cost and scholarship mix chart">
-              <h2 class="pie-title">Cost &amp; Scholarship Mix</h2>
-              <div class="pie-wrap">
-                <svg class="pie-svg" viewBox="0 0 220 220" role="img" aria-labelledby="pieTitle pieDesc">
-                  <title id="pieTitle">Cost and scholarship mix</title>
-                  <desc id="pieDesc">Share of total estimated cost paid by the student, covered by outside support, and covered by WTS scholarship support.</desc>
-                  <path id="sliceStudent" class="pie-slice student" d=""></path>
-                  <path id="sliceRaised" class="pie-slice raised" d=""></path>
-                  <path id="sliceMatch" class="pie-slice match" d=""></path>
-                  <text id="labelStudent" class="pie-label" x="110" y="110">0%</text>
-                  <text id="labelRaised" class="pie-label" x="110" y="110">0%</text>
-                  <text id="labelMatch" class="pie-label" x="110" y="110">0%</text>
-                </svg>
+            <div class="mix-panel" aria-label="Cost and scholarship mix chart">
+              <div class="mix-title">Cost &amp; Scholarship Mix</div>
+              <div class="mix-content">
+                <div class="pie-wrap">
+                  <svg class="pie-svg" viewBox="0 0 220 220" role="img" aria-labelledby="pieTitle pieDesc">
+                    <title id="pieTitle">Cost and scholarship mix</title>
+                    <desc id="pieDesc">Share of total estimated cost paid by the student, covered by outside support, and covered by WTS scholarship support.</desc>
+                    <path id="sliceStudent" class="pie-slice student" d=""></path>
+                    <path id="sliceRaised" class="pie-slice raised" d=""></path>
+                    <path id="sliceMatch" class="pie-slice match" d=""></path>
+                    <text id="labelStudent" class="pie-label" x="110" y="110">0%</text>
+                    <text id="labelRaised" class="pie-label" x="110" y="110">0%</text>
+                    <text id="labelMatch" class="pie-label" x="110" y="110">0%</text>
+                  </svg>
+                </div>
+                <div class="legend">
+                  <div class="legend-item">
+                    <span class="dot student"></span>
+                    <span><strong>Student</strong></span>
+                    <span class="amount" id="legendStudent">$24,300</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="dot raised"></span>
+                    <span><strong>Outside Support</strong></span>
+                    <span class="amount" id="legendRaised">$0</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="dot match"></span>
+                    <span><strong>WTS Scholarship Support</strong></span>
+                    <span class="amount" id="legendMatch">$0</span>
+                  </div>
+                </div>
               </div>
-              <div class="legend">
-                <div class="legend-item">
-                  <span class="dot student"></span>
-                  <span><strong>Student</strong></span>
-                  <span class="amount" id="legendStudent">$24,300</span>
-                </div>
-                <div class="legend-item">
-                  <span class="dot raised"></span>
-                  <span><strong>Support</strong></span>
-                  <span class="amount" id="legendRaised">$0</span>
-                </div>
-                <div class="legend-item">
-                  <span class="dot match"></span>
-                  <span><strong>WTS Scholarship Support</strong></span>
-                  <span class="amount" id="legendMatch">$0</span>
-                </div>
-              </div>
-            </aside>
-          </div>
+            </div>
+          </article>
 
         </section>
       </section>
