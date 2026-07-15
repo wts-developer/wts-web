@@ -1,4 +1,4 @@
-/* WTS tuition chat widget — styles live inside the widget's Shadow DOM.
+/* WTS tuition chat widget - styles live inside the widget's Shadow DOM.
    Brand tokens mirror projects/tuition-estimator/src/calculator.css so the
    two widgets read as one family when both are on the page. */
 
@@ -36,33 +36,75 @@
 }
 
 /* ---- Launcher ------------------------------------------------------ */
+/* First impression is a labeled pill ("Get instant answers") so the
+   entry point is unmissable on a content-heavy page. Once the visitor
+   has opened the chat (this visit), it collapses to the quieter icon
+   circle - the label has done its job by then. */
 
 .wts-chat__launcher {
   position: fixed;
   right: 22px;
   bottom: 22px;
   z-index: 2147483000;
-  width: 60px;
   height: 60px;
+  padding: 0 24px 0 18px;
   border: 0;
-  border-radius: 50%;
+  border-radius: 999px;
   cursor: pointer;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: #fff;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  white-space: nowrap;
   background: linear-gradient(135deg, var(--accent-dark), var(--accent));
   box-shadow: 0 10px 28px rgba(110, 23, 38, .45);
   transition: transform .18s ease, box-shadow .18s ease;
 }
-.wts-chat__launcher:hover { transform: translateY(-2px) scale(1.04); }
+.wts-chat__launcher:hover { transform: translateY(-2px) scale(1.03); }
 .wts-chat__launcher:focus-visible {
   outline: 3px solid var(--wts-gold);
   outline-offset: 2px;
 }
-.wts-chat__launcher svg { width: 28px; height: 28px; display: block; }
+.wts-chat__launcher svg { width: 28px; height: 28px; display: block; flex-shrink: 0; }
 .wts-chat__launcher .icon-close { display: none; }
 .wts-chat--open .wts-chat__launcher .icon-chat { display: none; }
 .wts-chat--open .wts-chat__launcher .icon-close { display: block; }
+
+/* A soft expanding ring draws the eye on page load, three beats then
+   done. Skipped entirely for visitors who prefer reduced motion. */
+.wts-chat__launcher::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(140, 34, 51, .55);
+  animation: wts-chat-pulse 2.2s ease-out 1.2s 3;
+  pointer-events: none;
+}
+@keyframes wts-chat-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(140, 34, 51, .55); }
+  70% { box-shadow: 0 0 0 16px rgba(140, 34, 51, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(140, 34, 51, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wts-chat__launcher::before { animation: none; }
+  .wts-chat__launcher:hover { transform: none; }
+}
+
+/* Collapsed (post-engagement / open) form: icon circle, no label. */
+.wts-chat--engaged .wts-chat__launcher,
+.wts-chat--open .wts-chat__launcher {
+  width: 60px;
+  padding: 0;
+  justify-content: center;
+}
+.wts-chat--engaged .wts-chat__launcher .wts-chat__launcher-label,
+.wts-chat--open .wts-chat__launcher .wts-chat__launcher-label { display: none; }
+.wts-chat--engaged .wts-chat__launcher::before { animation: none; }
 
 /* ---- Panel --------------------------------------------------------- */
 
@@ -104,16 +146,21 @@
   background: linear-gradient(135deg, var(--accent-dark), var(--accent));
   flex-shrink: 0;
 }
+/* The reversed (white) logo variant sits directly on the maroon header,
+   matching how wts.edu's own header presents it. */
 .wts-chat__logo {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: #fff;
   display: grid;
   place-items: center;
 }
-.wts-chat__logo svg { width: 26px; height: 26px; display: block; }
+.wts-chat__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
 .wts-chat__heading { min-width: 0; }
 .wts-chat__title {
   font-weight: 900;
@@ -158,6 +205,9 @@
   border-radius: var(--radius-md);
   overflow-wrap: break-word;
 }
+/* A bubble carrying a cost table takes the full row so the table gets
+   every available pixel before the font-fit logic has to shrink it. */
+.wts-chat__msg--wide { max-width: 100%; }
 .wts-chat__msg--bot {
   align-self: flex-start;
   background: #fff;
@@ -177,7 +227,7 @@
 
 .wts-chat__msg pre {
   margin: 8px 0;
-  padding: 10px 12px;
+  padding: 8px 10px;
   overflow-x: auto;
   font-family: var(--mono);
   font-size: 11.5px;
@@ -186,6 +236,14 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   white-space: pre;
+}
+/* Last-resort fit (fitPre hit its font floor and the widest line still
+   doesn't fit): wrap instead of side-scrolling. Only the longest lines
+   wrap; the right-aligned money rows are narrower and stay intact. */
+.wts-chat__msg pre.wts-chat__pre--wrap {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: hidden;
 }
 .wts-chat__msg p { margin: 0 0 8px; }
 .wts-chat__msg p:last-child { margin-bottom: 0; }

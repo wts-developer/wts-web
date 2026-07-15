@@ -1,6 +1,6 @@
 /* WTS tuition chat logic. Written shadow-DOM-aware: everything scopes off
    the `root` (shadow root) and `app` (`.wts-chat` wrapper) passed to
-   runChat(root, app, config) — no bare document.* DOM lookups, so build.py
+   runChat(root, app, config) - no bare document.* DOM lookups, so build.py
    can inline this file without rewriting it.
 
    Talks to the Hedwig web-chat API (hedwig/webchat/ in the
@@ -92,6 +92,32 @@ function runChat(root, app, config) {
 
   // ---- transcript rendering -----------------------------------------
 
+  // Shrink a code block's mono face until its widest line fits the
+  // bubble, so the cost table reads without side-scrolling. Floor at
+  // 9px for legibility; if the widest line still doesn't fit there,
+  // soft-wrap it (only the longest lines wrap; the aligned money rows
+  // are narrower and keep their columns). No-op while the panel is
+  // hidden (clientWidth 0) - fitAllPres() re-runs on open for a
+  // transcript restored into a closed panel.
+  function fitPre(pre) {
+    if (!pre.clientWidth) return;
+    var size = 11.5;
+    pre.classList.remove("wts-chat__pre--wrap");
+    pre.style.fontSize = size + "px";
+    while (size > 9 && pre.scrollWidth > pre.clientWidth) {
+      size -= 0.5;
+      pre.style.fontSize = size + "px";
+    }
+    if (pre.scrollWidth > pre.clientWidth) {
+      pre.classList.add("wts-chat__pre--wrap");
+    }
+  }
+
+  function fitAllPres() {
+    var pres = messagesEl.querySelectorAll("pre");
+    for (var i = 0; i < pres.length; i++) fitPre(pres[i]);
+  }
+
   function addBubble(who, text, opts) {
     var div = document.createElement("div");
     div.className = "wts-chat__msg wts-chat__msg--" + (who === "user" ? "user" : "bot");
@@ -101,7 +127,11 @@ function runChat(root, app, config) {
     } else {
       div.innerHTML = renderMrkdwn(text);
     }
+    var pres = who === "user" ? [] : div.querySelectorAll("pre");
+    if (pres.length) div.className += " wts-chat__msg--wide";
     messagesEl.appendChild(div);
+    // Fit after insertion - scrollWidth/clientWidth are 0 off-DOM.
+    for (var i = 0; i < pres.length; i++) fitPre(pres[i]);
     messagesEl.scrollTop = messagesEl.scrollHeight;
     return div;
   }
@@ -168,6 +198,18 @@ function runChat(root, app, config) {
 
   var pending = false;
 
+  // Hold the typing indicator on screen for a beat even when the answer
+  // comes back instantly (mock mode, warm API): an immediate wall of
+  // text reads as a search result, a short pause reads as a chat.
+  function typingPause(payload, startedAt) {
+    var target = 800 + Math.random() * 700;
+    var remaining = target - (Date.now() - startedAt);
+    if (remaining <= 0) return Promise.resolve(payload);
+    return new Promise(function (resolve) {
+      setTimeout(function () { resolve(payload); }, remaining);
+    });
+  }
+
   function send(text) {
     text = (text || "").trim();
     if (!text || pending) return;
@@ -183,8 +225,10 @@ function runChat(root, app, config) {
     typing.innerHTML = '<span class="wts-chat__typing"><i></i><i></i><i></i></span>';
     messagesEl.appendChild(typing);
     messagesEl.scrollTop = messagesEl.scrollHeight;
+    var startedAt = Date.now();
 
     askBackend(text)
+      .then(function (payload) { return typingPause(payload, startedAt); })
       .then(function (payload) {
         typing.remove();
         addBubble("bot", payload.reply);
@@ -213,8 +257,17 @@ function runChat(root, app, config) {
     launcher.setAttribute("aria-label",
       open ? "Close tuition assistant chat" : "Open tuition assistant chat");
     state.open = open;
+    if (open && !state.engaged) {
+      // Engagement collapses the labeled launcher pill to the quieter
+      // icon circle for the rest of the visit.
+      state.engaged = true;
+      app.classList.add("wts-chat--engaged");
+    }
     saveState();
-    if (open) input.focus();
+    if (open) {
+      fitAllPres();
+      input.focus();
+    }
   }
 
   launcher.addEventListener("click", function () {
@@ -244,6 +297,7 @@ function runChat(root, app, config) {
     }
   });
 
+  if (state.engaged) app.classList.add("wts-chat--engaged");
   restoreTranscript();
   if (state.open) setOpen(true);
 }

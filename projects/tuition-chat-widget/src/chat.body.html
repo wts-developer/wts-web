@@ -8,6 +8,7 @@
       <circle cx="12"  cy="9.6" r="1.15" fill="#8c2233"/>
       <circle cx="15.4" cy="9.6" r="1.15" fill="#8c2233"/>
     </svg>
+    <span class="wts-chat__launcher-label">Get instant answers</span>
     <svg class="icon-close" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
     </svg>
@@ -16,14 +17,10 @@
   <section class="wts-chat__panel" role="dialog" aria-label="Westminster tuition assistant">
     <header class="wts-chat__header">
       <span class="wts-chat__logo" aria-hidden="true">
-        <!-- Placeholder mark: a Westminster-style "W" shield until the bot
-             gets its own identity. Swap for the official asset later. -->
-        <svg viewBox="0 0 32 32">
-          <path d="M16 2 28 7v9c0 7.5-5 12.3-12 14C9 28.3 4 23.5 4 16V7l12-5Z"
-                fill="#8c2233"/>
-          <path d="M8.5 10h3l1.6 8 2.3-8h1.2l2.3 8 1.6-8h3l-3.2 13h-2.4L16 15.6 14.1 23h-2.4L8.5 10Z"
-                fill="#fff"/>
-        </svg>
+        <!-- Official WTS logo icon (reversed/white variant) served from the
+             wts.edu Webflow CDN - same asset the site header uses, so the
+             widget inherits any future logo refresh automatically. -->
+        <img src="https://cdn.prod.website-files.com/607eea4517cd5c0a2e0d32e2/607eea4517cd5c64230d3312_WTS_LogoIcon_Rev.svg" alt="" />
       </span>
       <div class="wts-chat__heading">
         <div class="wts-chat__title">Tuition Assistant</div>
@@ -45,7 +42,7 @@
       </button>
     </form>
     <div class="wts-chat__disclaimer">
-      Automated answers based on published tuition rates &mdash; confirm details
+      Automated answers based on published tuition rates. Confirm details
       with an admissions counselor.
     </div>
   </section>
