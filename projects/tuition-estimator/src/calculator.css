@@ -224,23 +224,9 @@
       transform: translateY(-4px);
     }
 
-    .online-badge.campus {
-      border-color: rgba(140,34,51,.45);
-      background: rgba(140,34,51,.10);
-      color: #6e1726;
+    .program-footnote {
+      margin: 14px 0 0;
     }
-
-    .funded-note {
-      margin-top: 6px;
-      font-size: .84rem;
-      font-weight: 700;
-      color: #8c2233;
-    }
-
-    /* On-campus (100% funded) programs: nothing to estimate, so the inputs
-       panel hides and the results card spans the full width. */
-    .funded-mode .left-column { display: none; }
-    .funded-mode .main-grid { grid-template-columns: 1fr; }
 
     .main-grid {
       display: grid;
@@ -1316,6 +1302,20 @@
 
     .comparison-source-link:hover {
       text-decoration: underline;
+    }
+
+
+    body.program-mar .mini.match-opportunity,
+    body.program-mar .summary-tile.match-opportunity,
+    body.program-mar .summary-row.match-opportunity {
+      border-color: #8c2233;
+      background: rgba(140,34,51,.16);
+      box-shadow: 0 0 0 3px rgba(140,34,51,.18);
+    }
+
+    body.program-mar .mini.match-opportunity .mini-label::after,
+    body.program-mar .summary-tile.match-opportunity .tile-label::after {
+      color: rgba(255,255,255,.92);
     }
 
 

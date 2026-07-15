@@ -51,8 +51,10 @@ EMBED_CSS = """
 .wts-estimator-app .full-width-summary-section,
 .wts-estimator-app .full-width-term-section,
 .wts-estimator-app .market-comparison-section { display: none; }
-/* Keep the advanced pace options out of the embed; the start-term picker
-   stays because the tuition rate increases in the June 2027 term. */
+/* Everything is $675/credit for now: hide the start-term picker (and its
+   stale rate-increase note) and the advanced options. CONFIG already has
+   futureRate equal to currentRate, so the math is $675 regardless. */
+.wts-estimator-app .field:has(> #startTerm),
 .wts-estimator-app details.advanced:not(.scholarship-reference) { display: none; }
 /* wts.edu's next section overlaps upward with an angled (skewed) top edge;
    reserve room so it doesn't clip the last card of the estimator. */
