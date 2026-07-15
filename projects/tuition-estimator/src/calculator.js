@@ -1,45 +1,72 @@
 
+    // Online programs share one static theme; the theme only shifts when an
+    // on-campus (100% funded) program is selected, so modality stands out.
+    const ONLINE_THEME = { accent: "#56575a", accentDark: "#3f4042", accentSoft: "#ececed" };
+    const CAMPUS_THEME = { accent: "#8c2233", accentDark: "#6e1726", accentSoft: "#f5e9eb" };
+
     const CONFIG = {
       programs: {
         MATS: {
           name: "MATS",
+          fullName: "Master of Arts in Theological Studies",
           credits: 36,
           matchType: "fixedCap",
           fixedCap: 5000,
           termSystem: "online",
-          theme: { accent: "#56575a", accentDark: "#3f4042", accentSoft: "#ececed" },
+          theme: ONLINE_THEME,
           description: "dollar-for-dollar match up to $5,000"
         },
         MAC: {
           name: "MAC",
+          fullName: "Master of Arts in Counseling",
           credits: 61,
           matchType: "percentCap",
           percentCap: 0.25,
           termSystem: "online",
-          theme: { accent: "#02434d", accentDark: "#01343c", accentSoft: "#e4ece9" },
+          theme: ONLINE_THEME,
           description: "dollar-for-dollar match up to 25% of total tuition"
         },
         MDiv: {
           name: "MDiv",
+          fullName: "Master of Divinity",
           credits: 111,
           matchType: "estimatedCourseCount",
           estimatedCourses: 43,
           termSystem: "residential",
-          theme: { accent: "#8c2233", accentDark: "#6e1726", accentSoft: "#f5e9eb" },
+          theme: ONLINE_THEME,
           description: "dollar-for-dollar match estimated at one credit per course across about 43 courses"
         },
         MAR: {
           name: "MAR",
+          fullName: "Master of Arts in Religion",
           credits: 74,
           matchType: "estimatedCourseCount",
           estimatedCourses: 23,
           termSystem: "residential",
-          theme: { accent: "#bd8b41", accentDark: "#8e662f", accentSoft: "#f7efe3" },
+          theme: ONLINE_THEME,
           description: "dollar-for-dollar match estimated at one credit per course across about 23 courses"
+        },
+        MDivCampus: {
+          name: "MDiv",
+          fullName: "Master of Divinity",
+          credits: 111,
+          funded: true,
+          termSystem: "residential",
+          theme: CAMPUS_THEME,
+          description: "tuition 100% funded for admitted students"
+        },
+        MARCampus: {
+          name: "MAR",
+          fullName: "Master of Arts in Religion",
+          credits: 74,
+          funded: true,
+          termSystem: "residential",
+          theme: CAMPUS_THEME,
+          description: "tuition 100% funded for admitted students"
         }
       },
       currentRate: 675,
-      futureRate: 675,
+      futureRate: 750,
       futureRateStart: "2027-06",
       termCycle: ["06", "09", "01", "03"],
       sbcRecognitionFeePerCourse: 1300,
@@ -111,9 +138,38 @@
     const scholarshipIncluded = true;
     let sbcScholarshipIncluded = false;
 
+    // Westminster scholarship support shown in the reference dropdown,
+    // filtered to the selected program. Not exhaustive; sourced from the
+    // matching rules above and the scholarships published on wts.edu.
+    const SCHOLARSHIPS = {
+      MATS: [
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, up to $5,000." },
+        { name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students." }
+      ],
+      MAC: [
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, up to 25% of total tuition." },
+        { name: "SBC Recognition Fee Scholarship", detail: "may cover part or all of SBC course recognition fees." },
+        { name: "CCEF SBC Alumni and International Student Scholarships", detail: "limited scholarships available." }
+      ],
+      MDiv: [
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, estimated at one credit per course (about 43 courses)." }
+      ],
+      MAR: [
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, estimated at one credit per course (about 23 courses)." }
+      ],
+      MDivCampus: [
+        { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
+      ],
+      MARCampus: [
+        { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
+      ]
+    };
+
     const $ = id => document.getElementById(id);
     const els = {
       matsBtn: $("matsBtn"), macBtn: $("macBtn"), mdivBtn: $("mdivBtn"), marBtn: $("marBtn"),
+      mdivCampusBtn: $("mdivCampusBtn"), marCampusBtn: $("marCampusBtn"),
+      scholarshipList: $("scholarshipList"),
       fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
       creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
       customCredits: $("customCredits"),
@@ -178,7 +234,9 @@
     }
 
     function rateForTerm(key) {
-      return CONFIG.currentRate;
+      // Term keys are zero-padded "YYYY-MM" strings, so lexicographic
+      // comparison is chronological.
+      return key >= CONFIG.futureRateStart ? CONFIG.futureRate : CONFIG.currentRate;
     }
 
     function buildTerms(totalCredits, creditsPerTerm, startTerm, termSystem = "online") {
@@ -520,6 +578,41 @@
     function calculate() {
       updateMacOnlyVisibility();
       const program = CONFIG.programs[selectedProgram];
+
+      if (program.funded) {
+        // On-campus MDiv and MAR: tuition is 100% funded for admitted
+        // students, so there is nothing to estimate. Show the covered
+        // amount (full credits at the current per-credit rate, as an
+        // illustration) and a $0 cost; the inputs panel is hidden.
+        const gross = program.credits * CONFIG.currentRate;
+        updatePieChart(0, 0, gross, gross);
+        els.netPrice.textContent = "$0";
+        els.resultCaption.textContent = `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted students. No out-of-pocket tuition.`;
+        els.miniMatch.textContent = money(gross);
+        els.miniRemainingCard.hidden = true;
+        els.miniRemainingCard.classList.remove("match-opportunity");
+        els.miniGross.textContent = money(gross);
+        els.legendStudent.textContent = "$0";
+        els.legendRaised.textContent = "$0";
+        els.legendMatch.textContent = money(gross);
+        els.summaryModeLabel.textContent = "Tuition 100% funded";
+        els.summaryGross.textContent = money(gross);
+        els.summaryRaised.textContent = "-$0";
+        els.summaryMatch.textContent = `-${money(gross)}`;
+        els.summaryRemainingMatch.textContent = "$0";
+        els.summaryRemainingMatchRow.classList.remove("match-opportunity");
+        els.summaryNet.textContent = "$0";
+        els.termCountLabel.textContent = "Tuition 100% funded";
+        els.termTable.innerHTML = `
+          <tr>
+            <td colspan="6">Tuition for the on-campus ${program.name} is 100% funded for admitted students, so there is no term-by-term cost to plan for.</td>
+          </tr>
+        `;
+        els.emailLink.href = `mailto:?subject=${encodeURIComponent(`WTS on-campus ${program.name} tuition`)}&body=${encodeURIComponent(`Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted students. There is no out-of-pocket tuition.`)}`;
+        return;
+      }
+
+      els.miniRemainingCard.hidden = false;
       const creditsPerTerm = els.creditsPerTerm.value === "custom"
         ? Math.max(1, Number(els.customCredits.value || 3))
         : Number(els.creditsPerTerm.value);
@@ -554,8 +647,8 @@
 
       els.netPrice.textContent = money(totalOutOfPocket);
       els.resultCaption.textContent = selectedProgram === "MAC" && sbcCourses > 0
-        ? `For the ${program.name} program after outside support, WTS scholarship support, and selected SBC course recognition assumptions.`
-        : `For the ${program.name} program after outside support and WTS scholarship support.`;
+        ? `For the online ${program.fullName} (${program.name}) after outside support, Westminster scholarship support, and selected SBC course recognition assumptions.`
+        : `For the online ${program.fullName} (${program.name}) after outside support and Westminster scholarship support.`;
       els.miniMatch.textContent = money(totalWtsAid);
       els.miniRemaining.textContent = scholarshipIncluded ? money(remainingEligibleMatch) : "$0";
       els.miniGross.textContent = money(gross);
@@ -664,31 +757,40 @@
 
     window.addEventListener("beforeprint", preparePrint);
 
+    const programButtons = {
+      MATS: els.matsBtn, MAC: els.macBtn, MDiv: els.mdivBtn, MAR: els.marBtn,
+      MDivCampus: els.mdivCampusBtn, MARCampus: els.marCampusBtn
+    };
+
+    function renderScholarships(key) {
+      if (!els.scholarshipList) return;
+      els.scholarshipList.innerHTML = (SCHOLARSHIPS[key] || []).map(s =>
+        `<li><strong>${s.name}:</strong> ${s.detail}</li>`
+      ).join("");
+    }
+
     function selectProgram(key) {
       selectedProgram = key;
       setTheme(key);
 
-      document.body.classList.remove("program-mats", "program-mac", "program-mdiv", "program-mar");
+      Object.keys(programButtons).forEach(k => document.body.classList.remove(`program-${k.toLowerCase()}`));
       document.body.classList.add(`program-${key.toLowerCase()}`);
+      document.body.classList.toggle("funded-mode", !!CONFIG.programs[key].funded);
 
-      els.matsBtn.setAttribute("aria-pressed", key === "MATS");
-      els.macBtn.setAttribute("aria-pressed", key === "MAC");
-      els.mdivBtn.setAttribute("aria-pressed", key === "MDiv");
-      els.marBtn.setAttribute("aria-pressed", key === "MAR");
+      Object.entries(programButtons).forEach(([k, btn]) => {
+        if (!btn) return;
+        btn.setAttribute("aria-pressed", k === key);
+        btn.classList.toggle("active", k === key);
+      });
 
-      els.matsBtn.classList.toggle("active", key === "MATS");
-      els.macBtn.classList.toggle("active", key === "MAC");
-      els.mdivBtn.classList.toggle("active", key === "MDiv");
-      els.marBtn.classList.toggle("active", key === "MAR");
-
+      renderScholarships(key);
       updateMacOnlyVisibility();
       calculate();
     }
 
-    els.matsBtn.addEventListener("click", () => selectProgram("MATS"));
-    els.macBtn.addEventListener("click", () => selectProgram("MAC"));
-    els.mdivBtn.addEventListener("click", () => selectProgram("MDiv"));
-    els.marBtn.addEventListener("click", () => selectProgram("MAR"));
+    Object.entries(programButtons).forEach(([key, btn]) => {
+      if (btn) btn.addEventListener("click", () => selectProgram(key));
+    });
     els.sbcScholarshipYes.addEventListener("click", () => selectSbcScholarship(true));
     els.sbcScholarshipNo.addEventListener("click", () => selectSbcScholarship(false));
 
@@ -720,6 +822,7 @@
 
     document.body.classList.add(`program-${selectedProgram.toLowerCase()}`);
     setTheme(selectedProgram);
+    renderScholarships(selectedProgram);
     updateMacOnlyVisibility();
     calculate();
     preparePrint();
