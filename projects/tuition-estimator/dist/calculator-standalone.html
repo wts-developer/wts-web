@@ -217,6 +217,27 @@
       max-width: 54ch;
     }
 
+    .online-badge {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 6px;
+      padding: 3px 9px;
+      border: 1px solid rgba(189,139,65,.55);
+      border-radius: 999px;
+      background: rgba(189,139,65,.12);
+      font-family: var(--sans);
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #8e662f;
+      transform: translateY(-4px);
+    }
+
+    .program-footnote {
+      margin: 14px 0 0;
+    }
+
     .main-grid {
       display: grid;
       grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
@@ -1866,16 +1887,17 @@
             <div class="code">61 credits</div>
           </button>
           <button type="button" id="mdivBtn" class="program-card" aria-pressed="false">
-            <div class="name">MDiv</div>
+            <div class="name">MDiv <span class="online-badge">Online</span></div>
             <div class="desc">Master of Divinity</div>
             <div class="code">111 credits</div>
           </button>
           <button type="button" id="marBtn" class="program-card" aria-pressed="false">
-            <div class="name">MAR</div>
+            <div class="name">MAR <span class="online-badge">Online</span></div>
             <div class="desc">Master of Arts in Religion</div>
             <div class="code">74 credits</div>
           </button>
         </div>
+        <p class="section-note program-footnote">MDiv and MAR estimates are for the online programs. The residential MDiv and MAR are 100% funded, with no out-of-pocket tuition for admitted students.</p>
       </section>
 
       <section class="main-grid">
