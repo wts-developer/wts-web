@@ -63,6 +63,44 @@
           termSystem: "residential",
           theme: CAMPUS_THEME,
           description: "tuition 100% funded for admitted students"
+        },
+        // Course-priced postgraduate programs (per-course tuition rather
+        // than per-credit; the start-term rate increase does not apply).
+        ThM: {
+          name: "ThM",
+          fullName: "Master of Theology",
+          coursePriced: true,
+          courses: 6,
+          courseRate: 4350,
+          matchPct: 0.20,
+          modality: "both",
+          theme: ONLINE_THEME,
+          description: "20% matching grant for full-time students, any modality"
+        },
+        DMin: {
+          name: "DMin",
+          fullName: "Doctor of Ministry",
+          coursePriced: true,
+          // Published program card: $34,000 total true-cost price for the
+          // 8-course program, up to 20% baseline scholarship, and up to a
+          // 20% Ministry Partnership Match on ministry partner payments.
+          trueCost: 34000,
+          baselinePct: 0.20,
+          matchPct: 0.20,
+          modality: "campus",
+          theme: CAMPUS_THEME,
+          description: "20% baseline scholarship plus a 20% ministry partnership match"
+        },
+        PhD: {
+          name: "PhD",
+          fullName: "Doctor of Philosophy",
+          coursePriced: true,
+          courses: 10,
+          courseRate: 5000,
+          matchPct: 0,
+          modality: "campus",
+          theme: CAMPUS_THEME,
+          description: "scholarships determined individually by the committee"
         }
       },
       currentRate: 675,
@@ -162,6 +200,16 @@
       ],
       MARCampus: [
         { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
+      ],
+      ThM: [
+        { name: "Matching Grant", detail: "for full-time ThM students, dollar-for-dollar match on outside support, up to 20% of total tuition, in any modality." }
+      ],
+      DMin: [
+        { name: "Baseline Scholarship", detail: "up to 20% of the total program cost, applied automatically." },
+        { name: "Ministry Partnership Match", detail: "dollar-for-dollar match on ministry partner (e.g. church) payments, up to 20% of the total program cost." }
+      ],
+      PhD: [
+        { name: "Committee Scholarships", detail: "PhD scholarships are determined individually by the committee and are not included in this estimate." }
       ]
     };
 
@@ -169,6 +217,8 @@
     const els = {
       matsBtn: $("matsBtn"), macBtn: $("macBtn"), mdivBtn: $("mdivBtn"), marBtn: $("marBtn"),
       mdivCampusBtn: $("mdivCampusBtn"), marCampusBtn: $("marCampusBtn"),
+      thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
+      fundsRaisedLabel: $("fundsRaisedLabel"),
       scholarshipList: $("scholarshipList"),
       fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
       creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
@@ -612,6 +662,42 @@
         return;
       }
 
+      if (program.coursePriced) {
+        // ThM, DMin, PhD: per-course pricing, no term-by-term rate schedule.
+        // DMin follows its published program card: total true cost, an
+        // automatic baseline scholarship, then ministry partner payments
+        // matched dollar-for-dollar up to the partnership match cap.
+        const fundsRaisedRequested = Math.max(0, Number(els.fundsRaised.value || 0));
+        const gross = program.trueCost || program.courses * program.courseRate;
+        const baseline = program.baselinePct ? gross * program.baselinePct : 0;
+        const fundsApplied = Math.min(fundsRaisedRequested, Math.max(0, gross - baseline));
+        const matchCap = program.matchPct ? gross * program.matchPct : 0;
+        const match = Math.min(fundsApplied, matchCap, Math.max(0, gross - baseline - fundsApplied));
+        const totalWtsAid = baseline + match;
+        const totalOutOfPocket = Math.max(0, gross - fundsApplied - totalWtsAid);
+        const remainingEligibleMatch = Math.max(0, matchCap - match);
+
+        updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
+
+        els.netPrice.textContent = money(totalOutOfPocket);
+        const captions = {
+          ThM: `For the Master of Theology (ThM), online or on campus, after outside support and Westminster scholarship support. Excludes program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students.`,
+          DMin: `For the on-campus Doctor of Ministry (DMin), based on the published $34,000 total program cost, after the automatic baseline scholarship, ministry partner payments, and the Ministry Partnership Match.`,
+          PhD: `For the on-campus Doctor of Philosophy (PhD) after outside support. PhD scholarships are determined individually by the committee and are not included in this estimate. Excludes program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee.`
+        };
+        els.resultCaption.textContent = captions[selectedProgram];
+        els.miniMatch.textContent = money(totalWtsAid);
+        els.miniGross.textContent = money(gross);
+        els.miniRemainingCard.hidden = matchCap === 0;
+        els.miniRemaining.textContent = money(remainingEligibleMatch);
+        const showMatchOpportunity = matchCap > 0 && remainingEligibleMatch > 0;
+        els.miniRemainingCard.classList.toggle("match-opportunity", showMatchOpportunity);
+        els.legendStudent.textContent = money(totalOutOfPocket);
+        els.legendRaised.textContent = money(fundsApplied);
+        els.legendMatch.textContent = money(totalWtsAid);
+        return;
+      }
+
       els.miniRemainingCard.hidden = false;
       const creditsPerTerm = els.creditsPerTerm.value === "custom"
         ? Math.max(1, Number(els.customCredits.value || 3))
@@ -759,7 +845,8 @@
 
     const programButtons = {
       MATS: els.matsBtn, MAC: els.macBtn, MDiv: els.mdivBtn, MAR: els.marBtn,
-      MDivCampus: els.mdivCampusBtn, MARCampus: els.marCampusBtn
+      ThM: els.thmBtn, MDivCampus: els.mdivCampusBtn, MARCampus: els.marCampusBtn,
+      DMin: els.dminBtn, PhD: els.phdBtn
     };
 
     function renderScholarships(key) {
@@ -776,6 +863,14 @@
       Object.keys(programButtons).forEach(k => document.body.classList.remove(`program-${k.toLowerCase()}`));
       document.body.classList.add(`program-${key.toLowerCase()}`);
       document.body.classList.toggle("funded-mode", !!CONFIG.programs[key].funded);
+      // Course-priced programs bill per course, so the per-credit start-term
+      // rate increase and pace options do not apply.
+      document.body.classList.toggle("course-priced-mode", !!CONFIG.programs[key].coursePriced);
+      if (els.fundsRaisedLabel) {
+        els.fundsRaisedLabel.textContent = key === "DMin"
+          ? "Ministry partner (e.g. church) payments over full program"
+          : "Church, donor, or employer support over full program";
+      }
 
       Object.entries(programButtons).forEach(([k, btn]) => {
         if (!btn) return;

@@ -61,6 +61,11 @@
             <div class="desc">Master of Arts in Religion</div>
             <div class="code">74 credits</div>
           </button>
+          <button type="button" id="thmBtn" class="program-card" aria-pressed="false">
+            <div class="name">ThM <span class="online-badge">Online</span> <span class="online-badge campus">On Campus</span></div>
+            <div class="desc">Master of Theology</div>
+            <div class="code">6 courses</div>
+          </button>
           <button type="button" id="mdivCampusBtn" class="program-card" aria-pressed="false">
             <div class="name">MDiv <span class="online-badge campus">On Campus</span></div>
             <div class="desc">Master of Divinity</div>
@@ -72,6 +77,16 @@
             <div class="desc">Master of Arts in Religion</div>
             <div class="code">74 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
+          </button>
+          <button type="button" id="dminBtn" class="program-card" aria-pressed="false">
+            <div class="name">DMin <span class="online-badge campus">On Campus</span></div>
+            <div class="desc">Doctor of Ministry</div>
+            <div class="code">8 modular courses</div>
+          </button>
+          <button type="button" id="phdBtn" class="program-card" aria-pressed="false">
+            <div class="name">PhD <span class="online-badge campus">On Campus</span></div>
+            <div class="desc">Doctor of Philosophy</div>
+            <div class="code">10 courses</div>
           </button>
         </div>
       </section>
@@ -85,7 +100,7 @@
           </div>
           <div class="panel-body">
             <div class="field">
-              <label for="fundsRaised">Church, donor, or employer support over full program</label>
+              <label for="fundsRaised" id="fundsRaisedLabel">Church, donor, or employer support over full program</label>
               <input id="fundsRaised" type="number" min="0" step="100" value="0" />
               <div class="amount-buttons" aria-label="Quick support amounts">
                 <button type="button" class="quick-amount" data-amount="0">$0</button>

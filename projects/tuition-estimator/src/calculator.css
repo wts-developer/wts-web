@@ -242,6 +242,11 @@
     .funded-mode .left-column { display: none; }
     .funded-mode .main-grid { grid-template-columns: 1fr; }
 
+    /* Course-priced programs (ThM, DMin, PhD) bill per course, so the
+       per-credit start-term rate increase and pace options do not apply. */
+    .course-priced-mode .field:has(> #startTerm),
+    .course-priced-mode details.advanced:not(.scholarship-reference) { display: none; }
+
     /* Future features, not introduced yet: the estimate summary, the
        term-by-term table (including its email/review/print action row), and
        the market comparison. Markup and logic stay in place; unhide these
@@ -1250,7 +1255,7 @@
 
 
     .program-switch {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     @media (max-width: 1180px) {
