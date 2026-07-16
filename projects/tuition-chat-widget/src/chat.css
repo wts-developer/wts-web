@@ -12,9 +12,9 @@
   /* Brand tokens measured from the computed styles of the live
      wts.edu tuition page (Webflow CSS), so the widget sits on the page
      in the site's exact palette: maroon nav rgb(138,34,51), gold
-     rgb(191,139,58), the light-grey/tan content-section background
-     rgb(231,229,226), body text rgb(51,51,51). Body copy on the site
-     is Lato, matched below. */
+     rgb(191,139,58), the "content-section light-tan" background
+     rgb(231,229,226) (the Don't Wait to Apply band), body text
+     rgb(51,51,51). Body copy on the site is Lato, matched below. */
   --wts-red: #8a2233;
   --wts-red-dark: #6e1726;
   --wts-gold: #bf8b3a;
