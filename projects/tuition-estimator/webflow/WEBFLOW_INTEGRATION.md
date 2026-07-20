@@ -31,11 +31,13 @@ does need to be hosted as a file rather than pasted inline.
 - Renders the estimator inside a **Shadow DOM**, so its styles cannot leak
   into the site and the site's styles cannot break it. No classes or IDs are
   added to the global page other than the `wts-cost-estimator` container div.
-- Shows four blocks: Choose Your Program, Financial Information, Your
-  Estimated Cost After Support, and Cost & Scholarship Mix.
-- Adds one Google Fonts stylesheet (Lato + Roboto Mono) to the page head if
-  not already present. The serif headline face uses the site's existing
-  Typekit Kepler families.
+- Shows a centered "Tuition Savings Calculator" header, then a three-step
+  flow: step 1 Choose Your Program and step 2 Financial Information side by
+  side, with the step 3 results card (estimated cost plus the cost and
+  scholarship mix) spanning the full width beneath them.
+- Adds one Google Fonts stylesheet (Lato) to the page head if not already
+  present. The serif headline face uses the site's existing Typekit Kepler
+  families.
 - Makes **no network calls** other than that fonts stylesheet — all tuition
   math is client-side. No analytics, no cookies, no personal data.
 - Is plain vanilla JS with no dependencies (no jQuery, no framework), and

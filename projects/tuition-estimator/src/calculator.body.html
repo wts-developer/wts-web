@@ -38,7 +38,14 @@
         </div>
       </section>
 
+      <header class="calculator-header">
+        <div class="calc-eyebrow">Tuition &amp; Scholarships</div>
+        <h2 class="calc-title">Tuition Savings Calculator</h2>
+      </header>
+
+      <section class="builder-grid">
       <section class="section program-section">
+        <div class="step-label">Step 1</div>
         <h2 class="section-heading">Choose Your Program</h2>
         <div class="program-switch" aria-label="Program selection">
           <button type="button" id="matsBtn" class="program-card" aria-pressed="true">
@@ -91,8 +98,8 @@
         </div>
       </section>
 
-      <section class="main-grid">
         <aside class="left-column">
+          <div class="step-label">Step 2</div>
           <div class="panel input-panel">
             <div class="panel-header">
             <h2 class="panel-title">Financial Information</h2>
@@ -100,7 +107,15 @@
           </div>
           <div class="panel-body">
             <div class="field">
-              <label for="fundsRaised" id="fundsRaisedLabel">Church, donor, or employer support over full program</label>
+              <details class="advanced scholarship-reference" open>
+                <summary>Available Westminster scholarship support</summary>
+                <ul class="scholarship-list" id="scholarshipList"></ul>
+                <p class="help">Scholarship support for the program selected in step 1. Scholarships are limited and require an application; eligibility does not guarantee an award. Matching scholarships apply automatically to the additional support you enter below.</p>
+              </details>
+            </div>
+
+            <div class="field">
+              <label for="fundsRaised" id="fundsRaisedLabel">Additional support from outside resources over the full program</label>
               <input id="fundsRaised" type="number" min="0" step="100" value="0" />
               <div class="amount-buttons" aria-label="Quick support amounts">
                 <button type="button" class="quick-amount" data-amount="0">$0</button>
@@ -108,11 +123,7 @@
                 <button type="button" class="quick-amount" data-amount="5000">$5,000</button>
                 <button type="button" class="quick-amount" data-amount="10000">$10,000</button>
               </div>
-              <details class="advanced scholarship-reference">
-                <summary>What Westminster scholarship support is available?</summary>
-                <ul class="scholarship-list" id="scholarshipList"></ul>
-                <p class="help">Scholarship support for the program selected above. Scholarships are limited and require an application; eligibility does not guarantee an award. Matching support is applied to your estimate automatically.</p>
-              </details>
+              <div class="help">Support you expect beyond Westminster scholarships, such as church or ministry partners, employers, VA or GI Bill benefits, or denominational scholarships.</div>
             </div>
 
             <div class="field">
@@ -244,8 +255,10 @@
           </div>
 
         </aside>
+      </section>
 
-        <section class="results-section">
+      <section class="results-section">
+        <div class="step-label">Step 3</div>
           <article class="result-card" aria-label="Estimated cost after support">
             <div class="result-label">Your Estimated Cost After Support</div>
             <div class="result-value" id="netPrice">$24,300</div>
@@ -257,7 +270,7 @@
                 <div class="mini-value" id="miniMatch">$0</div>
               </div>
               <div class="mini" id="miniRemainingCard">
-                <div class="mini-label">Support Westminster Will Still Match</div>
+                <div class="mini-label">Support Westminster Will Match</div>
                 <div class="mini-value" id="miniRemaining">$0</div>
               </div>
               <div class="mini">
@@ -309,8 +322,6 @@
               </div>
             </div>
           </article>
-
-        </section>
       </section>
 
       <section class="print-only print-explainer" aria-label="How to read this estimate">

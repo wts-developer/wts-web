@@ -250,7 +250,7 @@
     /* On-campus (100% funded) programs: nothing to estimate, so the inputs
        panel hides and the results card spans the full width. */
     .funded-mode .left-column { display: none; }
-    .funded-mode .main-grid { grid-template-columns: 1fr; }
+    .funded-mode .builder-grid { grid-template-columns: 1fr; }
 
     /* Course-priced programs (ThM, DMin, PhD) bill per course, so the
        per-credit start-term rate increase and pace options do not apply. */
@@ -265,11 +265,54 @@
     .full-width-term-section,
     .market-comparison-section { display: none; }
 
-    .main-grid {
+    /* Centered header for the whole calculator section. Hidden on the
+       standalone page (which has its own hero); the embed unhides it. */
+    .calculator-header {
+      display: none;
+      text-align: center;
+      margin: 0 0 30px;
+    }
+
+    .calc-eyebrow {
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      font-size: .74rem;
+      font-weight: 700;
+      color: var(--wts-gray);
+      margin-bottom: 10px;
+    }
+
+    .calc-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      letter-spacing: -.03em;
+      line-height: 1.05;
+    }
+
+    .step-label {
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-size: .72rem;
+      font-weight: 700;
+      color: #8e662f;
+      margin-bottom: 8px;
+    }
+
+    /* Step 1 (programs) and step 2 (financial information) sit side by
+       side; step 3 (the results card) spans the full width below them. */
+    .builder-grid {
       display: grid;
-      grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 24px;
       align-items: start;
+      margin-top: 8px;
+    }
+
+    .results-section {
       margin-top: 24px;
     }
 
@@ -1062,7 +1105,7 @@
     }
 
     @media (max-width: 1020px) {
-      .hero, .main-grid { grid-template-columns: 1fr; }
+      .hero, .builder-grid { grid-template-columns: 1fr; }
       .result-mini-grid { grid-template-columns: 1fr; }
     }
 
@@ -1264,14 +1307,14 @@
     }
 
 
+    /* Two columns of compact cards inside the half-width step 1 panel. */
     .program-switch {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    @media (max-width: 1180px) {
-      .program-switch {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .program-card {
+      padding: 16px 18px;
+      border-radius: 18px;
     }
 
 
@@ -1545,7 +1588,7 @@
         line-height: 1.2;
       }
 
-      .main-grid {
+      .builder-grid {
         display: block !important;
         margin: 0;
       }
@@ -1886,7 +1929,14 @@
         </div>
       </section>
 
+      <header class="calculator-header">
+        <div class="calc-eyebrow">Tuition &amp; Scholarships</div>
+        <h2 class="calc-title">Tuition Savings Calculator</h2>
+      </header>
+
+      <section class="builder-grid">
       <section class="section program-section">
+        <div class="step-label">Step 1</div>
         <h2 class="section-heading">Choose Your Program</h2>
         <div class="program-switch" aria-label="Program selection">
           <button type="button" id="matsBtn" class="program-card" aria-pressed="true">
@@ -1939,8 +1989,8 @@
         </div>
       </section>
 
-      <section class="main-grid">
         <aside class="left-column">
+          <div class="step-label">Step 2</div>
           <div class="panel input-panel">
             <div class="panel-header">
             <h2 class="panel-title">Financial Information</h2>
@@ -1948,7 +1998,15 @@
           </div>
           <div class="panel-body">
             <div class="field">
-              <label for="fundsRaised" id="fundsRaisedLabel">Church, donor, or employer support over full program</label>
+              <details class="advanced scholarship-reference" open>
+                <summary>Available Westminster scholarship support</summary>
+                <ul class="scholarship-list" id="scholarshipList"></ul>
+                <p class="help">Scholarship support for the program selected in step 1. Scholarships are limited and require an application; eligibility does not guarantee an award. Matching scholarships apply automatically to the additional support you enter below.</p>
+              </details>
+            </div>
+
+            <div class="field">
+              <label for="fundsRaised" id="fundsRaisedLabel">Additional support from outside resources over the full program</label>
               <input id="fundsRaised" type="number" min="0" step="100" value="0" />
               <div class="amount-buttons" aria-label="Quick support amounts">
                 <button type="button" class="quick-amount" data-amount="0">$0</button>
@@ -1956,11 +2014,7 @@
                 <button type="button" class="quick-amount" data-amount="5000">$5,000</button>
                 <button type="button" class="quick-amount" data-amount="10000">$10,000</button>
               </div>
-              <details class="advanced scholarship-reference">
-                <summary>What Westminster scholarship support is available?</summary>
-                <ul class="scholarship-list" id="scholarshipList"></ul>
-                <p class="help">Scholarship support for the program selected above. Scholarships are limited and require an application; eligibility does not guarantee an award. Matching support is applied to your estimate automatically.</p>
-              </details>
+              <div class="help">Support you expect beyond Westminster scholarships, such as church or ministry partners, employers, VA or GI Bill benefits, or denominational scholarships.</div>
             </div>
 
             <div class="field">
@@ -2092,8 +2146,10 @@
           </div>
 
         </aside>
+      </section>
 
-        <section class="results-section">
+      <section class="results-section">
+        <div class="step-label">Step 3</div>
           <article class="result-card" aria-label="Estimated cost after support">
             <div class="result-label">Your Estimated Cost After Support</div>
             <div class="result-value" id="netPrice">$24,300</div>
@@ -2105,7 +2161,7 @@
                 <div class="mini-value" id="miniMatch">$0</div>
               </div>
               <div class="mini" id="miniRemainingCard">
-                <div class="mini-label">Support Westminster Will Still Match</div>
+                <div class="mini-label">Support Westminster Will Match</div>
                 <div class="mini-value" id="miniRemaining">$0</div>
               </div>
               <div class="mini">
@@ -2157,8 +2213,6 @@
               </div>
             </div>
           </article>
-
-        </section>
       </section>
 
       <section class="print-only print-explainer" aria-label="How to read this estimate">
@@ -2477,19 +2531,19 @@
     // matching rules above and the scholarships published on wts.edu.
     const SCHOLARSHIPS = {
       MATS: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, up to $5,000." },
-        { name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students." }
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to $5,000." },
+        { name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students, up to about $6,075." }
       ],
       MAC: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, up to 25% of total tuition." },
-        { name: "SBC Recognition Fee Scholarship", detail: "may cover part or all of SBC course recognition fees." },
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to 25% of total tuition (about $10,294 at the current rate)." },
+        { name: "SBC Recognition Fee Scholarship", detail: "may cover part or all of SBC course recognition fees ($1,300 per course)." },
         { name: "CCEF SBC Alumni and International Student Scholarships", detail: "limited scholarships available." }
       ],
       MDiv: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, estimated at one credit per course (about 43 courses)." }
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $29,025 across about 43 courses)." }
       ],
       MAR: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, estimated at one credit per course (about 23 courses)." }
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $15,525 across about 23 courses)." }
       ],
       MDivCampus: [
         { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
@@ -2498,11 +2552,11 @@
         { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
       ],
       ThM: [
-        { name: "Matching Grant", detail: "for full-time ThM students, dollar-for-dollar match on outside support, up to 20% of total tuition, in any modality." }
+        { name: "Matching Grant", detail: "for full-time ThM students, dollar-for-dollar match on your additional outside support, up to 20% of total tuition (about $5,220), in any modality." }
       ],
       DMin: [
-        { name: "Baseline Scholarship", detail: "up to 20% of the total program cost, applied automatically." },
-        { name: "Ministry Partnership Match", detail: "dollar-for-dollar match on ministry partner (e.g. church) payments, up to 20% of the total program cost." }
+        { name: "Baseline Scholarship", detail: "up to $6,800 (20% of the total program cost), applied automatically." },
+        { name: "Ministry Partnership Match", detail: "dollar-for-dollar match on ministry partner (e.g. church) payments, up to $6,800 (20% of the total program cost)." }
       ],
       PhD: [
         { name: "Committee Scholarships", detail: "PhD scholarships are determined individually by the committee and are not included in this estimate." }
@@ -3165,7 +3219,7 @@
       if (els.fundsRaisedLabel) {
         els.fundsRaisedLabel.textContent = key === "DMin"
           ? "Ministry partner (e.g. church) payments over full program"
-          : "Church, donor, or employer support over full program";
+          : "Additional support from outside resources over the full program";
       }
 
       Object.entries(programButtons).forEach(([k, btn]) => {

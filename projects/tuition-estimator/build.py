@@ -43,6 +43,9 @@ FONTS_URL = (
 EMBED_CSS = """
 /* --- embed-mode additions (not part of the standalone page) --- */
 :host { display: block; }
+/* The standalone page has its own hero; the embed shows the centered
+   section header instead. */
+.wts-estimator-app .calculator-header { display: block; }
 /* The embed shows only the interactive estimator: program cards, financial
    information, estimated cost, and the cost & scholarship mix. The host page
    supplies its own hero, and the long-form summary / per-term / market

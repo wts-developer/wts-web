@@ -240,7 +240,7 @@
     /* On-campus (100% funded) programs: nothing to estimate, so the inputs
        panel hides and the results card spans the full width. */
     .funded-mode .left-column { display: none; }
-    .funded-mode .main-grid { grid-template-columns: 1fr; }
+    .funded-mode .builder-grid { grid-template-columns: 1fr; }
 
     /* Course-priced programs (ThM, DMin, PhD) bill per course, so the
        per-credit start-term rate increase and pace options do not apply. */
@@ -255,11 +255,54 @@
     .full-width-term-section,
     .market-comparison-section { display: none; }
 
-    .main-grid {
+    /* Centered header for the whole calculator section. Hidden on the
+       standalone page (which has its own hero); the embed unhides it. */
+    .calculator-header {
+      display: none;
+      text-align: center;
+      margin: 0 0 30px;
+    }
+
+    .calc-eyebrow {
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      font-size: .74rem;
+      font-weight: 700;
+      color: var(--wts-gray);
+      margin-bottom: 10px;
+    }
+
+    .calc-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      letter-spacing: -.03em;
+      line-height: 1.05;
+    }
+
+    .step-label {
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-size: .72rem;
+      font-weight: 700;
+      color: #8e662f;
+      margin-bottom: 8px;
+    }
+
+    /* Step 1 (programs) and step 2 (financial information) sit side by
+       side; step 3 (the results card) spans the full width below them. */
+    .builder-grid {
       display: grid;
-      grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 24px;
       align-items: start;
+      margin-top: 8px;
+    }
+
+    .results-section {
       margin-top: 24px;
     }
 
@@ -1052,7 +1095,7 @@
     }
 
     @media (max-width: 1020px) {
-      .hero, .main-grid { grid-template-columns: 1fr; }
+      .hero, .builder-grid { grid-template-columns: 1fr; }
       .result-mini-grid { grid-template-columns: 1fr; }
     }
 
@@ -1254,14 +1297,14 @@
     }
 
 
+    /* Two columns of compact cards inside the half-width step 1 panel. */
     .program-switch {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    @media (max-width: 1180px) {
-      .program-switch {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .program-card {
+      padding: 16px 18px;
+      border-radius: 18px;
     }
 
 
@@ -1535,7 +1578,7 @@
         line-height: 1.2;
       }
 
-      .main-grid {
+      .builder-grid {
         display: block !important;
         margin: 0;
       }

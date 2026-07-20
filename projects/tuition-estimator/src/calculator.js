@@ -181,19 +181,19 @@
     // matching rules above and the scholarships published on wts.edu.
     const SCHOLARSHIPS = {
       MATS: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, up to $5,000." },
-        { name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students." }
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to $5,000." },
+        { name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students, up to about $6,075." }
       ],
       MAC: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, up to 25% of total tuition." },
-        { name: "SBC Recognition Fee Scholarship", detail: "may cover part or all of SBC course recognition fees." },
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to 25% of total tuition (about $10,294 at the current rate)." },
+        { name: "SBC Recognition Fee Scholarship", detail: "may cover part or all of SBC course recognition fees ($1,300 per course)." },
         { name: "CCEF SBC Alumni and International Student Scholarships", detail: "limited scholarships available." }
       ],
       MDiv: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, estimated at one credit per course (about 43 courses)." }
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $29,025 across about 43 courses)." }
       ],
       MAR: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on outside support, estimated at one credit per course (about 23 courses)." }
+        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $15,525 across about 23 courses)." }
       ],
       MDivCampus: [
         { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
@@ -202,11 +202,11 @@
         { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
       ],
       ThM: [
-        { name: "Matching Grant", detail: "for full-time ThM students, dollar-for-dollar match on outside support, up to 20% of total tuition, in any modality." }
+        { name: "Matching Grant", detail: "for full-time ThM students, dollar-for-dollar match on your additional outside support, up to 20% of total tuition (about $5,220), in any modality." }
       ],
       DMin: [
-        { name: "Baseline Scholarship", detail: "up to 20% of the total program cost, applied automatically." },
-        { name: "Ministry Partnership Match", detail: "dollar-for-dollar match on ministry partner (e.g. church) payments, up to 20% of the total program cost." }
+        { name: "Baseline Scholarship", detail: "up to $6,800 (20% of the total program cost), applied automatically." },
+        { name: "Ministry Partnership Match", detail: "dollar-for-dollar match on ministry partner (e.g. church) payments, up to $6,800 (20% of the total program cost)." }
       ],
       PhD: [
         { name: "Committee Scholarships", detail: "PhD scholarships are determined individually by the committee and are not included in this estimate." }
@@ -869,7 +869,7 @@
       if (els.fundsRaisedLabel) {
         els.fundsRaisedLabel.textContent = key === "DMin"
           ? "Ministry partner (e.g. church) payments over full program"
-          : "Church, donor, or employer support over full program";
+          : "Additional support from outside resources over the full program";
       }
 
       Object.entries(programButtons).forEach(([k, btn]) => {
