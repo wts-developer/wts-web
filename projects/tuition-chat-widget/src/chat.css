@@ -66,7 +66,10 @@
   font-weight: 700;
   letter-spacing: .01em;
   white-space: nowrap;
-  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  /* Flat brand maroon, not a gradient: matches the site's primary
+     header bar exactly (marketing wants one maroon, not a shaded
+     variant of it). */
+  background: var(--accent);
   box-shadow: 0 10px 28px rgba(110, 23, 38, .45);
   transition: transform .18s ease, box-shadow .18s ease;
 }
@@ -149,7 +152,7 @@
   gap: 12px;
   padding: 14px 16px;
   color: #fff;
-  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  background: var(--accent);
   flex-shrink: 0;
 }
 /* The reversed (white) logo variant sits directly on the maroon header,
