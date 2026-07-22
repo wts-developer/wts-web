@@ -312,6 +312,23 @@
       margin-top: 8px;
     }
 
+    /* Both columns start with a step label and a section heading; kill the
+       generic .section top margin so the two columns align on desktop. */
+    .builder-grid .section {
+      margin-top: 0;
+    }
+
+    /* Italic annotation style shared by the scholarship disclaimer and the
+       auto-update note: set off from the content above it, not run in as a
+       paragraph. */
+    .annotation {
+      margin: 14px 0 0;
+      font-style: italic;
+      font-size: .85rem;
+      line-height: 1.5;
+      color: var(--wts-gray);
+    }
+
     .results-section {
       margin-top: 24px;
     }
@@ -1191,10 +1208,10 @@
     }
 
 
+    /* Block layout so the step label and heading carry the same margins as
+       the program column, keeping the two headings level. */
     .left-column {
-      display: grid;
-      gap: 20px;
-      align-content: start;
+      display: block;
       min-width: 0;
     }
 
@@ -1991,17 +2008,14 @@
 
         <aside class="left-column">
           <div class="step-label">Step 2</div>
+          <h2 class="section-heading">Financial Information</h2>
           <div class="panel input-panel">
-            <div class="panel-header">
-            <h2 class="panel-title">Financial Information</h2>
-            
-          </div>
           <div class="panel-body">
             <div class="field">
               <details class="advanced scholarship-reference" open>
                 <summary>Available Westminster scholarship support</summary>
                 <ul class="scholarship-list" id="scholarshipList"></ul>
-                <p class="help">Scholarship support for the program selected in step 1. Scholarships are limited and require an application; eligibility does not guarantee an award. Matching scholarships apply automatically to the additional support you enter below.</p>
+                <p class="annotation">Scholarship support for the program selected in step 1. Scholarships are limited and require an application; eligibility does not guarantee an award. Matching scholarships apply automatically to the additional support you enter below.</p>
               </details>
             </div>
 
@@ -2141,7 +2155,7 @@
               </div>
             </details>
 
-            <p class="fine-print">This estimate updates automatically as you change your answers.</p>
+            <p class="annotation">This estimate updates automatically as you change your answers.</p>
           </div>
           </div>
 

@@ -302,6 +302,23 @@
       margin-top: 8px;
     }
 
+    /* Both columns start with a step label and a section heading; kill the
+       generic .section top margin so the two columns align on desktop. */
+    .builder-grid .section {
+      margin-top: 0;
+    }
+
+    /* Italic annotation style shared by the scholarship disclaimer and the
+       auto-update note: set off from the content above it, not run in as a
+       paragraph. */
+    .annotation {
+      margin: 14px 0 0;
+      font-style: italic;
+      font-size: .85rem;
+      line-height: 1.5;
+      color: var(--wts-gray);
+    }
+
     .results-section {
       margin-top: 24px;
     }
@@ -1181,10 +1198,10 @@
     }
 
 
+    /* Block layout so the step label and heading carry the same margins as
+       the program column, keeping the two headings level. */
     .left-column {
-      display: grid;
-      gap: 20px;
-      align-content: start;
+      display: block;
       min-width: 0;
     }
 
