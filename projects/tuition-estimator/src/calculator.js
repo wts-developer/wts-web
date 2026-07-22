@@ -688,10 +688,9 @@
         els.resultCaption.textContent = captions[selectedProgram];
         els.miniMatch.textContent = money(totalWtsAid);
         els.miniGross.textContent = money(gross);
-        els.miniRemainingCard.hidden = matchCap === 0;
-        els.miniRemaining.textContent = money(remainingEligibleMatch);
-        const showMatchOpportunity = matchCap > 0 && remainingEligibleMatch > 0;
-        els.miniRemainingCard.classList.toggle("match-opportunity", showMatchOpportunity);
+        els.miniRemainingCard.hidden = false;
+        els.miniRemaining.textContent = money(fundsApplied);
+        els.miniRemainingCard.classList.remove("match-opportunity");
         els.legendStudent.textContent = money(totalOutOfPocket);
         els.legendRaised.textContent = money(fundsApplied);
         els.legendMatch.textContent = money(totalWtsAid);
@@ -736,7 +735,7 @@
         ? `For the online ${program.fullName} (${program.name}) after outside support, Westminster scholarship support, and selected SBC course recognition assumptions.`
         : `For the online ${program.fullName} (${program.name}) after outside support and Westminster scholarship support.`;
       els.miniMatch.textContent = money(totalWtsAid);
-      els.miniRemaining.textContent = scholarshipIncluded ? money(remainingEligibleMatch) : "$0";
+      els.miniRemaining.textContent = money(fundsApplied);
       els.miniGross.textContent = money(gross);
       els.miniCreditsRemaining.textContent = num(wtsCreditsRemaining);
       els.miniSbcScholarship.textContent = money(sbcRecognitionScholarship);
@@ -752,7 +751,7 @@
       els.summaryMatch.textContent = `-${money(totalWtsAid)}`;
       els.summaryRemainingMatch.textContent = scholarshipIncluded ? money(remainingEligibleMatch) : "$0";
       const showMatchOpportunity = scholarshipIncluded && remainingEligibleMatch > 0;
-      els.miniRemainingCard.classList.toggle("match-opportunity", showMatchOpportunity);
+      els.miniRemainingCard.classList.remove("match-opportunity");
       els.summaryRemainingMatchRow.classList.toggle("match-opportunity", showMatchOpportunity);
       els.summarySbcFee.textContent = money(sbcRecognitionFee);
       els.summarySbcScholarship.textContent = `-${money(sbcRecognitionScholarship)}`;

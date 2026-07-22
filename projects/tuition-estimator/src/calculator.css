@@ -366,6 +366,21 @@
       margin-bottom: 7px;
     }
 
+    /* Field prompts read slightly larger than surrounding copy. Scoped to
+       direct field labels so the SBC course-list checkboxes stay compact. */
+    .field > label,
+    .label-title,
+    details.advanced.scholarship-reference summary {
+      font-size: 1.1rem;
+    }
+
+    /* First block in the panel; no divider line above it. */
+    details.advanced.scholarship-reference {
+      border-top: 0;
+      padding-top: 0;
+      margin-top: 0;
+    }
+
     .help {
       margin-top: 7px;
       color: var(--wts-gray);
@@ -508,7 +523,7 @@
     }
 
     .result-value {
-      margin: 12px 0 10px;
+      margin: 0 0 10px;
       font-family: var(--serif);
       font-size: clamp(3.1rem, 6vw, 5.2rem);
       letter-spacing: -.055em;
@@ -517,7 +532,7 @@
     }
 
     .result-caption {
-      max-width: 52ch;
+      max-width: none;
       color: rgba(255,255,255,.84);
       font-size: 1.05rem;
     }
@@ -535,6 +550,37 @@
       background: rgba(255,255,255,.1);
       padding: 14px;
       min-width: 0;
+      /* values anchor to the bottom so the figures align across tiles */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mini .mini-value {
+      margin-top: auto;
+    }
+
+    /* Tile accents mirror the pie chart's bucket colors. */
+    .mini.bucket-match {
+      border-color: var(--wts-gold);
+      background: rgba(189,139,65,.26);
+    }
+
+    .mini.bucket-raised {
+      border-color: #b3455a;
+      background: rgba(140,34,51,.34);
+    }
+
+    .mini.bucket-student {
+      border-color: rgba(255,255,255,.55);
+      background: rgba(86,87,90,.6);
+    }
+
+    .match-footnote {
+      margin: 16px 0 0;
+      font-style: italic;
+      font-size: .85rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,.75);
     }
 
     .mini .mini-label {
