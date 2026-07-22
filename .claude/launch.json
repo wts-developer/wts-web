@@ -8,6 +8,12 @@
       "port": 8437
     },
     {
+      "name": "tuition-estimator-dev",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["projects/tuition-estimator/dev.py"],
+      "port": 8437
+    },
+    {
       "name": "tuition-chat-widget",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8438", "-d", "projects/tuition-chat-widget/dist"],
