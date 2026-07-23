@@ -222,7 +222,7 @@
       matsBtn: $("matsBtn"), macBtn: $("macBtn"), mdivBtn: $("mdivBtn"), marBtn: $("marBtn"),
       mdivCampusBtn: $("mdivCampusBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
-      fundsRaisedLabel: $("fundsRaisedLabel"),
+      fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
       scholarshipList: $("scholarshipList"),
       fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
       creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
@@ -644,6 +644,7 @@
         els.resultCaption.textContent = `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted students. No out-of-pocket tuition.`;
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
+        els.miniRemaining.textContent = "$0"; // no outside support for funded programs
         els.miniRemainingCard.classList.remove("match-opportunity");
         els.miniGross.textContent = money(gross);
         els.legendStudent.textContent = "$0";
@@ -912,6 +913,11 @@
       Object.keys(programButtons).forEach(k => document.body.classList.remove(`program-${k.toLowerCase()}`));
       document.body.classList.add(`program-${key.toLowerCase()}`);
       document.body.classList.toggle("funded-mode", !!CONFIG.programs[key].funded);
+      // With the inputs panel hidden for funded programs, the results card
+      // becomes step 2 rather than step 3.
+      if (els.resultsStepLabel) {
+        els.resultsStepLabel.textContent = CONFIG.programs[key].funded ? "Step 2" : "Step 3";
+      }
       // Course-priced programs bill per course, so the per-credit start-term
       // rate increase and pace options do not apply.
       document.body.classList.toggle("course-priced-mode", !!CONFIG.programs[key].coursePriced);

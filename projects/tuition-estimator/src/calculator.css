@@ -25,6 +25,9 @@
 
     * { box-sizing: border-box; }
 
+    /* Author display rules (e.g. .mini's flex) must not defeat [hidden]. */
+    [hidden] { display: none !important; }
+
     body {
       margin: 0;
       font-family: var(--sans);
@@ -580,20 +583,22 @@
       margin-top: auto;
     }
 
-    /* Tile accents mirror the pie chart's bucket colors. */
+    /* Tile accents mirror the pie chart's bucket colors; gold is reserved
+       for the final estimated-cost tile. */
     .mini.bucket-match {
-      border-color: var(--wts-gold);
-      background: rgba(189,139,65,.26);
-    }
-
-    .mini.bucket-raised {
       border-color: #b3455a;
       background: rgba(140,34,51,.34);
     }
 
+    .mini.bucket-raised {
+      border-color: #3f8a96;
+      background: rgba(2,67,77,.45);
+    }
+
     .mini.bucket-student {
-      border-color: rgba(255,255,255,.55);
-      background: rgba(86,87,90,.6);
+      border-color: var(--wts-gold);
+      background: linear-gradient(135deg, rgba(189,139,65,.28), rgba(255,255,255,.10));
+      box-shadow: 0 0 0 3px rgba(189,139,65,.18);
     }
 
     .match-footnote {
@@ -1459,13 +1464,16 @@
     }
 
 
-    .pie-slice.student { fill: #56575a !important; }
-    .pie-slice.raised { fill: #8c2233 !important; }
-    .pie-slice.match { fill: #bd8b41 !important; }
+    /* Bucket colors from the style guide: gold is reserved for the final
+       estimated-cost bucket, Westminster red marks seminary-provided
+       support, and the forest teal marks outside support. */
+    .pie-slice.student { fill: #bd8b41 !important; }
+    .pie-slice.raised { fill: #02434d !important; }
+    .pie-slice.match { fill: #8c2233 !important; }
 
-    .dot.student { background: #56575a !important; }
-    .dot.raised { background: #8c2233 !important; }
-    .dot.match { background: #bd8b41 !important; }
+    .dot.student { background: #bd8b41 !important; }
+    .dot.raised { background: #02434d !important; }
+    .dot.match { background: #8c2233 !important; }
 
 
      

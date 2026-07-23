@@ -35,6 +35,9 @@
 
     * { box-sizing: border-box; }
 
+    /* Author display rules (e.g. .mini's flex) must not defeat [hidden]. */
+    [hidden] { display: none !important; }
+
     body {
       margin: 0;
       font-family: var(--sans);
@@ -590,20 +593,22 @@
       margin-top: auto;
     }
 
-    /* Tile accents mirror the pie chart's bucket colors. */
+    /* Tile accents mirror the pie chart's bucket colors; gold is reserved
+       for the final estimated-cost tile. */
     .mini.bucket-match {
-      border-color: var(--wts-gold);
-      background: rgba(189,139,65,.26);
-    }
-
-    .mini.bucket-raised {
       border-color: #b3455a;
       background: rgba(140,34,51,.34);
     }
 
+    .mini.bucket-raised {
+      border-color: #3f8a96;
+      background: rgba(2,67,77,.45);
+    }
+
     .mini.bucket-student {
-      border-color: rgba(255,255,255,.55);
-      background: rgba(86,87,90,.6);
+      border-color: var(--wts-gold);
+      background: linear-gradient(135deg, rgba(189,139,65,.28), rgba(255,255,255,.10));
+      box-shadow: 0 0 0 3px rgba(189,139,65,.18);
     }
 
     .match-footnote {
@@ -1469,13 +1474,16 @@
     }
 
 
-    .pie-slice.student { fill: #56575a !important; }
-    .pie-slice.raised { fill: #8c2233 !important; }
-    .pie-slice.match { fill: #bd8b41 !important; }
+    /* Bucket colors from the style guide: gold is reserved for the final
+       estimated-cost bucket, Westminster red marks seminary-provided
+       support, and the forest teal marks outside support. */
+    .pie-slice.student { fill: #bd8b41 !important; }
+    .pie-slice.raised { fill: #02434d !important; }
+    .pie-slice.match { fill: #8c2233 !important; }
 
-    .dot.student { background: #56575a !important; }
-    .dot.raised { background: #8c2233 !important; }
-    .dot.match { background: #bd8b41 !important; }
+    .dot.student { background: #bd8b41 !important; }
+    .dot.raised { background: #02434d !important; }
+    .dot.match { background: #8c2233 !important; }
 
 
      
@@ -2230,7 +2238,7 @@
       </section>
 
       <section class="results-section">
-        <div class="step-label">Step 3</div>
+        <div class="step-label" id="resultsStepLabel">Step 3</div>
         <h2 class="section-heading">Your Estimated Cost After Support</h2>
           <article class="result-card" aria-label="Estimated cost after support">
             <div class="result-caption" id="resultCaption">For the selected program after outside support and WTS scholarship support.</div>
@@ -2657,7 +2665,7 @@
       matsBtn: $("matsBtn"), macBtn: $("macBtn"), mdivBtn: $("mdivBtn"), marBtn: $("marBtn"),
       mdivCampusBtn: $("mdivCampusBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
-      fundsRaisedLabel: $("fundsRaisedLabel"),
+      fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
       scholarshipList: $("scholarshipList"),
       fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
       creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
@@ -3079,6 +3087,7 @@
         els.resultCaption.textContent = `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted students. No out-of-pocket tuition.`;
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
+        els.miniRemaining.textContent = "$0"; // no outside support for funded programs
         els.miniRemainingCard.classList.remove("match-opportunity");
         els.miniGross.textContent = money(gross);
         els.legendStudent.textContent = "$0";
@@ -3347,6 +3356,11 @@
       Object.keys(programButtons).forEach(k => document.body.classList.remove(`program-${k.toLowerCase()}`));
       document.body.classList.add(`program-${key.toLowerCase()}`);
       document.body.classList.toggle("funded-mode", !!CONFIG.programs[key].funded);
+      // With the inputs panel hidden for funded programs, the results card
+      // becomes step 2 rather than step 3.
+      if (els.resultsStepLabel) {
+        els.resultsStepLabel.textContent = CONFIG.programs[key].funded ? "Step 2" : "Step 3";
+      }
       // Course-priced programs bill per course, so the per-credit start-term
       // rate increase and pace options do not apply.
       document.body.classList.toggle("course-priced-mode", !!CONFIG.programs[key].coursePriced);
