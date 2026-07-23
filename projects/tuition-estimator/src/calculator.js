@@ -179,21 +179,25 @@
     // Westminster scholarship support shown in the reference dropdown,
     // filtered to the selected program. Not exhaustive; sourced from the
     // matching rules above and the scholarships published on wts.edu.
+    // Entries with a `calc` are selectable in the scholarship picker (one
+    // scholarship at a time); entries without stay informational notes.
+    // calc.type "match" uses the program's matching rules; "percentTuition"
+    // is an automatic tuition scholarship with no outside-support match.
     const SCHOLARSHIPS = {
       MATS: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to $5,000." },
-        { name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students, up to about $6,075." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to $5,000." },
+        { id: "awm", calc: { type: "percentTuition", pct: 0.25 }, name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students, up to about $6,075." }
       ],
       MAC: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to 25% of total tuition (about $10,294 at the current rate)." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to 25% of total tuition (about $10,294 at the current rate)." },
         { name: "SBC Recognition Fee Scholarship", detail: "may cover part or all of SBC course recognition fees ($1,300 per course)." },
         { name: "CCEF SBC Alumni and International Student Scholarships", detail: "limited scholarships available." }
       ],
       MDiv: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $29,025 across about 43 courses)." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $29,025 across about 43 courses)." }
       ],
       MAR: [
-        { name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $15,525 across about 23 courses)." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $15,525 across about 23 courses)." }
       ],
       MDivCampus: [
         { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
@@ -716,10 +720,22 @@
       const rows = buildTerms(wtsCreditsRemaining, creditsPerTerm, startTerm, program.termSystem);
       const gross = rows.reduce((sum, row) => sum + row.tuition, 0);
 
-      const fundsApplied = Math.min(fundsRaisedRequested, gross);
-      const matchCap = capFor(program, gross, startTerm, creditsPerTerm, rows);
-      const standardMatch = scholarshipIncluded ? Math.min(fundsApplied, matchCap, Math.max(0, gross - fundsApplied)) : 0;
-      const totalWtsAid = scholarshipIncluded ? Math.min(standardMatch + additionalAid, Math.max(0, gross - fundsApplied)) : 0;
+      // One scholarship at a time: a percent-tuition scholarship (e.g. the
+      // Advancing Women's Ministry Scholarship) replaces the matching
+      // scholarship entirely, so outside support still reduces the cost but
+      // draws no match. Outside support above a match cap also still counts:
+      // every raised dollar is applied, only the match itself is capped.
+      const scholarship = activeScholarship();
+      const isPercentScholarship = !!(scholarship && scholarship.calc.type === "percentTuition");
+      const scholarshipAid = isPercentScholarship ? gross * scholarship.calc.pct : 0;
+      const fundsApplied = Math.min(fundsRaisedRequested, Math.max(0, gross - scholarshipAid));
+      const matchCap = isPercentScholarship ? 0 : capFor(program, gross, startTerm, creditsPerTerm, rows);
+      const standardMatch = scholarshipIncluded && !isPercentScholarship
+        ? Math.min(fundsApplied, matchCap, Math.max(0, gross - fundsApplied))
+        : 0;
+      const totalWtsAid = scholarshipIncluded
+        ? Math.min(scholarshipAid + standardMatch + additionalAid, Math.max(0, gross - fundsApplied))
+        : 0;
       const studentPaid = Math.max(0, gross - fundsApplied - totalWtsAid);
       const totalOutOfPocket = studentPaid + sbcRecognitionFeeStudentPaid;
       const remainingEligibleMatch = scholarshipIncluded ? Math.max(0, matchCap - standardMatch) : 0;
@@ -731,9 +747,12 @@
       updatePieChart(pieStudentPaid, fundsApplied, pieWtsScholarshipSupport, pieTotal);
 
       els.netPrice.textContent = money(totalOutOfPocket);
+      const scholarshipPhrase = isPercentScholarship
+        ? `the ${scholarship.name} and outside support`
+        : `outside support and Westminster scholarship support`;
       els.resultCaption.textContent = selectedProgram === "MAC" && sbcCourses > 0
         ? `For the online ${program.fullName} (${program.name}) after outside support, Westminster scholarship support, and selected SBC course recognition assumptions.`
-        : `For the online ${program.fullName} (${program.name}) after outside support and Westminster scholarship support.`;
+        : `For the online ${program.fullName} (${program.name}) after ${scholarshipPhrase}.`;
       els.miniMatch.textContent = money(totalWtsAid);
       els.miniRemaining.textContent = money(fundsApplied);
       els.miniGross.textContent = money(gross);
@@ -848,15 +867,46 @@
       DMin: els.dminBtn, PhD: els.phdBtn
     };
 
+    let selectedScholarshipId = null;
+
+    function scholarshipOptions(key) {
+      return (SCHOLARSHIPS[key] || []).filter(s => s.calc);
+    }
+
+    function activeScholarship() {
+      const options = scholarshipOptions(selectedProgram);
+      return options.find(s => s.id === selectedScholarshipId) || options[0] || null;
+    }
+
     function renderScholarships(key) {
       if (!els.scholarshipList) return;
-      els.scholarshipList.innerHTML = (SCHOLARSHIPS[key] || []).map(s =>
-        `<li><strong>${s.name}:</strong> ${s.detail}</li>`
-      ).join("");
+      const entries = SCHOLARSHIPS[key] || [];
+      const options = entries.filter(s => s.calc);
+      const notes = entries.filter(s => !s.calc);
+      const chosen = options.find(s => s.id === selectedScholarshipId) || options[0] || null;
+      selectedScholarshipId = chosen ? chosen.id : null;
+
+      els.scholarshipList.innerHTML =
+        options.map(s => `
+          <li class="scholarship-option">
+            <label>
+              <input type="radio" name="scholarshipChoice" value="${s.id}"${s.id === selectedScholarshipId ? " checked" : ""}>
+              <span><strong>${s.name}:</strong> ${s.detail}</span>
+            </label>
+          </li>`).join("") +
+        notes.map(s => `<li><strong>${s.name}:</strong> ${s.detail}</li>`).join("");
+
+      els.scholarshipList.querySelectorAll('input[name="scholarshipChoice"]').forEach(input => {
+        input.addEventListener("change", () => {
+          selectedScholarshipId = input.value;
+          calculate();
+        });
+      });
     }
 
     function selectProgram(key) {
       selectedProgram = key;
+      selectedScholarshipId = null; // back to the program's default scholarship
       setTheme(key);
 
       Object.keys(programButtons).forEach(k => document.body.classList.remove(`program-${k.toLowerCase()}`));

@@ -490,6 +490,27 @@
       color: var(--wts-ink);
     }
 
+    /* Selectable scholarships (one at a time) render as radio rows. */
+    .scholarship-option {
+      list-style: none;
+      margin-left: -18px;
+    }
+
+    .scholarship-option label {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      font-weight: 400;
+      cursor: pointer;
+      margin-bottom: 0;
+    }
+
+    .scholarship-option input[type="radio"] {
+      margin-top: 3px;
+      accent-color: var(--accent);
+    }
+
     .result-card {
       position: relative;
       border-radius: var(--radius-xl);
