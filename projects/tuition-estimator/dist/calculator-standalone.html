@@ -157,12 +157,14 @@
       margin-top: 28px;
     }
 
+    /* Headings match the site's display serif exactly: kepler-std-display
+       at weight 300 with normal tracking (see .display-h1 on wts.edu). */
     .section-heading {
       margin: 0 0 14px;
       font-family: var(--serif);
-      font-weight: 400;
+      font-weight: 300;
       font-size: clamp(2rem, 4vw, 3.2rem);
-      letter-spacing: -.045em;
+      letter-spacing: normal;
       line-height: 1;
     }
 
@@ -289,9 +291,9 @@
     .calc-title {
       margin: 0;
       font-family: var(--serif);
-      font-weight: 400;
+      font-weight: 300;
       font-size: clamp(2.2rem, 4vw, 3rem);
-      letter-spacing: -.03em;
+      letter-spacing: normal;
       line-height: 1.05;
     }
 
@@ -524,12 +526,30 @@
       accent-color: var(--accent);
     }
 
+    /* Non-selectable entries: clearly informational, not broken options. */
+    .scholarship-note-head {
+      list-style: none;
+      margin: 10px 0 2px -18px;
+      font-family: var(--sans);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--wts-gray);
+    }
+
+    .scholarship-list li.scholarship-note {
+      font-style: italic;
+    }
+
     .result-card {
       position: relative;
       border-radius: var(--radius-xl);
       padding: clamp(24px, 4vw, 38px);
       color: #fff;
-      background: linear-gradient(160deg, var(--accent-dark), var(--accent));
+      /* Always the neutral gray, regardless of program theme, so the
+         color-coded bucket tiles inside stay the focus. */
+      background: linear-gradient(160deg, #3f4042, #56575a);
       box-shadow: var(--shadow);
       overflow: hidden;
       margin-bottom: 20px;
@@ -575,7 +595,9 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      margin-top: 26px;
+      /* No extra space above the tiles; the card padding frames them
+         evenly all the way around. */
+      margin-top: 0;
     }
 
     .mini {
@@ -789,6 +811,26 @@
       border-radius: 18px;
       padding: 20px 24px;
       color: var(--wts-ink);
+    }
+
+    /* Program identity repeated inside the white summary panel, echoing the
+       step 1 card format at a smaller size. */
+    .mix-program {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .mix-program-name {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .mix-program .online-badge {
+      transform: translateY(-1px);
     }
 
     .mix-title {
@@ -1493,8 +1535,8 @@
     .panel-title,
     .table-header h2 {
       font-family: var(--serif);
-      font-weight: 400;
-      letter-spacing: -.02em;
+      font-weight: 300;
+      letter-spacing: normal;
     }
 
     .section-heading { font-size: 2.1rem; margin-bottom: 14px; }
@@ -1503,8 +1545,8 @@
     .program-card .name {
       font-family: var(--serif);
       font-size: 1.6rem;
-      font-weight: 400;
-      letter-spacing: -.02em;
+      font-weight: 300;
+      letter-spacing: normal;
       margin-bottom: 4px;
     }
 
@@ -2271,6 +2313,7 @@
             </div>
 
             <div class="mix-panel" aria-label="Cost and savings breakdown chart">
+              <div class="mix-program" id="mixProgram"></div>
               <div class="mix-title" id="mixTitle">Cost &amp; Savings Breakdown</div>
               <div class="mix-content">
                 <div class="pie-wrap">
@@ -2666,7 +2709,7 @@
       mdivCampusBtn: $("mdivCampusBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
-      mixTitle: $("mixTitle"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
+      mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       scholarshipList: $("scholarshipList"),
       fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
       creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
@@ -3097,6 +3140,15 @@
       updateMacOnlyVisibility();
       const program = CONFIG.programs[selectedProgram];
       els.mixTitle.textContent = `Cost & Savings Breakdown: ${modalityTag(program)}`;
+      if (els.mixProgram) {
+        const badge = kind => kind === "campus"
+          ? '<span class="online-badge campus">On Campus</span>'
+          : '<span class="online-badge">Online</span>';
+        const badges = program.funded || program.modality === "campus" ? badge("campus")
+          : program.modality === "both" ? `${badge("online")} ${badge("campus")}`
+          : badge("online");
+        els.mixProgram.innerHTML = `<span class="mix-program-name">${program.name}</span> ${badges}`;
+      }
 
       if (program.funded) {
         // On-campus MDiv and MAR: tuition is 100% funded for admitted
@@ -3351,6 +3403,13 @@
       const chosen = options.find(s => s.id === selectedScholarshipId) || options[0] || null;
       selectedScholarshipId = chosen ? chosen.id : null;
 
+      // Entries without radios read as notes, under a small label so they
+      // are clearly informational rather than broken options.
+      const noteHead = notes.length === 0 ? ""
+        : key === "DMin" ? "Applied automatically:"
+        : options.length ? "Also available:"
+        : "";
+
       els.scholarshipList.innerHTML =
         options.map(s => `
           <li class="scholarship-option">
@@ -3359,7 +3418,8 @@
               <span><strong>${s.name}:</strong> ${s.detail}</span>
             </label>
           </li>`).join("") +
-        notes.map(s => `<li><strong>${s.name}:</strong> ${s.detail}</li>`).join("");
+        (noteHead ? `<li class="scholarship-note-head">${noteHead}</li>` : "") +
+        notes.map(s => `<li class="scholarship-note"><strong>${s.name}:</strong> ${s.detail}</li>`).join("");
 
       els.scholarshipList.querySelectorAll('input[name="scholarshipChoice"]').forEach(input => {
         input.addEventListener("change", () => {

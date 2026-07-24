@@ -223,7 +223,7 @@
       mdivCampusBtn: $("mdivCampusBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
-      mixTitle: $("mixTitle"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
+      mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       scholarshipList: $("scholarshipList"),
       fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
       creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
@@ -654,6 +654,15 @@
       updateMacOnlyVisibility();
       const program = CONFIG.programs[selectedProgram];
       els.mixTitle.textContent = `Cost & Savings Breakdown: ${modalityTag(program)}`;
+      if (els.mixProgram) {
+        const badge = kind => kind === "campus"
+          ? '<span class="online-badge campus">On Campus</span>'
+          : '<span class="online-badge">Online</span>';
+        const badges = program.funded || program.modality === "campus" ? badge("campus")
+          : program.modality === "both" ? `${badge("online")} ${badge("campus")}`
+          : badge("online");
+        els.mixProgram.innerHTML = `<span class="mix-program-name">${program.name}</span> ${badges}`;
+      }
 
       if (program.funded) {
         // On-campus MDiv and MAR: tuition is 100% funded for admitted
@@ -908,6 +917,13 @@
       const chosen = options.find(s => s.id === selectedScholarshipId) || options[0] || null;
       selectedScholarshipId = chosen ? chosen.id : null;
 
+      // Entries without radios read as notes, under a small label so they
+      // are clearly informational rather than broken options.
+      const noteHead = notes.length === 0 ? ""
+        : key === "DMin" ? "Applied automatically:"
+        : options.length ? "Also available:"
+        : "";
+
       els.scholarshipList.innerHTML =
         options.map(s => `
           <li class="scholarship-option">
@@ -916,7 +932,8 @@
               <span><strong>${s.name}:</strong> ${s.detail}</span>
             </label>
           </li>`).join("") +
-        notes.map(s => `<li><strong>${s.name}:</strong> ${s.detail}</li>`).join("");
+        (noteHead ? `<li class="scholarship-note-head">${noteHead}</li>` : "") +
+        notes.map(s => `<li class="scholarship-note"><strong>${s.name}:</strong> ${s.detail}</li>`).join("");
 
       els.scholarshipList.querySelectorAll('input[name="scholarshipChoice"]').forEach(input => {
         input.addEventListener("change", () => {
