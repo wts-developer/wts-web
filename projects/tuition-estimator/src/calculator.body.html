@@ -104,15 +104,15 @@
           <div class="panel input-panel">
           <div class="panel-body">
             <div class="field">
-              <details class="advanced scholarship-reference" open>
-                <summary>Available Westminster scholarship support</summary>
+              <div class="scholarship-reference">
+                <div class="label-title">Available Westminster scholarship support</div>
                 <ul class="scholarship-list" id="scholarshipList"></ul>
-                <p class="annotation">Scholarship support for the program selected in step 1. Students may hold one Westminster scholarship at a time; select the one that fits your situation. Scholarships are limited and require an application; eligibility does not guarantee an award. Matching scholarships apply automatically to the additional support you enter below.</p>
-              </details>
+                <p class="annotation">Select the Westminster scholarship you hope to attain for your program of interest. Scholarships are limited and require an application. Eligibility does not guarantee an award. Matching Scholarship support applies automatically to the "additional support" section below.</p>
+              </div>
             </div>
 
             <div class="field">
-              <label for="fundsRaised" id="fundsRaisedLabel">Additional support from outside resources over the full program</label>
+              <label for="fundsRaised" id="fundsRaisedLabel">Additional support from outside resources</label>
               <input id="fundsRaised" type="number" min="0" step="100" value="0" />
               <div class="amount-buttons" aria-label="Quick support amounts">
                 <button type="button" class="quick-amount" data-amount="0">$0</button>
@@ -120,7 +120,7 @@
                 <button type="button" class="quick-amount" data-amount="5000">$5,000</button>
                 <button type="button" class="quick-amount" data-amount="10000">$10,000</button>
               </div>
-              <div class="annotation">Support you expect beyond Westminster scholarships, such as church or ministry partners, employers, VA or GI Bill benefits, or denominational scholarships.</div>
+              <div class="annotation">Enter the amount of financial support you expect for the full length of your program of interest beyond Westminster scholarships. Sources may include church or ministry partners, employers, VA or GI benefits, denominational scholarships, and others.</div>
             </div>
 
             <div class="field">
@@ -258,7 +258,6 @@
         <div class="step-label" id="resultsStepLabel">Step 3</div>
         <h2 class="section-heading">Your Estimated Cost After Support</h2>
           <article class="result-card" aria-label="Estimated cost after support">
-            <div class="result-caption" id="resultCaption">For the selected program after outside support and WTS scholarship support.</div>
 
             <div class="result-mini-grid">
               <div class="mini">
@@ -270,7 +269,7 @@
                 <div class="mini-value" id="miniMatch">$0</div>
               </div>
               <div class="mini bucket-raised" id="miniRemainingCard">
-                <div class="mini-label">Outside Support*</div>
+                <div class="mini-label" id="miniRemainingLabel">Outside Support*</div>
                 <div class="mini-value" id="miniRemaining">$0</div>
               </div>
               <div class="mini bucket-student" id="miniNetCard">
@@ -288,7 +287,7 @@
             </div>
 
             <div class="mix-panel" aria-label="Cost and savings breakdown chart">
-              <div class="mix-title">Cost &amp; Savings Breakdown</div>
+              <div class="mix-title" id="mixTitle">Cost &amp; Savings Breakdown</div>
               <div class="mix-content">
                 <div class="pie-wrap">
                   <svg class="pie-svg" viewBox="0 0 220 220" role="img" aria-labelledby="pieTitle pieDesc">
@@ -304,9 +303,9 @@
                 </div>
                 <div class="legend">
                   <div class="legend-item">
-                    <span class="dot student"></span>
-                    <span><strong>Your Estimated Cost After Support</strong></span>
-                    <span class="amount" id="legendStudent">$24,300</span>
+                    <span class="dot match"></span>
+                    <span><strong>Westminster Scholarship Support</strong></span>
+                    <span class="amount" id="legendMatch">$0</span>
                   </div>
                   <div class="legend-item">
                     <span class="dot raised"></span>
@@ -314,14 +313,14 @@
                     <span class="amount" id="legendRaised">$0</span>
                   </div>
                   <div class="legend-item">
-                    <span class="dot match"></span>
-                    <span><strong>Westminster Scholarship Support</strong></span>
-                    <span class="amount" id="legendMatch">$0</span>
+                    <span class="dot student"></span>
+                    <span><strong>Your Estimated Cost After Support</strong></span>
+                    <span class="amount" id="legendStudent">$24,300</span>
                   </div>
                 </div>
               </div>
             </div>
-            <p class="match-footnote">*Westminster only matches financial support from these resources: churches, ministry partners, and employers, not from the GI Bill, denominational scholarships, etc.</p>
+            <p class="match-footnote" id="resultFootnote"></p>
           </article>
       </section>
 

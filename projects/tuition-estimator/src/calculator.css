@@ -477,7 +477,7 @@
     }
 
     .scholarship-reference {
-      margin-top: 14px;
+      margin-top: 0;
     }
 
     .scholarship-list {
@@ -583,22 +583,23 @@
       margin-top: auto;
     }
 
-    /* Tile accents mirror the pie chart's bucket colors; gold is reserved
-       for the final estimated-cost tile. */
+    /* Tile accents mirror the pie chart's bucket colors, all with the same
+       gradient treatment; the gold estimated-cost tile keeps the highlight
+       ring so it stands out as the answer. */
     .mini.bucket-match {
       border-color: #b3455a;
-      background: rgba(140,34,51,.34);
+      background: linear-gradient(135deg, rgba(140,34,51,.42), rgba(255,255,255,.10));
     }
 
     .mini.bucket-raised {
       border-color: #3f8a96;
-      background: rgba(2,67,77,.45);
+      background: linear-gradient(135deg, rgba(2,67,77,.55), rgba(255,255,255,.10));
     }
 
     .mini.bucket-student {
       border-color: var(--wts-gold);
-      background: linear-gradient(135deg, rgba(189,139,65,.28), rgba(255,255,255,.10));
-      box-shadow: 0 0 0 3px rgba(189,139,65,.18);
+      background: linear-gradient(135deg, rgba(189,139,65,.34), rgba(255,255,255,.10));
+      box-shadow: 0 0 0 3px rgba(189,139,65,.22);
     }
 
     .match-footnote {

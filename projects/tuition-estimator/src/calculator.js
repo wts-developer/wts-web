@@ -185,32 +185,32 @@
     // is an automatic tuition scholarship with no outside-support match.
     const SCHOLARSHIPS = {
       MATS: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to $5,000." },
-        { id: "awm", calc: { type: "percentTuition", pct: 0.25 }, name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students, up to about $6,075." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to $5,000." },
+        { id: "awm", calc: { type: "percentTuition", pct: 0.25 }, name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students." }
       ],
       MAC: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, up to 25% of total tuition (about $10,294 at the current rate)." },
-        { name: "SBC Recognition Fee Scholarship", detail: "may cover part or all of SBC course recognition fees ($1,300 per course)." },
-        { name: "CCEF SBC Alumni and International Student Scholarships", detail: "limited scholarships available." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to 25% of total tuition." },
+        { name: "SBC Recognition Fee Scholarship", detail: "May cover part or all of SBC course recognition fees ($1,300 per course)." },
+        { name: "CCEF SBC Alumni and International Student Scholarships", detail: "Limited scholarships available." }
       ],
       MDiv: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $29,025 across about 43 courses)." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course across about 43 courses." }
       ],
       MAR: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course (up to about $15,525 across about 23 courses)." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course across about 23 courses." }
       ],
       MDivCampus: [
-        { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted students. No out-of-pocket tuition." }
       ],
       MARCampus: [
-        { name: "Full Tuition Funding", detail: "tuition is 100% funded for admitted students. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted students. No out-of-pocket tuition." }
       ],
       ThM: [
-        { name: "Matching Grant", detail: "for full-time ThM students, dollar-for-dollar match on your additional outside support, up to 20% of total tuition (about $5,220), in any modality." }
+        { name: "Matching Grant", detail: "Dollar-for-dollar match on your additional outside support for full-time ThM students, up to 20% of total tuition, in any modality." }
       ],
       DMin: [
-        { name: "Baseline Scholarship", detail: "up to $6,800 (20% of the total program cost), applied automatically." },
-        { name: "Ministry Partnership Match", detail: "dollar-for-dollar match on ministry partner (e.g. church) payments, up to $6,800 (20% of the total program cost)." }
+        { name: "Baseline Scholarship", detail: "Up to $6,800 (20% of the total program cost), applied automatically." },
+        { name: "Ministry Partnership Match", detail: "Dollar-for-dollar match on ministry partner (e.g. church) payments, up to $6,800 (20% of the total program cost)." }
       ],
       PhD: [
         { name: "Committee Scholarships", detail: "PhD scholarships are determined individually by the committee and are not included in this estimate." }
@@ -223,13 +223,14 @@
       mdivCampusBtn: $("mdivCampusBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
+      mixTitle: $("mixTitle"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       scholarshipList: $("scholarshipList"),
       fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
       creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
       customCredits: $("customCredits"),
       sbcScholarshipBlock: $("sbcScholarshipBlock"), sbcScholarshipYes: $("sbcScholarshipYes"), sbcScholarshipNo: $("sbcScholarshipNo"),
       sbcDetails: $("sbcDetails"), sbcCourseList: $("sbcCourseList"), sbcSelectionNote: $("sbcSelectionNote"), sbcCoverage: $("sbcCoverage"), sbcCoverageLabel: $("sbcCoverageLabel"), sbcFeeNote: $("sbcFeeNote"),
-      netPrice: $("netPrice"), resultCaption: $("resultCaption"),
+      netPrice: $("netPrice"),
       miniMatch: $("miniMatch"), miniRemaining: $("miniRemaining"), miniRemainingCard: $("miniRemainingCard"), miniGross: $("miniGross"),
       miniCreditsCard: $("miniCreditsCard"), miniCreditsRemaining: $("miniCreditsRemaining"),
       miniSbcCard: $("miniSbcCard"), miniSbcScholarship: $("miniSbcScholarship"),
@@ -629,9 +630,30 @@
       `).join("");
     }
 
+    const MATCH_FOOTNOTE = "*Westminster only matches support from the following sources: churches, ministry partners, employers, family, and friends. Funds supplied by the GI Bill, denominational scholarships, and other sources do not qualify.";
+
+    function setResultFootnote(parts) {
+      const text = parts.filter(Boolean).join(" ");
+      els.resultFootnote.textContent = text;
+      els.resultFootnote.hidden = !text;
+    }
+
+    // Whether the Outside Support tile carries the asterisk pointing at the
+    // match footnote.
+    function setOutsideSupportAsterisk(hasMatch) {
+      els.miniRemainingLabel.textContent = hasMatch ? "Outside Support*" : "Outside Support";
+    }
+
+    function modalityTag(program) {
+      if (program.funded || program.modality === "campus") return `On-Campus ${program.name}`;
+      if (program.modality === "both") return `Online or On-Campus ${program.name}`;
+      return `Online ${program.name}`;
+    }
+
     function calculate() {
       updateMacOnlyVisibility();
       const program = CONFIG.programs[selectedProgram];
+      els.mixTitle.textContent = `Cost & Savings Breakdown: ${modalityTag(program)}`;
 
       if (program.funded) {
         // On-campus MDiv and MAR: tuition is 100% funded for admitted
@@ -641,7 +663,7 @@
         const gross = program.credits * CONFIG.currentRate;
         updatePieChart(0, 0, gross, gross);
         els.netPrice.textContent = "$0";
-        els.resultCaption.textContent = `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted students. No out-of-pocket tuition.`;
+        setResultFootnote([`Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted students. No out-of-pocket tuition.`]);
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
         els.miniRemaining.textContent = "$0"; // no outside support for funded programs
@@ -685,12 +707,13 @@
         updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
 
         els.netPrice.textContent = money(totalOutOfPocket);
-        const captions = {
-          ThM: `For the Master of Theology (ThM), online or on campus, after outside support and Westminster scholarship support. Excludes program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students.`,
-          DMin: `For the on-campus Doctor of Ministry (DMin), based on the published $34,000 total program cost, after the automatic baseline scholarship, ministry partner payments, and the Ministry Partnership Match.`,
-          PhD: `For the on-campus Doctor of Philosophy (PhD) after outside support. PhD scholarships are determined individually by the committee and are not included in this estimate. Excludes program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee.`
+        const footnotes = {
+          ThM: [MATCH_FOOTNOTE, "The estimate excludes program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students."],
+          DMin: ["*The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the published $34,000 total program cost. The baseline scholarship is applied automatically."],
+          PhD: ["PhD scholarships are determined individually by the committee and are not included in this estimate. The estimate excludes program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee."]
         };
-        els.resultCaption.textContent = captions[selectedProgram];
+        setResultFootnote(footnotes[selectedProgram] || []);
+        setOutsideSupportAsterisk(matchCap > 0);
         els.miniMatch.textContent = money(totalWtsAid);
         els.miniGross.textContent = money(gross);
         els.miniRemainingCard.hidden = false;
@@ -748,12 +771,10 @@
       updatePieChart(pieStudentPaid, fundsApplied, pieWtsScholarshipSupport, pieTotal);
 
       els.netPrice.textContent = money(totalOutOfPocket);
-      const scholarshipPhrase = isPercentScholarship
-        ? `the ${scholarship.name} and outside support`
-        : `outside support and Westminster scholarship support`;
-      els.resultCaption.textContent = selectedProgram === "MAC" && sbcCourses > 0
-        ? `For the online ${program.fullName} (${program.name}) after outside support, Westminster scholarship support, and selected SBC course recognition assumptions.`
-        : `For the online ${program.fullName} (${program.name}) after ${scholarshipPhrase}.`;
+      // The match-source footnote only applies while a matching scholarship
+      // is the selected scholarship.
+      setResultFootnote([isPercentScholarship ? "" : MATCH_FOOTNOTE]);
+      setOutsideSupportAsterisk(!isPercentScholarship);
       els.miniMatch.textContent = money(totalWtsAid);
       els.miniRemaining.textContent = money(fundsApplied);
       els.miniGross.textContent = money(gross);
@@ -924,7 +945,7 @@
       if (els.fundsRaisedLabel) {
         els.fundsRaisedLabel.textContent = key === "DMin"
           ? "Ministry partner (e.g. church) payments over full program"
-          : "Additional support from outside resources over the full program";
+          : "Additional support from outside resources";
       }
 
       Object.entries(programButtons).forEach(([k, btn]) => {
