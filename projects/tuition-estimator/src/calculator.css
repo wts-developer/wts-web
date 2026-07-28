@@ -449,6 +449,12 @@
       margin-top: 10px;
     }
 
+    /* Fills the support field with the full amount the selected matching
+       scholarship will match; spans its own row under the presets. */
+    .quick-amount.max-match {
+      grid-column: 1 / -1;
+    }
+
     .quick-amount {
       border: 1px solid var(--border);
       background: #fff;

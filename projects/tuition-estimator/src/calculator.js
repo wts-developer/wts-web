@@ -191,7 +191,7 @@
       MAC: [
         { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to 25% of total tuition." },
         { name: "SBC Recognition Fee Scholarship", detail: "May cover part or all of SBC course recognition fees ($1,300 per course)." },
-        { name: "CCEF SBC Alumni and International Student Scholarships", detail: "Limited scholarships available." }
+        { name: "International Student Scholarship", detail: "Limited scholarships available." }
       ],
       MDiv: [
         { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course across about 43 courses." }
@@ -224,6 +224,7 @@
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
+      maxMatchBtn: $("maxMatchBtn"),
       scholarshipList: $("scholarshipList"),
       fundsRaised: $("fundsRaised"), startTerm: $("startTerm"),
       creditsPerTerm: $("creditsPerTerm"), customCreditsField: $("customCreditsField"),
@@ -644,16 +645,20 @@
       els.miniRemainingLabel.textContent = hasMatch ? "Outside Support*" : "Outside Support";
     }
 
-    function modalityTag(program) {
-      if (program.funded || program.modality === "campus") return `On-Campus ${program.name}`;
-      if (program.modality === "both") return `Online or On-Campus ${program.name}`;
-      return `Online ${program.name}`;
+    // The maximum outside support the current matching scholarship will
+    // fully match; 0 when no match applies. Drives the max-match preset.
+    let lastMatchCap = 0;
+
+    function updateMaxMatchButton() {
+      if (!els.maxMatchBtn) return;
+      const cap = Math.round(lastMatchCap);
+      els.maxMatchBtn.hidden = cap <= 0;
+      els.maxMatchBtn.textContent = `Maximum matching scholarship amount: ${money(cap)}`;
     }
 
     function calculate() {
       updateMacOnlyVisibility();
       const program = CONFIG.programs[selectedProgram];
-      els.mixTitle.textContent = `Cost & Savings Breakdown: ${modalityTag(program)}`;
       if (els.mixProgram) {
         const badge = kind => kind === "campus"
           ? '<span class="online-badge campus">On Campus</span>'
@@ -670,6 +675,8 @@
         // amount (full credits at the current per-credit rate, as an
         // illustration) and a $0 cost; the inputs panel is hidden.
         const gross = program.credits * CONFIG.currentRate;
+        lastMatchCap = 0;
+        updateMaxMatchButton();
         updatePieChart(0, 0, gross, gross);
         els.netPrice.textContent = "$0";
         setResultFootnote([`Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted students. No out-of-pocket tuition.`]);
@@ -708,6 +715,8 @@
         const baseline = program.baselinePct ? gross * program.baselinePct : 0;
         const fundsApplied = Math.min(fundsRaisedRequested, Math.max(0, gross - baseline));
         const matchCap = program.matchPct ? gross * program.matchPct : 0;
+        lastMatchCap = matchCap;
+        updateMaxMatchButton();
         const match = Math.min(fundsApplied, matchCap, Math.max(0, gross - baseline - fundsApplied));
         const totalWtsAid = baseline + match;
         const totalOutOfPocket = Math.max(0, gross - fundsApplied - totalWtsAid);
@@ -763,6 +772,8 @@
       const scholarshipAid = isPercentScholarship ? gross * scholarship.calc.pct : 0;
       const fundsApplied = Math.min(fundsRaisedRequested, Math.max(0, gross - scholarshipAid));
       const matchCap = isPercentScholarship ? 0 : capFor(program, gross, startTerm, creditsPerTerm, rows);
+      lastMatchCap = matchCap;
+      updateMaxMatchButton();
       const standardMatch = scholarshipIncluded && !isPercentScholarship
         ? Math.min(fundsApplied, matchCap, Math.max(0, gross - fundsApplied))
         : 0;
@@ -982,7 +993,14 @@
     els.sbcScholarshipYes.addEventListener("click", () => selectSbcScholarship(true));
     els.sbcScholarshipNo.addEventListener("click", () => selectSbcScholarship(false));
 
-    document.querySelectorAll(".quick-amount").forEach(button => {
+    if (els.maxMatchBtn) {
+      els.maxMatchBtn.addEventListener("click", () => {
+        els.fundsRaised.value = Math.round(lastMatchCap);
+        calculate();
+      });
+    }
+
+    document.querySelectorAll(".quick-amount:not(.max-match)").forEach(button => {
       button.addEventListener("click", () => {
         els.fundsRaised.value = button.dataset.amount;
         calculate();
