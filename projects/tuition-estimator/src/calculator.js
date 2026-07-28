@@ -20,31 +20,36 @@
           name: "MAC",
           fullName: "Master of Arts in Counseling",
           credits: 61,
+          // The 25% matching scholarship is a TOTAL cap split 50/50: the
+          // student raises up to 12.5% of tuition and Westminster matches
+          // it dollar-for-dollar, for a combined reduction of up to 25%.
           matchType: "percentCap",
-          percentCap: 0.25,
+          percentCap: 0.125,
           termSystem: "online",
           theme: ONLINE_THEME,
-          description: "dollar-for-dollar match up to 25% of total tuition"
+          description: "dollar-for-dollar match, combined reduction up to 25% of total tuition"
         },
         MDiv: {
           name: "MDiv",
           fullName: "Master of Divinity",
           credits: 111,
-          matchType: "estimatedCourseCount",
-          estimatedCourses: 43,
+          // oMDR matching scholarship: Westminster matches outside support
+          // up to $675 per term regardless of credits taken that term.
+          matchType: "perTerm",
+          perTermMatch: 675,
           termSystem: "residential",
           theme: ONLINE_THEME,
-          description: "dollar-for-dollar match estimated at one credit per course across about 43 courses"
+          description: "dollar-for-dollar match up to $675 per term"
         },
         MAR: {
           name: "MAR",
           fullName: "Master of Arts in Religion",
           credits: 74,
-          matchType: "estimatedCourseCount",
-          estimatedCourses: 23,
+          matchType: "perTerm",
+          perTermMatch: 675,
           termSystem: "residential",
           theme: ONLINE_THEME,
-          description: "dollar-for-dollar match estimated at one credit per course across about 23 courses"
+          description: "dollar-for-dollar match up to $675 per term"
         },
         MDivCampus: {
           name: "MDiv",
@@ -197,15 +202,17 @@
         { id: "awm", calc: { type: "percentTuition", pct: 0.25 }, name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students." }
       ],
       MAC: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to 25% of total tuition." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, capped at 12.5% of tuition on each side, for a combined reduction of up to 25% of total tuition." },
         { name: "SBC Recognition Fee Scholarship", detail: "May cover part or all of SBC course recognition fees ($1,300 per course)." },
         { name: "International Student Scholarship", detail: "Limited scholarships available." }
       ],
       MDiv: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course across about 43 courses." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to $675 per term. Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
+        { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MAR: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course across about 23 courses." }
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to $675 per term. Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
+        { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MDivCampus: [
         { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $212,010 at the published residential rate. No out-of-pocket tuition." }
@@ -320,23 +327,8 @@
     function capFor(program, gross, startTerm, creditsPerTerm = 3, rows = []) {
       if (program.matchType === "fixedCap") return program.fixedCap;
       if (program.matchType === "percentCap") return gross * program.percentCap;
-      if (program.matchType === "estimatedCourseCount") {
-        return estimatedCourseCountMatchCap(program, rows, startTerm);
-      }
+      if (program.matchType === "perTerm") return rows.length * program.perTermMatch;
       return 0;
-    }
-
-    function estimatedCourseCountMatchCap(program, rows, startTerm) {
-      const estimatedCourses = Number(program.estimatedCourses || 0);
-      if (!estimatedCourses) return 0;
-
-      const totalCredits = rows.reduce((sum, row) => sum + Number(row.credits || 0), 0);
-      if (!totalCredits) return estimatedCourses * rateForTerm(startTerm);
-
-      return rows.reduce((sum, row) => {
-        const estimatedCoursesInTerm = estimatedCourses * (Number(row.credits || 0) / totalCredits);
-        return sum + (estimatedCoursesInTerm * rateForTerm(row.term));
-      }, 0);
     }
 
     function setTheme(programKey) {
