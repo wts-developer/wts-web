@@ -217,6 +217,10 @@ dist.mkdir(exist_ok=True)
 for name, content in [
     ("wts-tuition-chat.js", widget),
     ("index.html", mockup),
+    # The complete chat embed (demo config + inlined widget) as a reusable
+    # artifact so the combined tuition-estimator mockup can carry the
+    # identical chat behavior without duplicating this block.
+    ("embed-block.html", embed_block),
 ]:
     (dist / name).write_text(content)
     print(f"dist/{name}  {len(content) / 1024:.1f} KB")

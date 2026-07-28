@@ -29,6 +29,15 @@ body_html = read("src/calculator.body.html")
 logic_src = read("src/calculator.js")
 captured_page = read("src/wts-tuition-page.html")
 
+# The combined UAT mockup also carries the tuition chat launcher. The
+# sibling project builds its complete embed block (canned demo answers,
+# ?api= override, inlined widget) as an artifact; inlining it verbatim
+# keeps both mockups' chat behavior identical.
+CHAT_EMBED_PATH = ROOT.parent / "tuition-chat-widget" / "dist" / "embed-block.html"
+chat_embed = CHAT_EMBED_PATH.read_text() if CHAT_EMBED_PATH.is_file() else None
+if chat_embed is None:
+    print("warning: tuition-chat-widget/dist/embed-block.html not built; mockup will omit the chat launcher")
+
 # Lato is the calculator's UI face, matching the rest of wts.edu. Kepler
 # (headline serif) is already served site-wide by wts.edu's Typekit kit.
 FONTS_URL = (
@@ -218,6 +227,9 @@ embed_block = f"""
 </script>
 <!-- ================ END PROPOSED ADDITION ================ -->
 """
+
+if chat_embed:
+    embed_block += chat_embed
 
 mockup = captured_page.replace(ANCHOR, embed_block + ANCHOR, 1)
 # Resolve the captured page's relative URLs against production.
