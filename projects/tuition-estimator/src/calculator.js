@@ -653,7 +653,7 @@
       if (!els.maxMatchBtn) return;
       const cap = Math.round(lastMatchCap);
       els.maxMatchBtn.hidden = cap <= 0;
-      els.maxMatchBtn.textContent = `Maximum matching scholarship amount: ${money(cap)}`;
+      els.maxMatchBtn.textContent = `Maximum Matching Scholarship amount: ${money(cap)}`;
     }
 
     function calculate() {
@@ -666,7 +666,7 @@
         const badges = program.funded || program.modality === "campus" ? badge("campus")
           : program.modality === "both" ? `${badge("online")} ${badge("campus")}`
           : badge("online");
-        els.mixProgram.innerHTML = `<span class="mix-program-name">${program.name}</span> ${badges}`;
+        els.mixProgram.innerHTML = `<span class="mix-program-name">${program.fullName} (${program.name})</span> ${badges}`;
       }
 
       if (program.funded) {
