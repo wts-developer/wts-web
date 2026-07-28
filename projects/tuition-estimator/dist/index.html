@@ -550,6 +550,11 @@ font-size: 16px !important;
           fullName: "Master of Divinity",
           credits: 111,
           funded: true,
+          // 2026-2027 academic catalog: full-time residential tuition is
+          // $53,000 per academic year, about $1,910 per credit for MDiv
+          // General students. Used to show the real dollar value of the
+          // full-tuition scholarship.
+          residentialRate: 1910,
           termSystem: "residential",
           theme: CAMPUS_THEME,
           description: "tuition 100% funded for admitted students"
@@ -559,6 +564,9 @@ font-size: 16px !important;
           fullName: "Master of Arts in Religion",
           credits: 74,
           funded: true,
+          // 2026-2027 academic catalog: $53,000 per academic year, about
+          // $2,149 per credit for MAR residential students.
+          residentialRate: 2149,
           termSystem: "residential",
           theme: CAMPUS_THEME,
           description: "tuition 100% funded for admitted students"
@@ -699,10 +707,10 @@ font-size: 16px !important;
         { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, estimated at one credit of tuition per course across about 23 courses." }
       ],
       MDivCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted students. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $212,010 at the published residential rate. No out-of-pocket tuition." }
       ],
       MARCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted students. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $159,026 at the published residential rate. No out-of-pocket tuition." }
       ],
       ThM: [
         { name: "Matching Grant", detail: "Dollar-for-dollar match on your additional outside support for full-time ThM students, up to 20% of total tuition, in any modality." }
@@ -1173,12 +1181,12 @@ font-size: 16px !important;
         // students, so there is nothing to estimate. Show the covered
         // amount (full credits at the current per-credit rate, as an
         // illustration) and a $0 cost; the inputs panel is hidden.
-        const gross = program.credits * CONFIG.currentRate;
+        const gross = program.credits * (program.residentialRate || CONFIG.currentRate);
         lastMatchCap = 0;
         updateMaxMatchButton();
         updatePieChart(0, 0, gross, gross);
         els.netPrice.textContent = "$0";
-        setResultFootnote([`Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted students. No out-of-pocket tuition.`]);
+        setResultFootnote([`Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. That scholarship is worth about ${money(gross)} at the published residential rate of ${money(program.residentialRate)} per credit ($53,000 per academic year). No out-of-pocket tuition.`]);
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
         els.miniRemaining.textContent = "$0"; // no outside support for funded programs
