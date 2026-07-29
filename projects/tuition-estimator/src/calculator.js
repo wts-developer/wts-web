@@ -53,7 +53,7 @@
         },
         MDivCampus: {
           name: "MDiv",
-          fullName: "Master of Divinity",
+          fullName: "Master of Divinity, General Ministries",
           credits: 111,
           funded: true,
           // 2026-2027 academic catalog: full-time residential tuition is
@@ -61,6 +61,20 @@
           // General students. Used to show the real dollar value of the
           // full-tuition scholarship.
           residentialRate: 1910,
+          annualRate: 53000,
+          termSystem: "residential",
+          theme: CAMPUS_THEME,
+          description: "tuition 100% funded for admitted students"
+        },
+        MDivFellows: {
+          name: "MDiv",
+          fullName: "Master of Divinity, Pastoral Fellows",
+          credits: 111,
+          funded: true,
+          // 2026-2027 academic catalog: Pastoral Fellows tuition is
+          // $61,000 per academic year, about $2,198 per credit hour.
+          residentialRate: 2198,
+          annualRate: 61000,
           termSystem: "residential",
           theme: CAMPUS_THEME,
           description: "tuition 100% funded for admitted students"
@@ -73,6 +87,7 @@
           // 2026-2027 academic catalog: $53,000 per academic year, about
           // $2,149 per credit for MAR residential students.
           residentialRate: 2149,
+          annualRate: 53000,
           termSystem: "residential",
           theme: CAMPUS_THEME,
           description: "tuition 100% funded for admitted students"
@@ -120,6 +135,17 @@
       futureRate: 750,
       futureRateStart: "2027-06",
       termCycle: ["06", "09", "01", "03"],
+      // Universal $100 application fee, included in every estimate so web
+      // totals match the Hedwig chat engine. The enrollment deposit
+      // ($500 online) and Commitment Fee ($1,000 residential MDiv/MAR)
+      // are surfaced as notes: the deposit is applied toward tuition and
+      // the Commitment Fee covers the first four terms of the $250
+      // per-term residential student fee. Advanced-degree deposits are
+      // still unconfirmed and intentionally omitted.
+      applicationFee: 100,
+      onlineEnrollmentDeposit: 500,
+      residentialCommitmentFee: 1000,
+      residentialTermFee: 250,
       sbcRecognitionFeePerCourse: 1300,
       sbcMaxCredits: 15
     };
@@ -217,6 +243,9 @@
       MDivCampus: [
         { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $212,010 at the published residential rate. No out-of-pocket tuition." }
       ],
+      MDivFellows: [
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $243,978 at the published Pastoral Fellows rate. No out-of-pocket tuition." }
+      ],
       MARCampus: [
         { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $159,026 at the published residential rate. No out-of-pocket tuition." }
       ],
@@ -235,7 +264,7 @@
     const $ = id => document.getElementById(id);
     const els = {
       matsBtn: $("matsBtn"), macBtn: $("macBtn"), mdivBtn: $("mdivBtn"), marBtn: $("marBtn"),
-      mdivCampusBtn: $("mdivCampusBtn"), marCampusBtn: $("marCampusBtn"),
+      mdivCampusBtn: $("mdivCampusBtn"), mdivFellowsBtn: $("mdivFellowsBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
@@ -675,17 +704,21 @@
         // amount (full credits at the current per-credit rate, as an
         // illustration) and a $0 cost; the inputs panel is hidden.
         const gross = program.credits * (program.residentialRate || CONFIG.currentRate);
+        const fundedNet = CONFIG.applicationFee;
         lastMatchCap = 0;
         updateMaxMatchButton();
-        updatePieChart(0, 0, gross, gross);
-        els.netPrice.textContent = "$0";
-        setResultFootnote([`Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. That scholarship is worth about ${money(gross)} at the published residential rate of ${money(program.residentialRate)} per credit ($53,000 per academic year). No out-of-pocket tuition.`]);
+        updatePieChart(fundedNet, 0, gross, gross + fundedNet);
+        els.netPrice.textContent = money(fundedNet);
+        setResultFootnote([
+          `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. That scholarship is worth about ${money(gross)} at the published residential rate of ${money(program.residentialRate)} per credit (${money(program.annualRate)} per academic year). No out-of-pocket tuition.`,
+          `The estimate reflects the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term student fee; plan for the student fee in the remaining terms.`
+        ]);
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
         els.miniRemaining.textContent = "$0"; // no outside support for funded programs
         els.miniRemainingCard.classList.remove("match-opportunity");
         els.miniGross.textContent = money(gross);
-        els.legendStudent.textContent = "$0";
+        els.legendStudent.textContent = money(fundedNet);
         els.legendRaised.textContent = "$0";
         els.legendMatch.textContent = money(gross);
         els.summaryModeLabel.textContent = "Tuition 100% funded";
@@ -719,16 +752,17 @@
         updateMaxMatchButton();
         const match = Math.min(fundsApplied, matchCap, Math.max(0, gross - baseline - fundsApplied));
         const totalWtsAid = baseline + match;
-        const totalOutOfPocket = Math.max(0, gross - fundsApplied - totalWtsAid);
+        const totalOutOfPocket = Math.max(0, gross - fundsApplied - totalWtsAid) + CONFIG.applicationFee;
         const remainingEligibleMatch = Math.max(0, matchCap - match);
 
-        updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
+        updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross + CONFIG.applicationFee);
 
         els.netPrice.textContent = money(totalOutOfPocket);
+        const feeSentence = `The estimate includes the ${money(CONFIG.applicationFee)} application fee.`;
         const footnotes = {
-          ThM: [MATCH_FOOTNOTE, "The estimate excludes program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students."],
-          DMin: ["*The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the published $34,000 total program cost. The baseline scholarship is applied automatically."],
-          PhD: ["PhD scholarships are determined individually by the committee and are not included in this estimate. The estimate excludes program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee."]
+          ThM: [MATCH_FOOTNOTE, `${feeSentence} It excludes other program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students.`],
+          DMin: [`*The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the published $34,000 total program cost. The baseline scholarship is applied automatically. ${feeSentence}`],
+          PhD: [`PhD scholarships are determined individually by the committee and are not included in this estimate. ${feeSentence} It excludes other program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee.`]
         };
         setResultFootnote(footnotes[selectedProgram] || []);
         setOutsideSupportAsterisk(matchCap > 0);
@@ -781,19 +815,22 @@
         ? Math.min(scholarshipAid + standardMatch + additionalAid, Math.max(0, gross - fundsApplied))
         : 0;
       const studentPaid = Math.max(0, gross - fundsApplied - totalWtsAid);
-      const totalOutOfPocket = studentPaid + sbcRecognitionFeeStudentPaid;
+      const totalOutOfPocket = studentPaid + sbcRecognitionFeeStudentPaid + CONFIG.applicationFee;
       const remainingEligibleMatch = scholarshipIncluded ? Math.max(0, matchCap - standardMatch) : 0;
 
       const pieStudentPaid = totalOutOfPocket;
       const pieWtsScholarshipSupport = totalWtsAid + sbcRecognitionScholarship;
-      const pieTotal = gross + sbcRecognitionFee;
+      const pieTotal = gross + sbcRecognitionFee + CONFIG.applicationFee;
 
       updatePieChart(pieStudentPaid, fundsApplied, pieWtsScholarshipSupport, pieTotal);
 
       els.netPrice.textContent = money(totalOutOfPocket);
       // The match-source footnote only applies while a matching scholarship
       // is the selected scholarship.
-      setResultFootnote([isPercentScholarship ? "" : MATCH_FOOTNOTE]);
+      setResultFootnote([
+        isPercentScholarship ? "" : MATCH_FOOTNOTE,
+        `The estimate includes the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.onlineEnrollmentDeposit)} enrollment deposit is due when you enroll and is applied toward tuition.`
+      ]);
       setOutsideSupportAsterisk(!isPercentScholarship);
       els.miniMatch.textContent = money(totalWtsAid);
       els.miniRemaining.textContent = money(fundsApplied);
@@ -905,8 +942,8 @@
 
     const programButtons = {
       MATS: els.matsBtn, MAC: els.macBtn, MDiv: els.mdivBtn, MAR: els.marBtn,
-      ThM: els.thmBtn, MDivCampus: els.mdivCampusBtn, MARCampus: els.marCampusBtn,
-      DMin: els.dminBtn, PhD: els.phdBtn
+      ThM: els.thmBtn, MDivCampus: els.mdivCampusBtn, MDivFellows: els.mdivFellowsBtn,
+      MARCampus: els.marCampusBtn, DMin: els.dminBtn, PhD: els.phdBtn
     };
 
     let selectedScholarshipId = null;
