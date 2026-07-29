@@ -199,7 +199,7 @@
     const SCHOLARSHIPS = {
       MATS: [
         { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to $5,000." },
-        { id: "awm", calc: { type: "percentTuition", pct: 0.25 }, name: "Advancing Women's Ministry Scholarship", detail: "25% tuition scholarship for qualifying students." }
+        { id: "awm", calc: { type: "percentTuition", pct: 0.25 }, name: "Advancing Women's Ministry Scholarship", detail: "25% tuition coverage for qualifying students." }
       ],
       MAC: [
         { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, capped at 12.5% of tuition on each side, for a combined reduction of up to 25% of total tuition." },

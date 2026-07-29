@@ -212,6 +212,20 @@
       max-width: 54ch;
     }
 
+    /* Modality pills sit on their own row under the acronym so placement
+       is identical on every card at every viewport width. */
+    .card-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 2px 0 8px;
+    }
+
+    .card-badges .online-badge {
+      margin-left: 0;
+      transform: none;
+    }
+
     .online-badge {
       display: inline-block;
       vertical-align: middle;
@@ -462,6 +476,10 @@
       padding: 10px 8px;
       cursor: pointer;
       font-family: var(--mono);
+      /* Buttons don't inherit the page font size; without this they fall
+         back to the browser's ~13px form default (noticeably small on
+         mobile). */
+      font-size: 1rem;
       font-weight: 700;
       color: var(--wts-ink);
     }
