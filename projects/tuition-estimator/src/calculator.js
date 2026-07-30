@@ -320,19 +320,29 @@
       return { year, month };
     }
 
-    function nextTerm(key) {
+    // MAC and MATS run four terms per year (January, March, June,
+    // September); MDiv and MAR, online and residential alike, run three
+    // semesters (Spring, Summer, Fall). termSystem picks the calendar.
+    function cycleFor(termSystem) {
+      return termSystem === "residential"
+        ? ["06", "09", "01"]
+        : ["06", "09", "01", "03"];
+    }
+
+    function nextTerm(key, termSystem = "online") {
       let { year, month } = parseTerm(key);
+      const cycle = cycleFor(termSystem);
       const monthText = String(month).padStart(2, "0");
-      const idx = CONFIG.termCycle.indexOf(monthText);
-      const nextMonth = CONFIG.termCycle[(idx + 1) % CONFIG.termCycle.length];
-      if (month === 9 && nextMonth === "01") year += 1;
+      const idx = cycle.indexOf(monthText);
+      const nextMonth = cycle[(idx + 1) % cycle.length];
+      if (Number(nextMonth) < month) year += 1;
       return termKey(year, Number(nextMonth));
     }
 
     function termLabel(key, termSystem = "online") {
       const [year, month] = key.split("-").map(Number);
       const names = termSystem === "residential"
-        ? { 1: "Winter", 3: "Spring", 6: "Summer", 9: "Fall" }
+        ? { 1: "Spring", 6: "Summer", 9: "Fall" }
         : { 1: "January", 3: "March", 6: "June", 9: "September" };
       return `${names[month]} ${year}`;
     }
@@ -352,9 +362,24 @@
         const rate = rateForTerm(term);
         rows.push({ term, label: termLabel(term, termSystem), credits, rate, tuition: credits * rate });
         remaining -= credits;
-        term = nextTerm(term);
+        term = nextTerm(term, termSystem);
       }
       return rows;
+    }
+
+    // The start-term choices depend on the program's calendar: no March
+    // term exists for MDiv/MAR, and their terms carry semester names.
+    const START_TERM_KEYS = ["2026-09", "2027-01", "2027-03", "2027-06", "2027-09"];
+
+    function refreshStartTermOptions(program) {
+      if (!els.startTerm) return;
+      const cycle = cycleFor(program.termSystem);
+      const current = els.startTerm.value;
+      const valid = START_TERM_KEYS.filter(k => cycle.includes(k.split("-")[1]));
+      els.startTerm.innerHTML = valid
+        .map(k => `<option value="${k}">${termLabel(k, program.termSystem)}</option>`)
+        .join("");
+      els.startTerm.value = valid.includes(current) ? current : valid[0];
     }
 
     function capFor(program, gross, startTerm, creditsPerTerm = 3, rows = []) {
@@ -1033,6 +1058,7 @@
       });
 
       renderScholarships(key);
+      refreshStartTermOptions(CONFIG.programs[key]);
       updateMacOnlyVisibility();
       calculate();
     }
