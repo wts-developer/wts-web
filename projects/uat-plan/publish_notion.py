@@ -25,6 +25,29 @@ import os
 import sys
 import time
 import urllib.request
+from pathlib import Path
+
+
+def load_dotenv():
+    """Read KEY=VALUE lines from a .env next to this script, if present.
+
+    Real environment variables win over .env values. The .env file is
+    gitignored; copy .env.example to .env and paste your values in.
+    """
+    env_file = Path(__file__).resolve().parent / ".env"
+    if not env_file.is_file():
+        return
+    for line in env_file.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key, value = key.strip(), value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+load_dotenv()
 
 TOKEN = os.environ.get("NOTION_TOKEN", "").strip()
 PARENT = os.environ.get("NOTION_PARENT_PAGE_ID", "").strip().replace("-", "")

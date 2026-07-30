@@ -16,9 +16,14 @@ Bug Reports table for testers.
 
 ## Publish
 
+Copy `.env.example` to `.env` in this directory, paste in your token and
+parent page id (both gitignored), then:
+
 ```sh
-NOTION_TOKEN=secret_xxx NOTION_PARENT_PAGE_ID=xxxx python3 projects/uat-plan/publish_notion.py
+python3 projects/uat-plan/publish_notion.py
 ```
+
+Environment variables with the same names override `.env` if both exist.
 
 Prints the new page URL. Rerunning creates a fresh page (nothing is
 overwritten); delete superseded copies in Notion.
