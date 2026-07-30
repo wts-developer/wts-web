@@ -142,17 +142,23 @@ widget = f"""/*!
 # 2. The clickable mockup: captured tuition page + chat launcher
 # ---------------------------------------------------------------------
 
-# Canned-answer transport for the demo: keyword-matches a few real
-# engine outputs (src/mock-answers.json) so the dialog demos with no
-# backend. `?api=<url>` switches to the live API.
+# The mockup talks to the live Hedwig API by default, exactly like the
+# production Webflow embed (the widget's own DEFAULT_API_BASE). Escape
+# hatches: `?api=<url>` points at another backend (local dev), and
+# `?mock=1` forces the canned keyword-matched answers from
+# src/mock-answers.json for offline demos.
 demo_config = f"""
 <script>
 (function () {{
   var MOCK = {json.dumps(mock)};
-  var api = new URLSearchParams(location.search).get("api");
+  var params = new URLSearchParams(location.search);
+  var api = params.get("api");
   if (api) {{
     window.WTS_TUITION_CHAT_CONFIG = {{ apiBase: api }};
     return;
+  }}
+  if (!params.get("mock")) {{
+    return; // no config: the widget uses its built-in live API base
   }}
   window.WTS_TUITION_CHAT_CONFIG = {{
     mock: function (text) {{
