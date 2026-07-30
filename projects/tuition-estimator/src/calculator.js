@@ -42,7 +42,7 @@
           percentAfter: 0.25,
           termSystem: "residential",
           theme: ONLINE_THEME,
-          description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from AY27-28"
+          description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
         },
         MAR: {
           name: "MAR",
@@ -53,7 +53,7 @@
           percentAfter: 0.25,
           termSystem: "residential",
           theme: ONLINE_THEME,
-          description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from AY27-28"
+          description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
         },
         MDivCampus: {
           name: "MDiv",
@@ -237,11 +237,11 @@
         { name: "International Student Scholarship", detail: "Limited scholarships available." }
       ],
       MDiv: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the March 2027 term, then up to 25% of tuition beginning with the June 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the Spring 2027 term, then up to 25% of tuition beginning with the Summer 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MAR: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the March 2027 term, then up to 25% of tuition beginning with the June 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the Spring 2027 term, then up to 25% of tuition beginning with the Summer 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MDivCampus: [
@@ -271,6 +271,7 @@
       mdivCampusBtn: $("mdivCampusBtn"), mdivFellowsBtn: $("mdivFellowsBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
+      rateIncreaseNote: $("rateIncreaseNote"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       maxMatchBtn: $("maxMatchBtn"),
       scholarshipList: $("scholarshipList"),
@@ -380,6 +381,10 @@
         .map(k => `<option value="${k}">${termLabel(k, program.termSystem)}</option>`)
         .join("");
       els.startTerm.value = valid.includes(current) ? current : valid[0];
+      if (els.rateIncreaseNote) {
+        const boundary = program.termSystem === "residential" ? "Summer 2027" : "June 2027";
+        els.rateIncreaseNote.textContent = `Tuition increases from $675 to $750/credit beginning in the ${boundary} term.`;
+      }
     }
 
     function capFor(program, gross, startTerm, creditsPerTerm = 3, rows = []) {
