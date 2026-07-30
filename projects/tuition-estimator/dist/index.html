@@ -532,23 +532,27 @@ font-size: 16px !important;
           name: "MDiv",
           fullName: "Master of Divinity",
           credits: 111,
-          // oMDR matching scholarship: Westminster matches outside support
-          // up to $675 per term regardless of credits taken that term.
-          matchType: "perTerm",
+          // Online-program matching scholarship: $675 per term through the
+          // March 2027 term; beginning with the June 2027 term (AY27-28)
+          // Westminster instead matches outside support dollar-for-dollar
+          // up to 25% of tuition. Modeled per term, like the rate increase.
+          matchType: "onlineHybrid",
           perTermMatch: 675,
+          percentAfter: 0.25,
           termSystem: "residential",
           theme: ONLINE_THEME,
-          description: "dollar-for-dollar match up to $675 per term"
+          description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from AY27-28"
         },
         MAR: {
           name: "MAR",
           fullName: "Master of Arts in Religion",
           credits: 74,
-          matchType: "perTerm",
+          matchType: "onlineHybrid",
           perTermMatch: 675,
+          percentAfter: 0.25,
           termSystem: "residential",
           theme: ONLINE_THEME,
-          description: "dollar-for-dollar match up to $675 per term"
+          description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from AY27-28"
         },
         MDivCampus: {
           name: "MDiv",
@@ -732,11 +736,11 @@ font-size: 16px !important;
         { name: "International Student Scholarship", detail: "Limited scholarships available." }
       ],
       MDiv: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to $675 per term. Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the March 2027 term, then up to 25% of tuition beginning with the June 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MAR: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to $675 per term. Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the March 2027 term, then up to 25% of tuition beginning with the June 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MDivCampus: [
@@ -856,6 +860,15 @@ font-size: 16px !important;
       if (program.matchType === "fixedCap") return program.fixedCap;
       if (program.matchType === "percentCap") return gross * program.percentCap;
       if (program.matchType === "perTerm") return rows.length * program.perTermMatch;
+      if (program.matchType === "onlineHybrid") {
+        // $675 per term through March 2027, then 25% of each term's
+        // tuition from the June 2027 term (AY27-28) onward.
+        return rows.reduce((sum, row) => sum + (
+          row.term >= CONFIG.futureRateStart
+            ? row.tuition * program.percentAfter
+            : program.perTermMatch
+        ), 0);
+      }
       return 0;
     }
 
