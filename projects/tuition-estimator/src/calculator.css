@@ -1264,6 +1264,9 @@
 
     @media (max-width: 700px) {
       .program-switch, .choice-row, .amount-buttons, .action-row { grid-template-columns: 1fr; }
+      .bucket-tabs { grid-template-columns: 1fr; }
+      .bucket-tab { border-right: 0; border-bottom: 1px solid var(--border); }
+      .bucket-tab:last-child { border-bottom: 0; }
       .mix-content { grid-template-columns: 1fr; justify-items: stretch; }
       .hero { min-height: auto; }
       .result-value { white-space: normal; font-size: clamp(2.8rem, 14vw, 4.2rem); }
@@ -1459,6 +1462,40 @@
       }
     }
 
+
+    /* Program category tabs, echoing the live page's tab strip. */
+    .bucket-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      margin-bottom: 16px;
+    }
+
+    .bucket-tab {
+      padding: 12px 6px;
+      border: 0;
+      border-right: 1px solid var(--border);
+      background: #fff;
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--wts-ink);
+      cursor: pointer;
+    }
+
+    .bucket-tab:last-child {
+      border-right: 0;
+    }
+
+    .bucket-tab[aria-pressed="true"] {
+      background: var(--wts-gold);
+      color: #fff;
+    }
 
     /* Two columns of compact cards inside the half-width step 1 panel. */
     .program-switch {

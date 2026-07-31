@@ -47,6 +47,11 @@
       <section class="section program-section">
         <div class="step-label">Step 1</div>
         <h2 class="section-heading">Choose Your Program</h2>
+        <div class="bucket-tabs" aria-label="Program category">
+          <button type="button" class="bucket-tab" data-bucket="campus" aria-pressed="false">On-Campus Programs</button>
+          <button type="button" class="bucket-tab" data-bucket="online" aria-pressed="true">Online Programs</button>
+          <button type="button" class="bucket-tab" data-bucket="advanced" aria-pressed="false">Advanced Degree Programs</button>
+        </div>
         <div class="program-switch" aria-label="Program selection">
           <button type="button" id="matsBtn" class="program-card" aria-pressed="true">
             <div class="name">MATS</div>
@@ -71,6 +76,36 @@
             <div class="card-badges"><span class="online-badge">Online</span></div>
             <div class="desc">Master of Arts in Religion</div>
             <div class="code">74 credits</div>
+          </button>
+          <button type="button" id="certTHBtn" class="program-card" aria-pressed="false">
+            <div class="name">TH</div>
+            <div class="card-badges"><span class="online-badge">Online</span></div>
+            <div class="desc">Theological Studies Certificate: Theology and History</div>
+            <div class="code">9 credits</div>
+          </button>
+          <button type="button" id="certFTBtn" class="program-card" aria-pressed="false">
+            <div class="name">FT</div>
+            <div class="card-badges"><span class="online-badge">Online</span></div>
+            <div class="desc">Theological Studies Certificate: Foundations of Theology</div>
+            <div class="code">9 credits</div>
+          </button>
+          <button type="button" id="certBIBtn" class="program-card" aria-pressed="false">
+            <div class="name">BI</div>
+            <div class="card-badges"><span class="online-badge">Online</span></div>
+            <div class="desc">Theological Studies Certificate: Biblical Interpretation</div>
+            <div class="code">9 credits</div>
+          </button>
+          <button type="button" id="certGreekBtn" class="program-card" aria-pressed="false">
+            <div class="name">Greek</div>
+            <div class="card-badges"><span class="online-badge">Online</span></div>
+            <div class="desc">Biblical Languages Certificate: Greek</div>
+            <div class="code">9 credits</div>
+          </button>
+          <button type="button" id="certHebrewBtn" class="program-card" aria-pressed="false">
+            <div class="name">Hebrew</div>
+            <div class="card-badges"><span class="online-badge">Online</span></div>
+            <div class="desc">Biblical Languages Certificate: Hebrew</div>
+            <div class="code">9 credits</div>
           </button>
           <button type="button" id="mdivCampusBtn" class="program-card" aria-pressed="false">
             <div class="name">MDiv</div>
