@@ -90,10 +90,33 @@ Hedwig repo).
   calculator and a chat reply agree to the dollar for the same
   scenario.
 
-## Ship
+## Branches, PRs, and review
 
-Commit source plus rebuilt `dist/`, push to `main`. GitHub Pages
-publishes automatically:
+Multiple people and agents work in this repo. All changes land on
+`main` through pull requests; do not push to `main` directly.
+
+1. **Branch per change**, named `<area>/<short-slug>`, for example
+   `estimator/max-match-copy`, `chat/cold-start-note`,
+   `docs/uat-checklist`. Keep each branch to one reviewable change.
+2. **Commit source and rebuilt `dist/` together** on the branch. A PR
+   whose `dist/` does not match its `src/` is not mergeable; reviewers
+   should rebuild and diff if in doubt.
+3. **Open a PR against `main`** with: what changed and why, how it was
+   verified (which pages, which viewports, which dollar figures), and a
+   screenshot when the change is visual.
+4. **Review before merge.** At least one human approval. Changes to
+   policy data (rates, scholarship rules, caps, term calendars, fees)
+   additionally need the admissions or financial aid direction that
+   authorized them linked or quoted in the PR, and a note confirming
+   the Hedwig engine and canned chat answers were reconciled.
+5. **Merging is deploying.** GitHub Pages publishes `main`
+   automatically, and the shared UAT link updates within about a
+   minute. Do not merge unverified or half-done work; it goes straight
+   in front of stakeholders.
+6. **Agents: stop at the PR.** Push the branch, open the PR, report the
+   link. Never merge your own PR and never force-push shared branches.
+
+Published URLs (from `main`):
 
 - Combined UAT mockup: <https://wts-developer.github.io/wts-web/tuition-estimator/>
 - Estimator widget: <https://wts-developer.github.io/wts-web/tuition-estimator/wts-cost-estimator.js>
