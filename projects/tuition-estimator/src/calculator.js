@@ -361,7 +361,7 @@
       certTHBtn: $("certTHBtn"), certFTBtn: $("certFTBtn"), certBIBtn: $("certBIBtn"),
       certGreekBtn: $("certGreekBtn"), certHebrewBtn: $("certHebrewBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
-      rateIncreaseNote: $("rateIncreaseNote"),
+      rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       maxMatchBtn: $("maxMatchBtn"),
       scholarshipList: $("scholarshipList"),
@@ -1143,6 +1143,12 @@
           </li>`).join("") +
         (noteHead ? `<li class="scholarship-note-head">${noteHead}</li>` : "") +
         notes.map(s => `<li class="scholarship-note"><strong>${s.name}:</strong> ${s.detail}</li>`).join("");
+
+      // Certificates have no Westminster scholarships, so the
+      // select-a-scholarship guidance does not apply.
+      if (els.scholarshipAnnotation) {
+        els.scholarshipAnnotation.hidden = !!CONFIG.programs[key].certificate;
+      }
 
       els.scholarshipList.querySelectorAll('input[name="scholarshipChoice"]').forEach(input => {
         input.addEventListener("change", () => {

@@ -2252,7 +2252,7 @@
               <div class="scholarship-reference">
                 <div class="label-title">Available Westminster scholarship support</div>
                 <ul class="scholarship-list" id="scholarshipList"></ul>
-                <p class="annotation">Select the Westminster scholarship you hope to attain for your program of interest. Scholarships are limited and require an application. Eligibility does not guarantee an award. Matching Scholarship support applies automatically to the "additional support" section below.</p>
+                <p class="annotation" id="scholarshipAnnotation">Select the Westminster scholarship you hope to attain for your program of interest. Scholarships are limited and require an application. Eligibility does not guarantee an award. Matching Scholarship support applies automatically to the "additional support" section below.</p>
               </div>
             </div>
 
@@ -2967,7 +2967,7 @@
       certTHBtn: $("certTHBtn"), certFTBtn: $("certFTBtn"), certBIBtn: $("certBIBtn"),
       certGreekBtn: $("certGreekBtn"), certHebrewBtn: $("certHebrewBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
-      rateIncreaseNote: $("rateIncreaseNote"),
+      rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       maxMatchBtn: $("maxMatchBtn"),
       scholarshipList: $("scholarshipList"),
@@ -3749,6 +3749,12 @@
           </li>`).join("") +
         (noteHead ? `<li class="scholarship-note-head">${noteHead}</li>` : "") +
         notes.map(s => `<li class="scholarship-note"><strong>${s.name}:</strong> ${s.detail}</li>`).join("");
+
+      // Certificates have no Westminster scholarships, so the
+      // select-a-scholarship guidance does not apply.
+      if (els.scholarshipAnnotation) {
+        els.scholarshipAnnotation.hidden = !!CONFIG.programs[key].certificate;
+      }
 
       els.scholarshipList.querySelectorAll('input[name="scholarshipChoice"]').forEach(input => {
         input.addEventListener("change", () => {
