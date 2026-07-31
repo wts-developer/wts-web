@@ -1,4 +1,4 @@
-# Webflow integration — Tuition Chat Widget
+# Webflow integration: Tuition Chat Widget
 
 The widget is one `<script>` tag. It creates its own floating launcher
 button (bottom-right) and chat panel, all inside a Shadow DOM, so it
@@ -13,7 +13,7 @@ Two options, depending on rollout scope:
    [Tuition & Financial Aid page](https://www.wts.edu/admissions/tuition-financial-aid),
    add an **Embed** element anywhere in the page body and paste the
    contents of [embed-snippet.html](embed-snippet.html). Position in the
-   page doesn't matter — the widget floats.
+   page doesn't matter; the widget floats.
 2. **Site-wide.** Project **Settings → Custom Code → Footer Code**, same
    snippet. The launcher then appears on every page.
 
@@ -24,7 +24,7 @@ Two options, depending on rollout scope:
   questions as one-tap chips.
 - Answers come from the Hedwig web-chat API (`hedwig-admissions-slackbot`
   repo, `hedwig/webchat/`), which serves the same student-framed tuition
-  answers the admissions team QA'd in Slack UAT. No AI model is involved —
+  answers the admissions team QA'd in Slack UAT. No AI model is involved;
   it's a deterministic NLU + calculator pipeline over published tuition
   data, so answers can't hallucinate numbers.
 - Open/closed state and the conversation survive page navigation within

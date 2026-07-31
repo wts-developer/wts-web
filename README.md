@@ -1,6 +1,6 @@
 # wts-web
 
-Monorepo for Westminster Theological Seminary (wts.edu) web projects — mockups,
+Monorepo for Westminster Theological Seminary (wts.edu) web projects: mockups,
 embeddable widgets, and snippets intended to hand off to the wts.edu webmaster
 for integration into the production Webflow site.
 
@@ -9,7 +9,10 @@ for integration into the production Webflow site.
 | Project | Status | What it is |
 |---|---|---|
 | [projects/tuition-estimator](projects/tuition-estimator/) | ✅ ready | Living, clickable mockup of the [tuition page](https://www.wts.edu/admissions/tuition-financial-aid) with the Online Program Cost Estimator embedded front-and-center, plus a one-tag embeddable widget for Webflow |
-| [projects/tuition-chat-widget](projects/tuition-chat-widget/) | ✅ ready | Floating bottom-right chat dialog for the tuition page — one-tag Shadow-DOM embed, answered by the Hedwig web-chat API (`hedwig-admissions-slackbot` repo, `hedwig/webchat/`) |
+| [projects/tuition-chat-widget](projects/tuition-chat-widget/) | ✅ ready | Floating bottom-right chat dialog for the tuition page: one-tag Shadow-DOM embed, answered by the Hedwig web-chat API (`hedwig-admissions-slackbot` repo, `hedwig/webchat/`) |
+
+AI coding agents and new contributors: start with [AGENTS.md](AGENTS.md)
+for ground rules, dev servers, and verification steps.
 
 ## Conventions
 
@@ -20,7 +23,7 @@ for integration into the production Webflow site.
   from GitHub Pages or jsDelivr without a release step, and lets the wts.edu
   webmaster grab a single file.
 - Builds are Python 3 standard library only (`python3 build.py`), so they run
-  anywhere — no Node toolchain required. If a future project needs one, add it
+  anywhere with no Node toolchain required. If a future project needs one, add it
   per-project.
 
 ## Local development
@@ -47,5 +50,5 @@ python3 -m http.server 8437 -d projects/tuition-estimator/dist
 Alternatively, any file in a public repo is served by jsDelivr, e.g.
 `https://cdn.jsdelivr.net/gh/wts-developer/wts-web@main/projects/tuition-estimator/dist/wts-cost-estimator.js`.
 
-To share as a file instead of a link, send `projects/tuition-estimator/dist/index.html` —
+To share as a file instead of a link, send `projects/tuition-estimator/dist/index.html`;
 it is fully self-contained apart from assets it loads from production CDNs.

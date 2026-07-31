@@ -1,7 +1,7 @@
 # Adding the Online Program Cost Estimator to wts.edu (Webflow)
 
 This is the integration guide that accompanies the clickable mockup
-(`dist/index.html`, or the hosted copy — see the repo README for the link).
+(`dist/index.html`, or the hosted copy; see the repo README for the link).
 The mockup is the current production tuition page with **one addition**: the
 cost estimator, placed between the hero and the "Westminster Scholarships and
 Tuition" section. Everything else on the page is untouched.
@@ -38,7 +38,7 @@ does need to be hosted as a file rather than pasted inline.
 - Adds one Google Fonts stylesheet (Lato) to the page head if not already
   present. The serif headline face uses the site's existing Typekit Kepler
   families.
-- Makes **no network calls** other than that fonts stylesheet — all tuition
+- Makes **no network calls** other than that fonts stylesheet; all tuition
   math is client-side. No analytics, no cookies, no personal data.
 - Is plain vanilla JS with no dependencies (no jQuery, no framework), and
   does not interfere with Webflow's own scripts.
@@ -54,10 +54,10 @@ rebuilt file when rates change, or edit and rerun `python3 build.py`.
 
 If you prefer owning it in the Designer, the pieces are separated in the repo:
 
-- `src/calculator.body.html` — semantic markup (sections, fields, results)
-- `src/calculator.css` — styles; brand tokens (WTS red/gold/gray, radii,
+- `src/calculator.body.html`: semantic markup (sections, fields, results)
+- `src/calculator.css`: styles; brand tokens (WTS red/gold/gray, radii,
   shadows) are CSS custom properties declared at the top
-- `src/calculator.js` — logic; keep element IDs intact, as the script binds
+- `src/calculator.js`: logic; keep element IDs intact, as the script binds
   by ID
 
 Caveats: the JS is ~36 KB, above Webflow's per-embed character limit, so
@@ -70,4 +70,4 @@ We're happy to pair on this if Option B is the preference.
 
 The section that follows the estimator on the tuition page overlaps upward
 with an angled top edge. The widget already reserves ~150px of bottom padding
-so the angle doesn't clip the last card — no extra spacer is needed.
+so the angle doesn't clip the last card; no extra spacer is needed.

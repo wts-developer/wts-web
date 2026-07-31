@@ -18,9 +18,9 @@ per-term table, market comparison) exist only on the standalone page.
 
 | File | Purpose |
 |---|---|
-| `index.html` | The combined UAT mockup: a captured copy of the live tuition page with the estimator injected after the hero plus the tuition chat launcher (inlined from `../tuition-chat-widget/dist/embed-block.html`, so build that project first after chat changes). Share as a link (GitHub Pages) or attach the file to a ticket — it loads Webflow assets from production CDNs, so it needs internet but no server. |
+| `index.html` | The combined UAT mockup: a captured copy of the live tuition page with the estimator injected after the hero plus the tuition chat launcher (inlined from `../tuition-chat-widget/dist/embed-block.html`, so build that project first after chat changes). Share as a link (GitHub Pages) or attach the file to a ticket; it loads Webflow assets from production CDNs, so it needs internet but no server. |
 | `wts-cost-estimator.js` | The embeddable widget, one file, no dependencies. `<div id="wts-cost-estimator"></div>` + one `<script>` tag renders the estimator in a Shadow DOM (zero CSS collisions with the host page). |
-| `calculator-standalone.html` | The full estimator on its own page — parity with the Apps Script prototype, including the summary/per-term/market sections. |
+| `calculator-standalone.html` | The full estimator on its own page, with parity to the Apps Script prototype, including the summary/per-term/market sections. |
 
 ## Build
 

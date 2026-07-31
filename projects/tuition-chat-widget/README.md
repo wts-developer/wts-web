@@ -9,7 +9,7 @@ a Westminster-branded (identity-less, for now) assistant.
 The answers come from the **Hedwig** backend (`../hedwig-admissions-slackbot`,
 developed alongside this repo): a public, unauthenticated HTTP API
 (`hedwig/webchat/`) that runs the same deterministic answer engine the
-admissions team uses in Slack — NLU intent detection → tuition calculator →
+admissions team uses in Slack: NLU intent detection → tuition calculator →
 student-framed rendering. **No AI model answers prospects**; every reply is
 computed from the published tuition data in `hedwig/tuition/programs.py`,
 and the exact answers were QA'd by counselors through Hedwig's Slack UAT
@@ -43,7 +43,7 @@ then open `http://localhost:8438/?api=http://localhost:8787`.
 ## How it works
 
 - `src/chat.{css,body.html,js}` are the widget's styles, markup, and logic.
-  `chat.js` is written shadow-DOM-aware (no `document.*` lookups — `build.py`
+  `chat.js` is written shadow-DOM-aware (no `document.*` lookups; `build.py`
   fails the build if one sneaks in), so the build simply inlines all three
   into one IIFE.
 - The widget POSTs `{"message": "..."}` to `{apiBase}/api/chat` and gets back
