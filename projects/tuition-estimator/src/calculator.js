@@ -12,6 +12,7 @@
           credits: 36,
           matchType: "fixedCap",
           fixedCap: 5000,
+          bucket: "online",
           termSystem: "online",
           theme: ONLINE_THEME,
           description: "dollar-for-dollar match up to $5,000"
@@ -25,6 +26,7 @@
           // it dollar-for-dollar, for a combined reduction of up to 25%.
           matchType: "percentCap",
           percentCap: 0.125,
+          bucket: "online",
           termSystem: "online",
           theme: ONLINE_THEME,
           description: "dollar-for-dollar match, combined reduction up to 25% of total tuition"
@@ -33,6 +35,7 @@
           name: "MDiv",
           fullName: "Master of Divinity",
           credits: 111,
+          bucket: "online",
           // Online-program matching scholarship: $675 per term through the
           // March 2027 term; beginning with the June 2027 term (AY27-28)
           // Westminster instead matches outside support dollar-for-dollar
@@ -48,6 +51,7 @@
           name: "MAR",
           fullName: "Master of Arts in Religion",
           credits: 74,
+          bucket: "online",
           matchType: "onlineHybrid",
           perTermMatch: 675,
           percentAfter: 0.25,
@@ -59,6 +63,7 @@
           name: "MDiv",
           fullName: "Master of Divinity, General Ministries",
           credits: 111,
+          bucket: "campus",
           funded: true,
           // 2026-2027 academic catalog: full-time residential tuition is
           // $53,000 per academic year, about $1,910 per credit for MDiv
@@ -74,6 +79,7 @@
           name: "MDiv",
           fullName: "Master of Divinity, Pastoral Fellows",
           credits: 111,
+          bucket: "campus",
           funded: true,
           // 2026-2027 academic catalog: Pastoral Fellows tuition is
           // $61,000 per academic year, about $2,198 per credit hour.
@@ -87,6 +93,7 @@
           name: "MAR",
           fullName: "Master of Arts in Religion",
           credits: 74,
+          bucket: "campus",
           funded: true,
           // 2026-2027 academic catalog: $53,000 per academic year, about
           // $2,149 per credit for MAR residential students.
@@ -101,6 +108,7 @@
         ThM: {
           name: "ThM",
           fullName: "Master of Theology",
+          bucket: "advanced",
           coursePriced: true,
           courses: 6,
           courseRate: 4350,
@@ -112,6 +120,7 @@
         DMin: {
           name: "DMin",
           fullName: "Doctor of Ministry",
+          bucket: "advanced",
           coursePriced: true,
           // Published program card: $34,000 total true-cost price for the
           // 8-course program, up to 20% baseline scholarship, and up to a
@@ -126,6 +135,7 @@
         PhD: {
           name: "PhD",
           fullName: "Doctor of Philosophy",
+          bucket: "advanced",
           coursePriced: true,
           courses: 10,
           courseRate: 5000,
@@ -133,6 +143,69 @@
           modality: "campus",
           theme: CAMPUS_THEME,
           description: "scholarships determined individually by the committee"
+        },
+        // Certificates: 9 credits each at the online per-credit rate, no
+        // Westminster scholarships currently. Theological Studies
+        // certificates follow the four-term calendar; the registrar groups
+        // the Biblical Languages certificates with the semester calendar
+        // (rate increase effective Summer 2027 for them).
+        CertTH: {
+          name: "TH",
+          fullName: "Theological Studies Certificate: Theology and History",
+          credits: 9,
+          bucket: "online",
+          certificate: true,
+          stackable: true,
+          matchType: "none",
+          termSystem: "online",
+          theme: ONLINE_THEME,
+          description: "certificate program, no scholarships currently apply"
+        },
+        CertFT: {
+          name: "FT",
+          fullName: "Theological Studies Certificate: Foundations of Theology",
+          credits: 9,
+          bucket: "online",
+          certificate: true,
+          stackable: true,
+          matchType: "none",
+          termSystem: "online",
+          theme: ONLINE_THEME,
+          description: "certificate program, no scholarships currently apply"
+        },
+        CertBI: {
+          name: "BI",
+          fullName: "Theological Studies Certificate: Biblical Interpretation",
+          credits: 9,
+          bucket: "online",
+          certificate: true,
+          stackable: true,
+          matchType: "none",
+          termSystem: "online",
+          theme: ONLINE_THEME,
+          description: "certificate program, no scholarships currently apply"
+        },
+        CertGreek: {
+          name: "Greek",
+          fullName: "Biblical Languages Certificate: Greek",
+          credits: 9,
+          bucket: "online",
+          certificate: true,
+          matchType: "none",
+          termSystem: "residential",
+          theme: ONLINE_THEME,
+          description: "certificate program, no scholarships currently apply"
+        },
+        CertHebrew: {
+          name: "Hebrew",
+          fullName: "Biblical Languages Certificate: Hebrew",
+          credits: 9,
+          bucket: "online",
+          certificate: true,
+          matchType: "none",
+          termSystem: "residential",
+          theme: ONLINE_THEME,
+          description: "certificate program, no scholarships currently apply"
         }
       },
       currentRate: 675,
@@ -262,6 +335,21 @@
       ],
       PhD: [
         { name: "Committee Scholarships", detail: "PhD scholarships are determined individually by the committee and are not included in this estimate." }
+      ],
+      CertTH: [
+        { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
+      ],
+      CertFT: [
+        { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
+      ],
+      CertBI: [
+        { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
+      ],
+      CertGreek: [
+        { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
+      ],
+      CertHebrew: [
+        { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
       ]
     };
 
@@ -270,6 +358,8 @@
       matsBtn: $("matsBtn"), macBtn: $("macBtn"), mdivBtn: $("mdivBtn"), marBtn: $("marBtn"),
       mdivCampusBtn: $("mdivCampusBtn"), mdivFellowsBtn: $("mdivFellowsBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
+      certTHBtn: $("certTHBtn"), certFTBtn: $("certFTBtn"), certBIBtn: $("certBIBtn"),
+      certGreekBtn: $("certGreekBtn"), certHebrewBtn: $("certHebrewBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
       rateIncreaseNote: $("rateIncreaseNote"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
@@ -870,11 +960,18 @@
       els.netPrice.textContent = money(totalOutOfPocket);
       // The match-source footnote only applies while a matching scholarship
       // is the selected scholarship.
-      setResultFootnote([
-        isPercentScholarship ? "" : MATCH_FOOTNOTE,
-        `The estimate includes the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.onlineEnrollmentDeposit)} enrollment deposit is due when you enroll and is applied toward tuition.`
-      ]);
-      setOutsideSupportAsterisk(!isPercentScholarship);
+      const hasMatch = !isPercentScholarship && matchCap > 0;
+      const footnoteParts = [hasMatch ? MATCH_FOOTNOTE : ""];
+      if (program.certificate) {
+        footnoteParts.push(`The estimate includes the ${money(CONFIG.applicationFee)} application fee, which is one-and-done across certificates: moving on to another certificate or a full degree does not incur a new fee.`);
+        if (program.stackable) {
+          footnoteParts.push("The three Theological Studies Certificates plus three electives stack into a full MATS.");
+        }
+      } else {
+        footnoteParts.push(`The estimate includes the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.onlineEnrollmentDeposit)} enrollment deposit is due when you enroll and is applied toward tuition.`);
+      }
+      setResultFootnote(footnoteParts);
+      setOutsideSupportAsterisk(hasMatch);
       els.miniMatch.textContent = money(totalWtsAid);
       els.miniRemaining.textContent = money(fundsApplied);
       els.miniGross.textContent = money(gross);
@@ -985,9 +1082,30 @@
 
     const programButtons = {
       MATS: els.matsBtn, MAC: els.macBtn, MDiv: els.mdivBtn, MAR: els.marBtn,
+      CertTH: els.certTHBtn, CertFT: els.certFTBtn, CertBI: els.certBIBtn,
+      CertGreek: els.certGreekBtn, CertHebrew: els.certHebrewBtn,
       ThM: els.thmBtn, MDivCampus: els.mdivCampusBtn, MDivFellows: els.mdivFellowsBtn,
       MARCampus: els.marCampusBtn, DMin: els.dminBtn, PhD: els.phdBtn
     };
+
+    // Program category tabs, mirroring the live page's
+    // On-Campus / Online / Advanced Degree Programs split.
+    let selectedBucket = "online";
+
+    function selectBucket(bucket) {
+      selectedBucket = bucket;
+      document.querySelectorAll(".bucket-tab").forEach(tab => {
+        tab.setAttribute("aria-pressed", String(tab.dataset.bucket === bucket));
+      });
+      Object.entries(programButtons).forEach(([key, btn]) => {
+        if (btn) btn.hidden = CONFIG.programs[key].bucket !== bucket;
+      });
+      if (CONFIG.programs[selectedProgram].bucket !== bucket) {
+        const first = Object.keys(CONFIG.programs)
+          .find(k => CONFIG.programs[k].bucket === bucket);
+        selectProgram(first);
+      }
+    }
 
     let selectedScholarshipId = null;
 
@@ -1071,6 +1189,10 @@
     Object.entries(programButtons).forEach(([key, btn]) => {
       if (btn) btn.addEventListener("click", () => selectProgram(key));
     });
+    document.querySelectorAll(".bucket-tab").forEach(tab => {
+      tab.addEventListener("click", () => selectBucket(tab.dataset.bucket));
+    });
+    selectBucket(selectedBucket);
     els.sbcScholarshipYes.addEventListener("click", () => selectSbcScholarship(true));
     els.sbcScholarshipNo.addEventListener("click", () => selectSbcScholarship(false));
 
