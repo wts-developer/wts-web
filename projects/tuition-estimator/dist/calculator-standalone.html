@@ -260,6 +260,19 @@
       transform: translateY(-4px);
     }
 
+    .online-badge.alt-modality {
+      border-color: rgba(96,96,96,.3);
+      background: transparent;
+      color: #767676;
+      cursor: pointer;
+    }
+
+    .online-badge.alt-modality:hover,
+    .online-badge.alt-modality:focus {
+      text-decoration: underline;
+      color: #4a4a4a;
+    }
+
     .online-badge.campus {
       border-color: rgba(140,34,51,.45);
       background: rgba(140,34,51,.10);
@@ -2142,8 +2155,8 @@
         <div class="step-label">Step 1</div>
         <h2 class="section-heading">Choose Your Program</h2>
         <div class="bucket-tabs" aria-label="Program category">
-          <button type="button" class="bucket-tab" data-bucket="campus" aria-pressed="false">On-Campus Programs</button>
           <button type="button" class="bucket-tab" data-bucket="online" aria-pressed="true">Online Programs</button>
+          <button type="button" class="bucket-tab" data-bucket="campus" aria-pressed="false">On-Campus Programs</button>
           <button type="button" class="bucket-tab" data-bucket="advanced" aria-pressed="false">Advanced Degree Programs</button>
         </div>
         <div class="program-switch" aria-label="Program selection">
@@ -2161,63 +2174,63 @@
           </button>
           <button type="button" id="mdivBtn" class="program-card" aria-pressed="false">
             <div class="name">MDiv</div>
-            <div class="card-badges"><span class="online-badge">Online</span></div>
+            <div class="card-badges"><span class="online-badge">Online</span> <span class="online-badge alt-modality" data-jump="MDivCampus" title="See the on-campus MDiv">Also on campus</span></div>
             <div class="desc">Master of Divinity</div>
             <div class="code">111 credits</div>
           </button>
           <button type="button" id="marBtn" class="program-card" aria-pressed="false">
             <div class="name">MAR</div>
-            <div class="card-badges"><span class="online-badge">Online</span></div>
+            <div class="card-badges"><span class="online-badge">Online</span> <span class="online-badge alt-modality" data-jump="MARCampus" title="See the on-campus MAR">Also on campus</span></div>
             <div class="desc">Master of Arts in Religion</div>
             <div class="code">74 credits</div>
           </button>
           <button type="button" id="certTHBtn" class="program-card" aria-pressed="false">
-            <div class="name">TH</div>
+            <div class="name">TSC-TH</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
             <div class="desc">Theological Studies Certificate: Theology and History</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="certFTBtn" class="program-card" aria-pressed="false">
-            <div class="name">FT</div>
+            <div class="name">TSC-FT</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
             <div class="desc">Theological Studies Certificate: Foundations of Theology</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="certBIBtn" class="program-card" aria-pressed="false">
-            <div class="name">BI</div>
+            <div class="name">TSC-BI</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
             <div class="desc">Theological Studies Certificate: Biblical Interpretation</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="certGreekBtn" class="program-card" aria-pressed="false">
-            <div class="name">Greek</div>
+            <div class="name">BLC-G</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
             <div class="desc">Biblical Languages Certificate: Greek</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="certHebrewBtn" class="program-card" aria-pressed="false">
-            <div class="name">Hebrew</div>
+            <div class="name">BLC-H</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
             <div class="desc">Biblical Languages Certificate: Hebrew</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="mdivCampusBtn" class="program-card" aria-pressed="false">
             <div class="name">MDiv</div>
-            <div class="card-badges"><span class="online-badge campus">On Campus</span></div>
+            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MDiv" title="See the online MDiv">Also online</span></div>
             <div class="desc">Master of Divinity, General Ministries</div>
             <div class="code">111 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
           </button>
           <button type="button" id="mdivFellowsBtn" class="program-card" aria-pressed="false">
             <div class="name">MDiv</div>
-            <div class="card-badges"><span class="online-badge campus">On Campus</span></div>
+            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MDiv" title="See the online MDiv">Also online</span></div>
             <div class="desc">Master of Divinity, Pastoral Fellows</div>
             <div class="code">111 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
           </button>
           <button type="button" id="marCampusBtn" class="program-card" aria-pressed="false">
             <div class="name">MAR</div>
-            <div class="card-badges"><span class="online-badge campus">On Campus</span></div>
+            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MAR" title="See the online MAR">Also online</span></div>
             <div class="desc">Master of Arts in Religion</div>
             <div class="code">74 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
@@ -2756,7 +2769,7 @@
         // the Biblical Languages certificates with the semester calendar
         // (rate increase effective Summer 2027 for them).
         CertTH: {
-          name: "TH",
+          name: "TSC-TH",
           fullName: "Theological Studies Certificate: Theology and History",
           credits: 9,
           bucket: "online",
@@ -2768,7 +2781,7 @@
           description: "certificate program, no scholarships currently apply"
         },
         CertFT: {
-          name: "FT",
+          name: "TSC-FT",
           fullName: "Theological Studies Certificate: Foundations of Theology",
           credits: 9,
           bucket: "online",
@@ -2780,7 +2793,7 @@
           description: "certificate program, no scholarships currently apply"
         },
         CertBI: {
-          name: "BI",
+          name: "TSC-BI",
           fullName: "Theological Studies Certificate: Biblical Interpretation",
           credits: 9,
           bucket: "online",
@@ -2792,7 +2805,7 @@
           description: "certificate program, no scholarships currently apply"
         },
         CertGreek: {
-          name: "Greek",
+          name: "BLC-G",
           fullName: "Biblical Languages Certificate: Greek",
           credits: 9,
           bucket: "online",
@@ -2803,7 +2816,7 @@
           description: "certificate program, no scholarships currently apply"
         },
         CertHebrew: {
-          name: "Hebrew",
+          name: "BLC-H",
           fullName: "Biblical Languages Certificate: Hebrew",
           credits: 9,
           bucket: "online",
@@ -3803,6 +3816,16 @@
     });
     document.querySelectorAll(".bucket-tab").forEach(tab => {
       tab.addEventListener("click", () => selectBucket(tab.dataset.bucket));
+    });
+    // "Also online" / "Also on campus" chips jump to the same degree in
+    // the other modality, which lives on a different bucket tab.
+    document.querySelectorAll(".alt-modality[data-jump]").forEach(chip => {
+      chip.addEventListener("click", event => {
+        event.stopPropagation();
+        const key = chip.dataset.jump;
+        selectBucket(CONFIG.programs[key].bucket);
+        selectProgram(key);
+      });
     });
     selectBucket(selectedBucket);
     els.sbcScholarshipYes.addEventListener("click", () => selectSbcScholarship(true));

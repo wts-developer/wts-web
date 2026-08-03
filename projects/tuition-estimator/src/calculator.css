@@ -250,6 +250,19 @@
       transform: translateY(-4px);
     }
 
+    .online-badge.alt-modality {
+      border-color: rgba(96,96,96,.3);
+      background: transparent;
+      color: #767676;
+      cursor: pointer;
+    }
+
+    .online-badge.alt-modality:hover,
+    .online-badge.alt-modality:focus {
+      text-decoration: underline;
+      color: #4a4a4a;
+    }
+
     .online-badge.campus {
       border-color: rgba(140,34,51,.45);
       background: rgba(140,34,51,.10);
