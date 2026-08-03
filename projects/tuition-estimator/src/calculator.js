@@ -150,7 +150,7 @@
         // the Biblical Languages certificates with the semester calendar
         // (rate increase effective Summer 2027 for them).
         CertTH: {
-          name: "TH",
+          name: "TSC-TH",
           fullName: "Theological Studies Certificate: Theology and History",
           credits: 9,
           bucket: "online",
@@ -162,7 +162,7 @@
           description: "certificate program, no scholarships currently apply"
         },
         CertFT: {
-          name: "FT",
+          name: "TSC-FT",
           fullName: "Theological Studies Certificate: Foundations of Theology",
           credits: 9,
           bucket: "online",
@@ -174,7 +174,7 @@
           description: "certificate program, no scholarships currently apply"
         },
         CertBI: {
-          name: "BI",
+          name: "TSC-BI",
           fullName: "Theological Studies Certificate: Biblical Interpretation",
           credits: 9,
           bucket: "online",
@@ -186,7 +186,7 @@
           description: "certificate program, no scholarships currently apply"
         },
         CertGreek: {
-          name: "Greek",
+          name: "BLC-G",
           fullName: "Biblical Languages Certificate: Greek",
           credits: 9,
           bucket: "online",
@@ -197,7 +197,7 @@
           description: "certificate program, no scholarships currently apply"
         },
         CertHebrew: {
-          name: "Hebrew",
+          name: "BLC-H",
           fullName: "Biblical Languages Certificate: Hebrew",
           credits: 9,
           bucket: "online",
@@ -1197,6 +1197,16 @@
     });
     document.querySelectorAll(".bucket-tab").forEach(tab => {
       tab.addEventListener("click", () => selectBucket(tab.dataset.bucket));
+    });
+    // "Also online" / "Also on campus" chips jump to the same degree in
+    // the other modality, which lives on a different bucket tab.
+    document.querySelectorAll(".alt-modality[data-jump]").forEach(chip => {
+      chip.addEventListener("click", event => {
+        event.stopPropagation();
+        const key = chip.dataset.jump;
+        selectBucket(CONFIG.programs[key].bucket);
+        selectProgram(key);
+      });
     });
     selectBucket(selectedBucket);
     els.sbcScholarshipYes.addEventListener("click", () => selectSbcScholarship(true));
