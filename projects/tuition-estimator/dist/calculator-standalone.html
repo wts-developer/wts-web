@@ -28,9 +28,9 @@
       --mono: "Lato", Arial, Helvetica, sans-serif;
       --border: rgba(86, 87, 90, .18);
       --shadow: 0 18px 50px rgba(31, 32, 35, .10);
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
+      --radius-xl: 8px;
+      --radius-lg: 6px;
+      --radius-md: 4px;
     }
 
     * { box-sizing: border-box; }
@@ -126,7 +126,7 @@
 
     .hero-card {
       border: 1px solid rgba(255,255,255,.18);
-      border-radius: 24px;
+      border-radius: 6px;
       background: rgba(255,255,255,.10);
       backdrop-filter: blur(8px);
       padding: 22px;
@@ -176,7 +176,7 @@
 
     .program-switch {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
     }
 
@@ -196,7 +196,7 @@
       align-items: flex-start;
       justify-content: flex-start;
       border: 1px solid var(--border);
-      border-radius: 24px;
+      border-radius: 6px;
       background: rgba(255,255,255,.82);
       box-shadow: 0 8px 24px rgba(31,32,35,.05);
       padding: 22px;
@@ -261,16 +261,12 @@
     }
 
     .online-badge.alt-modality {
-      border-color: rgba(96,96,96,.3);
-      background: transparent;
-      color: #767676;
       cursor: pointer;
     }
 
     .online-badge.alt-modality:hover,
     .online-badge.alt-modality:focus {
       text-decoration: underline;
-      color: #4a4a4a;
     }
 
     .online-badge.campus {
@@ -289,7 +285,6 @@
     /* On-campus (100% funded) programs: nothing to estimate, so the inputs
        panel hides and the results card spans the full width. */
     .funded-mode .left-column { display: none; }
-    .funded-mode .builder-grid { grid-template-columns: 1fr; }
 
     /* Course-priced programs (ThM, DMin, PhD) bill per course, so the
        per-credit start-term rate increase and pace options do not apply. */
@@ -341,11 +336,11 @@
       margin-bottom: 8px;
     }
 
-    /* Step 1 (programs) and step 2 (financial information) sit side by
-       side; step 3 (the results card) spans the full width below them. */
+    /* Steps flow vertically: programs, then financial information, then
+       the results card. */
     .builder-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 24px;
       align-items: start;
       margin-top: 8px;
@@ -502,7 +497,7 @@
     .quick-amount {
       border: 1px solid var(--border);
       background: #fff;
-      border-radius: 999px;
+      border-radius: 4px;
       padding: 10px 8px;
       cursor: pointer;
       font-family: var(--mono);
@@ -646,7 +641,7 @@
 
     .mini {
       border: 1px solid rgba(255,255,255,.18);
-      border-radius: 16px;
+      border-radius: 5px;
       background: rgba(255,255,255,.1);
       padding: 14px;
       min-width: 0;
@@ -852,7 +847,7 @@
     .mix-panel {
       margin-top: 22px;
       background: rgba(255,255,255,.96);
-      border-radius: 18px;
+      border-radius: 5px;
       padding: 20px 24px;
       color: var(--wts-ink);
     }
@@ -968,7 +963,7 @@
 
     .notice {
       margin-top: 20px;
-      border-radius: 18px;
+      border-radius: 5px;
       border: 1px solid rgba(189,139,65,.36);
       background: rgba(189,139,65,.11);
       padding: 16px 18px;
@@ -1029,7 +1024,7 @@
       align-items: center;
       justify-content: center;
       min-height: 48px;
-      border-radius: 999px;
+      border-radius: 4px;
       border: 1px solid transparent;
       padding: 12px 16px;
       font-family: inherit;
@@ -1095,7 +1090,7 @@
     .range-value {
       min-width: 76px;
       border: 1px solid var(--border);
-      border-radius: 999px;
+      border-radius: 4px;
       background: #fff;
       padding: 8px 10px;
       font-family: var(--mono);
@@ -1148,7 +1143,7 @@
       width: min(300px, calc(100vw - 56px));
       max-width: 300px;
       padding: 12px 14px;
-      border-radius: 12px;
+      border-radius: 4px;
       border: 1px solid rgba(86,87,90,.18);
       background: #fff;
       color: var(--wts-ink);
@@ -1215,7 +1210,7 @@
       gap: 10px;
       align-items: start;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 4px;
       background: #fff;
       padding: 11px 12px;
       margin: 0;
@@ -1268,7 +1263,7 @@
     .summary-row.match-opportunity {
       margin: 6px -8px;
       padding: 14px 8px;
-      border-radius: 12px;
+      border-radius: 4px;
       border-bottom: 0;
       background: rgba(189,139,65,.16);
       box-shadow: inset 0 0 0 1px rgba(189,139,65,.38);
@@ -1282,6 +1277,7 @@
 
     @media (max-width: 1020px) {
       .hero, .builder-grid { grid-template-columns: 1fr; }
+      .program-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .result-mini-grid { grid-template-columns: 1fr; }
     }
 
@@ -1491,7 +1487,7 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 4px;
       overflow: hidden;
       background: #fff;
       margin-bottom: 16px;
@@ -1520,14 +1516,33 @@
       color: #fff;
     }
 
-    /* Two columns of compact cards inside the half-width step 1 panel. */
+    /* Three columns of compact cards across the full-width step 1 section;
+       two at tablet width, one on phones. These live after the generic
+       responsive rules, so they need their own breakpoints. */
     .program-switch {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (max-width: 1020px) {
+      .program-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      .program-switch { grid-template-columns: 1fr; }
+    }
+
+    /* Step 2 now spans the page; keep its content a readable width. */
+    .input-panel .panel-body {
+      max-width: 820px;
+    }
+
+    .results-update-note {
+      margin: -4px 0 18px;
     }
 
     .program-card {
       padding: 16px 18px;
-      border-radius: 18px;
+      border-radius: 5px;
     }
 
 
@@ -1625,8 +1640,9 @@
 
     .program-card .name {
       font-family: var(--serif);
-      font-size: 1.6rem;
-      font-weight: 300;
+      font-size: 1.16rem;
+      font-weight: 400;
+      line-height: 1.35;
       letter-spacing: normal;
       margin-bottom: 4px;
     }
@@ -1672,7 +1688,7 @@
     .scholarship-availability-note {
       padding: 12px 14px;
       border: 1px solid rgba(86,87,90,.22);
-      border-radius: 12px;
+      border-radius: 4px;
       background: #f7f7f7;
       color: var(--wts-gray);
       font-size: .86rem;
@@ -2157,100 +2173,85 @@
         <div class="bucket-tabs" aria-label="Program category">
           <button type="button" class="bucket-tab" data-bucket="online" aria-pressed="true">Online Programs</button>
           <button type="button" class="bucket-tab" data-bucket="campus" aria-pressed="false">On-Campus Programs</button>
-          <button type="button" class="bucket-tab" data-bucket="advanced" aria-pressed="false">Advanced Degree Programs</button>
+          <button type="button" class="bucket-tab" data-bucket="advanced" aria-pressed="false">Advanced Programs</button>
         </div>
         <div class="program-switch" aria-label="Program selection">
           <button type="button" id="matsBtn" class="program-card" aria-pressed="true">
-            <div class="name">MATS</div>
+            <div class="name">Master of Arts in Theological Studies (MATS)</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
-            <div class="desc">Master of Arts in Theological Studies</div>
             <div class="code">36 credits</div>
           </button>
           <button type="button" id="macBtn" class="program-card" aria-pressed="false">
-            <div class="name">MAC</div>
+            <div class="name">Master of Arts in Counseling (MAC)</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
-            <div class="desc">Master of Arts in Counseling</div>
             <div class="code">61 credits</div>
           </button>
           <button type="button" id="mdivBtn" class="program-card" aria-pressed="false">
-            <div class="name">MDiv</div>
-            <div class="card-badges"><span class="online-badge">Online</span> <span class="online-badge alt-modality" data-jump="MDivCampus" title="See the on-campus MDiv">Also on campus</span></div>
-            <div class="desc">Master of Divinity</div>
+            <div class="name">Master of Divinity, General Ministries (MDiv)</div>
+            <div class="card-badges"><span class="online-badge">Online</span> <span class="online-badge campus alt-modality" data-jump="MDivCampus" title="See the on-campus MDiv">On Campus</span></div>
             <div class="code">111 credits</div>
           </button>
           <button type="button" id="marBtn" class="program-card" aria-pressed="false">
-            <div class="name">MAR</div>
-            <div class="card-badges"><span class="online-badge">Online</span> <span class="online-badge alt-modality" data-jump="MARCampus" title="See the on-campus MAR">Also on campus</span></div>
-            <div class="desc">Master of Arts in Religion</div>
+            <div class="name">Master of Arts in Religion (MAR)</div>
+            <div class="card-badges"><span class="online-badge">Online</span> <span class="online-badge campus alt-modality" data-jump="MARCampus" title="See the on-campus MAR">On Campus</span></div>
             <div class="code">74 credits</div>
           </button>
           <button type="button" id="certTHBtn" class="program-card" aria-pressed="false">
-            <div class="name">TSC-TH</div>
+            <div class="name">Theological Studies Certificate: Theology and History (TSC-TH)</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
-            <div class="desc">Theological Studies Certificate: Theology and History</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="certFTBtn" class="program-card" aria-pressed="false">
-            <div class="name">TSC-FT</div>
+            <div class="name">Theological Studies Certificate: Foundations of Theology (TSC-FT)</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
-            <div class="desc">Theological Studies Certificate: Foundations of Theology</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="certBIBtn" class="program-card" aria-pressed="false">
-            <div class="name">TSC-BI</div>
+            <div class="name">Theological Studies Certificate: Biblical Interpretation (TSC-BI)</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
-            <div class="desc">Theological Studies Certificate: Biblical Interpretation</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="certGreekBtn" class="program-card" aria-pressed="false">
-            <div class="name">BLC-G</div>
+            <div class="name">Biblical Languages Certificate: Greek (BLC-G)</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
-            <div class="desc">Biblical Languages Certificate: Greek</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="certHebrewBtn" class="program-card" aria-pressed="false">
-            <div class="name">BLC-H</div>
+            <div class="name">Biblical Languages Certificate: Hebrew (BLC-H)</div>
             <div class="card-badges"><span class="online-badge">Online</span></div>
-            <div class="desc">Biblical Languages Certificate: Hebrew</div>
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="mdivCampusBtn" class="program-card" aria-pressed="false">
-            <div class="name">MDiv</div>
-            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MDiv" title="See the online MDiv">Also online</span></div>
-            <div class="desc">Master of Divinity, General Ministries</div>
+            <div class="name">Master of Divinity, General Ministries (MDiv G)</div>
+            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MDiv" title="See the online MDiv">Online</span></div>
             <div class="code">111 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
           </button>
           <button type="button" id="mdivFellowsBtn" class="program-card" aria-pressed="false">
-            <div class="name">MDiv</div>
-            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MDiv" title="See the online MDiv">Also online</span></div>
-            <div class="desc">Master of Divinity, Pastoral Fellows</div>
+            <div class="name">Master of Divinity, Pastoral Fellows (MDiv PF)</div>
+            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MDiv" title="See the online MDiv">Online</span></div>
             <div class="code">111 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
           </button>
           <button type="button" id="marCampusBtn" class="program-card" aria-pressed="false">
-            <div class="name">MAR</div>
-            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MAR" title="See the online MAR">Also online</span></div>
-            <div class="desc">Master of Arts in Religion</div>
+            <div class="name">Master of Arts in Religion (MAR)</div>
+            <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MAR" title="See the online MAR">Online</span></div>
             <div class="code">74 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
           </button>
           <button type="button" id="thmBtn" class="program-card" aria-pressed="false">
-            <div class="name">ThM</div>
+            <div class="name">Master of Theology (ThM)</div>
             <div class="card-badges"><span class="online-badge">Online</span> <span class="online-badge campus">On Campus</span></div>
-            <div class="desc">Master of Theology</div>
             <div class="code">6 courses</div>
           </button>
           <button type="button" id="dminBtn" class="program-card" aria-pressed="false">
-            <div class="name">DMin</div>
+            <div class="name">Doctor of Ministry (DMin)</div>
             <div class="card-badges"><span class="online-badge campus">On Campus</span></div>
-            <div class="desc">Doctor of Ministry</div>
             <div class="code">8 modular courses</div>
           </button>
           <button type="button" id="phdBtn" class="program-card" aria-pressed="false">
-            <div class="name">PhD</div>
+            <div class="name">Doctor of Philosophy (PhD)</div>
             <div class="card-badges"><span class="online-badge campus">On Campus</span></div>
-            <div class="desc">Doctor of Philosophy</div>
             <div class="code">10 courses</div>
           </button>
         </div>
@@ -2265,12 +2266,12 @@
               <div class="scholarship-reference">
                 <div class="label-title">Available Westminster scholarship support</div>
                 <ul class="scholarship-list" id="scholarshipList"></ul>
-                <p class="annotation" id="scholarshipAnnotation">Select the Westminster scholarship you hope to attain for your program of interest. Scholarships are limited and require an application. Eligibility does not guarantee an award. Matching Scholarship support applies automatically to the "additional support" section below.</p>
+                <p class="annotation" id="scholarshipAnnotation">Select the Westminster scholarship you hope to receive. Scholarships are limited and require an application. Eligibility does not guarantee an award. Matching Scholarship support applies automatically to the "additional support" section below.</p>
               </div>
             </div>
 
             <div class="field">
-              <label for="fundsRaised" id="fundsRaisedLabel">Additional support from outside resources</label>
+              <label for="fundsRaised" id="fundsRaisedLabel">Additional support from outside resources*</label>
               <input id="fundsRaised" type="number" min="0" step="100" value="0" />
               <div class="amount-buttons" aria-label="Quick support amounts">
                 <button type="button" class="quick-amount" data-amount="0">$0</button>
@@ -2279,7 +2280,7 @@
                 <button type="button" class="quick-amount" data-amount="10000">$10,000</button>
                 <button type="button" class="quick-amount max-match" id="maxMatchBtn" hidden></button>
               </div>
-              <div class="annotation">Enter the amount of financial support you expect for the full length of your program of interest beyond Westminster scholarships. Sources may include church or ministry partners, employers, VA or GI benefits, denominational scholarships, and others.</div>
+              <div class="annotation" id="fundsRaisedNote">*Enter the amount of outside financial support you expect for the full length of your program, beyond Westminster scholarships. Sources may include church or ministry partners, employers, family, friends, VA or GI benefits, denominational scholarships, and others. <span id="matchEligibilityNote">All of these lower your estimated cost, but only support from churches, ministry partners, employers, family, and friends counts toward a Westminster matching scholarship.</span></div>
             </div>
 
             <div class="field">
@@ -2406,7 +2407,6 @@
               </div>
             </details>
 
-            <p class="annotation">This estimate updates automatically as you change your answers.</p>
           </div>
           </div>
 
@@ -2416,6 +2416,7 @@
       <section class="results-section">
         <div class="step-label" id="resultsStepLabel">Step 3</div>
         <h2 class="section-heading">Your Estimated Cost After Support</h2>
+        <p class="annotation results-update-note">Estimates update automatically as you change your answers above.</p>
           <article class="result-card" aria-label="Estimated cost after support">
 
             <div class="result-mini-grid">
@@ -2679,7 +2680,7 @@
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
         },
         MDivCampus: {
-          name: "MDiv",
+          name: "MDiv G",
           fullName: "Master of Divinity, General Ministries",
           credits: 111,
           bucket: "campus",
@@ -2695,7 +2696,7 @@
           description: "tuition 100% funded for admitted students"
         },
         MDivFellows: {
-          name: "MDiv",
+          name: "MDiv PF",
           fullName: "Master of Divinity, Pastoral Fellows",
           credits: 111,
           bucket: "campus",
@@ -2937,13 +2938,13 @@
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MDivCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $212,010 at the published residential rate. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $212,000 over four years. No out-of-pocket tuition." }
       ],
       MDivFellows: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $243,978 at the published Pastoral Fellows rate. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $61,000/year, the scholarship is worth about $244,000 over four years. No out-of-pocket tuition." }
       ],
       MARCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $159,026 at the published residential rate. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $159,000 over three years. No out-of-pocket tuition." }
       ],
       ThM: [
         { name: "Matching Grant", detail: "Dollar-for-dollar match on your additional outside support for full-time ThM students, up to 20% of total tuition, in any modality." }
@@ -2980,7 +2981,7 @@
       certTHBtn: $("certTHBtn"), certFTBtn: $("certFTBtn"), certBIBtn: $("certBIBtn"),
       certGreekBtn: $("certGreekBtn"), certHebrewBtn: $("certHebrewBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
-      rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"),
+      rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"), matchEligibilityNote: $("matchEligibilityNote"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       maxMatchBtn: $("maxMatchBtn"),
       scholarshipList: $("scholarshipList"),
@@ -3412,7 +3413,7 @@
       `).join("");
     }
 
-    const MATCH_FOOTNOTE = "*Westminster only matches support from the following sources: churches, ministry partners, employers, family, and friends. Funds supplied by the GI Bill, denominational scholarships, and other sources do not qualify.";
+    const MATCH_FOOTNOTE = "*Westminster only matches support from churches, ministry partners, employers, family, and friends. Funds from the GI Bill, denominational scholarships, and other sources still lower your estimated cost but do not count toward the match.";
 
     function setResultFootnote(parts) {
       const text = parts.filter(Boolean).join(" ");
@@ -3424,6 +3425,9 @@
     // match footnote.
     function setOutsideSupportAsterisk(hasMatch) {
       els.miniRemainingLabel.textContent = hasMatch ? "Outside Support*" : "Outside Support";
+      // The match-eligibility sentence in the step 2 note only applies
+      // while a matching scholarship is in play.
+      if (els.matchEligibilityNote) els.matchEligibilityNote.hidden = !hasMatch;
     }
 
     // The maximum outside support the current matching scholarship will
@@ -3461,9 +3465,13 @@
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
         els.netPrice.textContent = money(fundedNet);
+        const approxWorth = Math.round(gross / 1000) * 1000;
+        const yearCount = Math.round(gross / program.annualRate);
+        const yearsWord = { 3: "three", 4: "four" }[yearCount] || String(yearCount);
         setResultFootnote([
-          `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. That scholarship is worth about ${money(gross)} at the published residential rate of ${money(program.residentialRate)} per credit (${money(program.annualRate)} per academic year). No out-of-pocket tuition.`,
-          `The estimate reflects the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term student fee; plan for the student fee in the remaining terms.`
+          `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. At ${money(program.annualRate)}/year, the scholarship is worth about ${money(approxWorth)} over ${yearsWord} years. No out-of-pocket tuition.`,
+          `The full program comes to ${money(gross)} in tuition at catalog rates. The estimate reflects the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term student fee; plan for the student fee in the remaining terms.`,
+          `On-campus scholarships are funded almost entirely by generous donors.`
         ]);
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
@@ -3795,8 +3803,8 @@
       document.body.classList.toggle("course-priced-mode", !!CONFIG.programs[key].coursePriced);
       if (els.fundsRaisedLabel) {
         els.fundsRaisedLabel.textContent = key === "DMin"
-          ? "Ministry partner (e.g. church) payments over full program"
-          : "Additional support from outside resources";
+          ? "Ministry partner (e.g. church) payments over full program*"
+          : "Additional support from outside resources*";
       }
 
       Object.entries(programButtons).forEach(([k, btn]) => {
