@@ -149,9 +149,9 @@
         // certificates follow the four-term calendar; the registrar groups
         // the Biblical Languages certificates with the semester calendar
         // (rate increase effective Summer 2027 for them).
-        CertTH: {
-          name: "TSC-TH",
-          fullName: "Theological Studies Certificate: Theology and History",
+        CertTSC: {
+          name: "TSC",
+          fullName: "Theological Studies Certificate",
           credits: 9,
           bucket: "online",
           certificate: true,
@@ -161,44 +161,9 @@
           theme: ONLINE_THEME,
           description: "certificate program, no scholarships currently apply"
         },
-        CertFT: {
-          name: "TSC-FT",
-          fullName: "Theological Studies Certificate: Foundations of Theology",
-          credits: 9,
-          bucket: "online",
-          certificate: true,
-          stackable: true,
-          matchType: "none",
-          termSystem: "online",
-          theme: ONLINE_THEME,
-          description: "certificate program, no scholarships currently apply"
-        },
-        CertBI: {
-          name: "TSC-BI",
-          fullName: "Theological Studies Certificate: Biblical Interpretation",
-          credits: 9,
-          bucket: "online",
-          certificate: true,
-          stackable: true,
-          matchType: "none",
-          termSystem: "online",
-          theme: ONLINE_THEME,
-          description: "certificate program, no scholarships currently apply"
-        },
-        CertGreek: {
-          name: "BLC-G",
-          fullName: "Biblical Languages Certificate: Greek",
-          credits: 9,
-          bucket: "online",
-          certificate: true,
-          matchType: "none",
-          termSystem: "residential",
-          theme: ONLINE_THEME,
-          description: "certificate program, no scholarships currently apply"
-        },
-        CertHebrew: {
-          name: "BLC-H",
-          fullName: "Biblical Languages Certificate: Hebrew",
+        CertBLC: {
+          name: "BLC",
+          fullName: "Biblical Languages Certificate",
           credits: 9,
           bucket: "online",
           certificate: true,
@@ -336,19 +301,10 @@
       PhD: [
         { name: "Committee Scholarships", detail: "PhD scholarships are determined individually by the committee and are not included in this estimate." }
       ],
-      CertTH: [
+      CertTSC: [
         { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
       ],
-      CertFT: [
-        { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
-      ],
-      CertBI: [
-        { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
-      ],
-      CertGreek: [
-        { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
-      ],
-      CertHebrew: [
+      CertBLC: [
         { name: "Certificate Programs", detail: "No Westminster scholarships currently apply to certificate programs. Outside support you raise still reduces your cost." }
       ]
     };
@@ -358,8 +314,7 @@
       matsBtn: $("matsBtn"), macBtn: $("macBtn"), mdivBtn: $("mdivBtn"), marBtn: $("marBtn"),
       mdivCampusBtn: $("mdivCampusBtn"), mdivFellowsBtn: $("mdivFellowsBtn"), marCampusBtn: $("marCampusBtn"),
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
-      certTHBtn: $("certTHBtn"), certFTBtn: $("certFTBtn"), certBIBtn: $("certBIBtn"),
-      certGreekBtn: $("certGreekBtn"), certHebrewBtn: $("certHebrewBtn"),
+      certTSCBtn: $("certTSCBtn"), certBLCBtn: $("certBLCBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
       rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"), matchEligibilityNote: $("matchEligibilityNote"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
@@ -972,7 +927,7 @@
       if (program.certificate) {
         footnoteParts.push(`The estimate includes the ${money(CONFIG.applicationFee)} application fee, which is one-and-done across certificates: moving on to another certificate or a full degree does not incur a new fee.`);
         if (program.stackable) {
-          footnoteParts.push("The three Theological Studies Certificates plus three electives stack into a full MATS.");
+          footnoteParts.push("The three Theological Studies Certificate emphases plus three electives stack into a full MATS.");
         }
       } else {
         footnoteParts.push(`The estimate includes the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.onlineEnrollmentDeposit)} enrollment deposit is due when you enroll and is applied toward tuition.`);
@@ -1089,8 +1044,7 @@
 
     const programButtons = {
       MATS: els.matsBtn, MAC: els.macBtn, MDiv: els.mdivBtn, MAR: els.marBtn,
-      CertTH: els.certTHBtn, CertFT: els.certFTBtn, CertBI: els.certBIBtn,
-      CertGreek: els.certGreekBtn, CertHebrew: els.certHebrewBtn,
+      CertTSC: els.certTSCBtn, CertBLC: els.certBLCBtn,
       ThM: els.thmBtn, MDivCampus: els.mdivCampusBtn, MDivFellows: els.mdivFellowsBtn,
       MARCampus: els.marCampusBtn, DMin: els.dminBtn, PhD: els.phdBtn
     };
