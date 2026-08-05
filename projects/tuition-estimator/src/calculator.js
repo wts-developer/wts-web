@@ -60,7 +60,7 @@
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
         },
         MDivCampus: {
-          name: "MDiv",
+          name: "MDiv G",
           fullName: "Master of Divinity, General Ministries",
           credits: 111,
           bucket: "campus",
@@ -76,7 +76,7 @@
           description: "tuition 100% funded for admitted students"
         },
         MDivFellows: {
-          name: "MDiv",
+          name: "MDiv PF",
           fullName: "Master of Divinity, Pastoral Fellows",
           credits: 111,
           bucket: "campus",
@@ -318,13 +318,13 @@
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MDivCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $212,010 at the published residential rate. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $212,000 over four years. No out-of-pocket tuition." }
       ],
       MDivFellows: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $243,978 at the published Pastoral Fellows rate. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $61,000/year, the scholarship is worth about $244,000 over four years. No out-of-pocket tuition." }
       ],
       MARCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, a scholarship worth about $159,026 at the published residential rate. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $159,000 over three years. No out-of-pocket tuition." }
       ],
       ThM: [
         { name: "Matching Grant", detail: "Dollar-for-dollar match on your additional outside support for full-time ThM students, up to 20% of total tuition, in any modality." }
@@ -361,7 +361,7 @@
       certTHBtn: $("certTHBtn"), certFTBtn: $("certFTBtn"), certBIBtn: $("certBIBtn"),
       certGreekBtn: $("certGreekBtn"), certHebrewBtn: $("certHebrewBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
-      rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"),
+      rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"), matchEligibilityNote: $("matchEligibilityNote"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       maxMatchBtn: $("maxMatchBtn"),
       scholarshipList: $("scholarshipList"),
@@ -793,7 +793,7 @@
       `).join("");
     }
 
-    const MATCH_FOOTNOTE = "*Westminster only matches support from the following sources: churches, ministry partners, employers, family, and friends. Funds supplied by the GI Bill, denominational scholarships, and other sources do not qualify.";
+    const MATCH_FOOTNOTE = "*Westminster only matches support from churches, ministry partners, employers, family, and friends. Funds from the GI Bill, denominational scholarships, and other sources still lower your estimated cost but do not count toward the match.";
 
     function setResultFootnote(parts) {
       const text = parts.filter(Boolean).join(" ");
@@ -805,6 +805,9 @@
     // match footnote.
     function setOutsideSupportAsterisk(hasMatch) {
       els.miniRemainingLabel.textContent = hasMatch ? "Outside Support*" : "Outside Support";
+      // The match-eligibility sentence in the step 2 note only applies
+      // while a matching scholarship is in play.
+      if (els.matchEligibilityNote) els.matchEligibilityNote.hidden = !hasMatch;
     }
 
     // The maximum outside support the current matching scholarship will
@@ -842,9 +845,13 @@
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
         els.netPrice.textContent = money(fundedNet);
+        const approxWorth = Math.round(gross / 1000) * 1000;
+        const yearCount = Math.round(gross / program.annualRate);
+        const yearsWord = { 3: "three", 4: "four" }[yearCount] || String(yearCount);
         setResultFootnote([
-          `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. That scholarship is worth about ${money(gross)} at the published residential rate of ${money(program.residentialRate)} per credit (${money(program.annualRate)} per academic year). No out-of-pocket tuition.`,
-          `The estimate reflects the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term student fee; plan for the student fee in the remaining terms.`
+          `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. At ${money(program.annualRate)}/year, the scholarship is worth about ${money(approxWorth)} over ${yearsWord} years. No out-of-pocket tuition.`,
+          `The full program comes to ${money(gross)} in tuition at catalog rates. The estimate reflects the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term student fee; plan for the student fee in the remaining terms.`,
+          `On-campus scholarships are funded almost entirely by generous donors.`
         ]);
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
@@ -1176,8 +1183,8 @@
       document.body.classList.toggle("course-priced-mode", !!CONFIG.programs[key].coursePriced);
       if (els.fundsRaisedLabel) {
         els.fundsRaisedLabel.textContent = key === "DMin"
-          ? "Ministry partner (e.g. church) payments over full program"
-          : "Additional support from outside resources";
+          ? "Ministry partner (e.g. church) payments over full program*"
+          : "Additional support from outside resources*";
       }
 
       Object.entries(programButtons).forEach(([k, btn]) => {
