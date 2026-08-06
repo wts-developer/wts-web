@@ -21,15 +21,15 @@
           name: "MAC",
           fullName: "Master of Arts in Counseling",
           credits: 61,
-          // The 25% matching scholarship is a TOTAL cap split 50/50: the
-          // student raises up to 12.5% of tuition and Westminster matches
-          // it dollar-for-dollar, for a combined reduction of up to 25%.
+          // Westminster matches outside support dollar-for-dollar up to
+          // 25% of tuition, so a fully matched student reduces tuition
+          // by up to 50% (25% raised + 25% matched).
           matchType: "percentCap",
-          percentCap: 0.125,
+          percentCap: 0.25,
           bucket: "online",
           termSystem: "online",
           theme: ONLINE_THEME,
-          description: "dollar-for-dollar match, combined reduction up to 25% of total tuition"
+          description: "dollar-for-dollar match up to 25% of tuition, combined reduction up to 50%"
         },
         MDiv: {
           name: "MDiv",
@@ -270,9 +270,9 @@
         { id: "awm", calc: { type: "percentTuition", pct: 0.25 }, name: "Advancing Women's Ministry Scholarship", detail: "25% tuition coverage for qualifying students." }
       ],
       MAC: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, capped at 12.5% of tuition on each side, for a combined reduction of up to 25% of total tuition." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to 25% of tuition. Fully matched, it reduces your tuition by up to 50%." },
         { name: "SBC Recognition Fee Scholarship", detail: "May cover part or all of SBC course recognition fees ($1,300 per course)." },
-        { name: "International Student Scholarship", detail: "Limited scholarships available." }
+        { name: "International Student Scholarship", detail: "50% scholarship for students expanding access to biblical counseling globally. Limited scholarships available." }
       ],
       MDiv: [
         { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the Spring 2027 term, then up to 25% of tuition beginning with the Summer 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
@@ -495,14 +495,23 @@
       ];
 
       const total = Math.max(gross, 1);
-      let angle = 0;
 
-      values.forEach(item => {
+      // Label percentages must sum to 100: round the two support slices,
+      // then the student slice absorbs the rounding remainder. Rounding
+      // each slice independently produced pies like 25/25/49, and equal
+      // support amounts must keep equal labels.
+      const pcts = values.map(item => Math.round(item.value / total * 100));
+      if (values[0].value > 0) {
+        pcts[0] = Math.max(0, 100 - pcts[1] - pcts[2]);
+      }
+
+      let angle = 0;
+      values.forEach((item, idx) => {
         const pct = item.value / total;
         const start = angle;
         const end = angle + pct * 360;
         item.path.setAttribute("d", item.value > 0 ? describeSlice(110, 110, 100, start, end) : "");
-        positionPieLabel(item.label, pct * 100, start, end);
+        positionPieLabel(item.label, pcts[idx], start, end);
         angle = end;
       });
     }
