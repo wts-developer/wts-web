@@ -577,7 +577,9 @@
 
     .result-card {
       position: relative;
-      border-radius: var(--radius-xl);
+      /* Same radius as the white panels; a larger one reads as a
+         mismatch against the light background. */
+      border-radius: var(--radius-lg);
       padding: clamp(24px, 4vw, 38px);
       color: #fff;
       /* Always the neutral gray, regardless of program theme, so the
