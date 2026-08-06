@@ -60,7 +60,7 @@
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
         },
         MDivCampus: {
-          name: "MDiv G",
+          name: "MDiv",
           fullName: "Master of Divinity, General Ministries",
           credits: 111,
           bucket: "campus",
@@ -283,13 +283,13 @@
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MDivCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $212,000 over four years. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $212,000 over four years. Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community." }
       ],
       MDivFellows: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $61,000/year, the scholarship is worth about $244,000 over four years. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $61,000/year, the scholarship is worth about $244,000 over four years. Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community." }
       ],
       MARCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $159,000 over three years. No out-of-pocket tuition." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $159,000 over three years. Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community." }
       ],
       ThM: [
         { name: "Matching Grant", detail: "Dollar-for-dollar match on your additional outside support for full-time ThM students, up to 20% of total tuition, in any modality." }
@@ -316,7 +316,7 @@
       thmBtn: $("thmBtn"), dminBtn: $("dminBtn"), phdBtn: $("phdBtn"),
       certTSCBtn: $("certTSCBtn"), certBLCBtn: $("certBLCBtn"),
       fundsRaisedLabel: $("fundsRaisedLabel"), resultsStepLabel: $("resultsStepLabel"),
-      rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"), matchEligibilityNote: $("matchEligibilityNote"),
+      rateIncreaseNote: $("rateIncreaseNote"), scholarshipAnnotation: $("scholarshipAnnotation"), scholarshipSelectNote: $("scholarshipSelectNote"), scholarshipMatchNote: $("scholarshipMatchNote"), matchEligibilityNote: $("matchEligibilityNote"),
       mixTitle: $("mixTitle"), mixProgram: $("mixProgram"), resultFootnote: $("resultFootnote"), miniRemainingLabel: $("miniRemainingLabel"),
       maxMatchBtn: $("maxMatchBtn"),
       scholarshipList: $("scholarshipList"),
@@ -760,9 +760,11 @@
     // match footnote.
     function setOutsideSupportAsterisk(hasMatch) {
       els.miniRemainingLabel.textContent = hasMatch ? "Outside Support*" : "Outside Support";
-      // The match-eligibility sentence in the step 2 note only applies
-      // while a matching scholarship is in play.
+      // The match-eligibility sentence in the step 2 note and the
+      // applies-automatically sentence in the scholarship annotation only
+      // apply while a matching scholarship is in play.
       if (els.matchEligibilityNote) els.matchEligibilityNote.hidden = !hasMatch;
+      if (els.scholarshipMatchNote) els.scholarshipMatchNote.hidden = !hasMatch;
     }
 
     // The maximum outside support the current matching scholarship will
@@ -804,9 +806,9 @@
         const yearCount = Math.round(gross / program.annualRate);
         const yearsWord = { 3: "three", 4: "four" }[yearCount] || String(yearCount);
         setResultFootnote([
-          `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. At ${money(program.annualRate)}/year, the scholarship is worth about ${money(approxWorth)} over ${yearsWord} years. No out-of-pocket tuition.`,
+          `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. At ${money(program.annualRate)}/year, the scholarship is worth about ${money(approxWorth)} over ${yearsWord} years.`,
           `The full program comes to ${money(gross)} in tuition at catalog rates. The estimate reflects the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term student fee; plan for the student fee in the remaining terms.`,
-          `On-campus scholarships are funded almost entirely by generous donors.`
+          `Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community.`
         ]);
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
@@ -1109,6 +1111,11 @@
       // select-a-scholarship guidance does not apply.
       if (els.scholarshipAnnotation) {
         els.scholarshipAnnotation.hidden = !!CONFIG.programs[key].certificate;
+      }
+      // "Select the Westminster scholarship..." only makes sense when
+      // there are options to select (ThM, DMin, and PhD have none).
+      if (els.scholarshipSelectNote) {
+        els.scholarshipSelectNote.hidden = options.length === 0;
       }
 
       els.scholarshipList.querySelectorAll('input[name="scholarshipChoice"]').forEach(input => {
