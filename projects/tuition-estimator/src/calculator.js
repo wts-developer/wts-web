@@ -177,14 +177,14 @@
       futureRate: 750,
       futureRateStart: "2027-06",
       termCycle: ["06", "09", "01", "03"],
-      // Universal $100 application fee, included in every estimate so web
-      // totals match the Hedwig chat engine. The enrollment deposit
-      // ($500 online) and Commitment Fee ($1,000 residential MDiv/MAR)
-      // are surfaced as notes: the deposit is applied toward tuition and
-      // the Commitment Fee covers the first four terms of the $250
-      // per-term residential student fee. Advanced-degree deposits are
-      // still unconfirmed and intentionally omitted.
-      applicationFee: 100,
+      // The $100 application fee is deliberately excluded everywhere: it
+      // is a pre-program admin expense, not program cost (it would not
+      // appear on a 1098-T). Hedwig excludes it too. The enrollment
+      // deposit ($500 online) and Commitment Fee ($1,000 residential
+      // MDiv/MAR) are surfaced as notes: the deposit is applied toward
+      // tuition and the Commitment Fee covers the first four terms of
+      // the $250 per-term residential Community Life Fee.
+      // Advanced-degree deposits are still unconfirmed and omitted.
       onlineEnrollmentDeposit: 500,
       residentialCommitmentFee: 1000,
       residentialTermFee: 250,
@@ -806,7 +806,7 @@
         // amount (full credits at the current per-credit rate, as an
         // illustration) and a $0 cost; the inputs panel is hidden.
         const gross = program.credits * (program.residentialRate || CONFIG.currentRate);
-        const fundedNet = CONFIG.applicationFee;
+        const fundedNet = 0;
         lastMatchCap = 0;
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
@@ -816,7 +816,7 @@
         const yearsWord = { 3: "three", 4: "four" }[yearCount] || String(yearCount);
         setResultFootnote([
           `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. At ${money(program.annualRate)}/year, the scholarship is worth about ${money(approxWorth)} over ${yearsWord} years.`,
-          `The full program comes to ${money(gross)} in tuition at catalog rates. The estimate reflects the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term student fee; plan for the student fee in the remaining terms.`,
+          `The full program comes to ${money(gross)} in tuition at catalog rates. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term Community Life Fee; plan for that fee in the remaining terms.`,
           `Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community.`
         ]);
         els.miniMatch.textContent = money(gross);
@@ -858,17 +858,17 @@
         updateMaxMatchButton();
         const match = Math.min(fundsApplied, matchCap, Math.max(0, gross - baseline - fundsApplied));
         const totalWtsAid = baseline + match;
-        const totalOutOfPocket = Math.max(0, gross - fundsApplied - totalWtsAid) + CONFIG.applicationFee;
+        const totalOutOfPocket = Math.max(0, gross - fundsApplied - totalWtsAid);
         const remainingEligibleMatch = Math.max(0, matchCap - match);
 
-        updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross + CONFIG.applicationFee);
+        updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
 
         els.netPrice.textContent = money(totalOutOfPocket);
-        const feeSentence = `The estimate includes the ${money(CONFIG.applicationFee)} application fee.`;
+        const communityFeeSentence = `Residential students also pay a ${money(CONFIG.residentialTermFee)} per-term Community Life Fee, not included in this estimate.`;
         const footnotes = {
-          ThM: [MATCH_FOOTNOTE, `${feeSentence} It excludes other program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students.`],
-          DMin: [`*The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the published $34,000 total program cost. The baseline scholarship is applied automatically. ${feeSentence}`],
-          PhD: [`PhD scholarships are determined individually by the committee and are not included in this estimate. ${feeSentence} It excludes other program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee.`]
+          ThM: [MATCH_FOOTNOTE, `The estimate excludes other program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students. ${communityFeeSentence}`],
+          DMin: [`*The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the published $34,000 total program cost. The baseline scholarship is applied automatically.`],
+          PhD: [`PhD scholarships are determined individually by the committee and are not included in this estimate. The estimate excludes other program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee. ${communityFeeSentence}`]
         };
         setResultFootnote(footnotes[selectedProgram] || []);
         setOutsideSupportAsterisk(matchCap > 0);
@@ -921,12 +921,12 @@
         ? Math.min(scholarshipAid + standardMatch + additionalAid, Math.max(0, gross - fundsApplied))
         : 0;
       const studentPaid = Math.max(0, gross - fundsApplied - totalWtsAid);
-      const totalOutOfPocket = studentPaid + sbcRecognitionFeeStudentPaid + CONFIG.applicationFee;
+      const totalOutOfPocket = studentPaid + sbcRecognitionFeeStudentPaid;
       const remainingEligibleMatch = scholarshipIncluded ? Math.max(0, matchCap - standardMatch) : 0;
 
       const pieStudentPaid = totalOutOfPocket;
       const pieWtsScholarshipSupport = totalWtsAid + sbcRecognitionScholarship;
-      const pieTotal = gross + sbcRecognitionFee + CONFIG.applicationFee;
+      const pieTotal = gross + sbcRecognitionFee;
 
       updatePieChart(pieStudentPaid, fundsApplied, pieWtsScholarshipSupport, pieTotal);
 
@@ -936,12 +936,11 @@
       const hasMatch = !isPercentScholarship && matchCap > 0;
       const footnoteParts = [hasMatch ? MATCH_FOOTNOTE : ""];
       if (program.certificate) {
-        footnoteParts.push(`The estimate includes the ${money(CONFIG.applicationFee)} application fee, which is one-and-done across certificates: moving on to another certificate or a full degree does not incur a new fee.`);
         if (program.stackable) {
           footnoteParts.push("The three Theological Studies Certificate emphases plus three electives stack into a full MATS.");
         }
       } else {
-        footnoteParts.push(`The estimate includes the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.onlineEnrollmentDeposit)} enrollment deposit is due when you enroll and is applied toward tuition.`);
+        footnoteParts.push(`A ${money(CONFIG.onlineEnrollmentDeposit)} enrollment deposit is due when you enroll and is applied toward tuition.`);
       }
       setResultFootnote(footnoteParts);
       setOutsideSupportAsterisk(hasMatch);

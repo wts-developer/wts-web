@@ -676,14 +676,14 @@ font-size: 16px !important;
       futureRate: 750,
       futureRateStart: "2027-06",
       termCycle: ["06", "09", "01", "03"],
-      // Universal $100 application fee, included in every estimate so web
-      // totals match the Hedwig chat engine. The enrollment deposit
-      // ($500 online) and Commitment Fee ($1,000 residential MDiv/MAR)
-      // are surfaced as notes: the deposit is applied toward tuition and
-      // the Commitment Fee covers the first four terms of the $250
-      // per-term residential student fee. Advanced-degree deposits are
-      // still unconfirmed and intentionally omitted.
-      applicationFee: 100,
+      // The $100 application fee is deliberately excluded everywhere: it
+      // is a pre-program admin expense, not program cost (it would not
+      // appear on a 1098-T). Hedwig excludes it too. The enrollment
+      // deposit ($500 online) and Commitment Fee ($1,000 residential
+      // MDiv/MAR) are surfaced as notes: the deposit is applied toward
+      // tuition and the Commitment Fee covers the first four terms of
+      // the $250 per-term residential Community Life Fee.
+      // Advanced-degree deposits are still unconfirmed and omitted.
       onlineEnrollmentDeposit: 500,
       residentialCommitmentFee: 1000,
       residentialTermFee: 250,
@@ -1305,7 +1305,7 @@ font-size: 16px !important;
         // amount (full credits at the current per-credit rate, as an
         // illustration) and a $0 cost; the inputs panel is hidden.
         const gross = program.credits * (program.residentialRate || CONFIG.currentRate);
-        const fundedNet = CONFIG.applicationFee;
+        const fundedNet = 0;
         lastMatchCap = 0;
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
@@ -1315,7 +1315,7 @@ font-size: 16px !important;
         const yearsWord = { 3: "three", 4: "four" }[yearCount] || String(yearCount);
         setResultFootnote([
           `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. At ${money(program.annualRate)}/year, the scholarship is worth about ${money(approxWorth)} over ${yearsWord} years.`,
-          `The full program comes to ${money(gross)} in tuition at catalog rates. The estimate reflects the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term student fee; plan for the student fee in the remaining terms.`,
+          `The full program comes to ${money(gross)} in tuition at catalog rates. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term Community Life Fee; plan for that fee in the remaining terms.`,
           `Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community.`
         ]);
         els.miniMatch.textContent = money(gross);
@@ -1357,17 +1357,17 @@ font-size: 16px !important;
         updateMaxMatchButton();
         const match = Math.min(fundsApplied, matchCap, Math.max(0, gross - baseline - fundsApplied));
         const totalWtsAid = baseline + match;
-        const totalOutOfPocket = Math.max(0, gross - fundsApplied - totalWtsAid) + CONFIG.applicationFee;
+        const totalOutOfPocket = Math.max(0, gross - fundsApplied - totalWtsAid);
         const remainingEligibleMatch = Math.max(0, matchCap - match);
 
-        updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross + CONFIG.applicationFee);
+        updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
 
         els.netPrice.textContent = money(totalOutOfPocket);
-        const feeSentence = `The estimate includes the ${money(CONFIG.applicationFee)} application fee.`;
+        const communityFeeSentence = `Residential students also pay a ${money(CONFIG.residentialTermFee)} per-term Community Life Fee, not included in this estimate.`;
         const footnotes = {
-          ThM: [MATCH_FOOTNOTE, `${feeSentence} It excludes other program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students.`],
-          DMin: [`*The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the published $34,000 total program cost. The baseline scholarship is applied automatically. ${feeSentence}`],
-          PhD: [`PhD scholarships are determined individually by the committee and are not included in this estimate. ${feeSentence} It excludes other program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee.`]
+          ThM: [MATCH_FOOTNOTE, `The estimate excludes other program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students. ${communityFeeSentence}`],
+          DMin: [`*The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the published $34,000 total program cost. The baseline scholarship is applied automatically.`],
+          PhD: [`PhD scholarships are determined individually by the committee and are not included in this estimate. The estimate excludes other program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee. ${communityFeeSentence}`]
         };
         setResultFootnote(footnotes[selectedProgram] || []);
         setOutsideSupportAsterisk(matchCap > 0);
@@ -1420,12 +1420,12 @@ font-size: 16px !important;
         ? Math.min(scholarshipAid + standardMatch + additionalAid, Math.max(0, gross - fundsApplied))
         : 0;
       const studentPaid = Math.max(0, gross - fundsApplied - totalWtsAid);
-      const totalOutOfPocket = studentPaid + sbcRecognitionFeeStudentPaid + CONFIG.applicationFee;
+      const totalOutOfPocket = studentPaid + sbcRecognitionFeeStudentPaid;
       const remainingEligibleMatch = scholarshipIncluded ? Math.max(0, matchCap - standardMatch) : 0;
 
       const pieStudentPaid = totalOutOfPocket;
       const pieWtsScholarshipSupport = totalWtsAid + sbcRecognitionScholarship;
-      const pieTotal = gross + sbcRecognitionFee + CONFIG.applicationFee;
+      const pieTotal = gross + sbcRecognitionFee;
 
       updatePieChart(pieStudentPaid, fundsApplied, pieWtsScholarshipSupport, pieTotal);
 
@@ -1435,12 +1435,11 @@ font-size: 16px !important;
       const hasMatch = !isPercentScholarship && matchCap > 0;
       const footnoteParts = [hasMatch ? MATCH_FOOTNOTE : ""];
       if (program.certificate) {
-        footnoteParts.push(`The estimate includes the ${money(CONFIG.applicationFee)} application fee, which is one-and-done across certificates: moving on to another certificate or a full degree does not incur a new fee.`);
         if (program.stackable) {
           footnoteParts.push("The three Theological Studies Certificate emphases plus three electives stack into a full MATS.");
         }
       } else {
-        footnoteParts.push(`The estimate includes the ${money(CONFIG.applicationFee)} application fee. A ${money(CONFIG.onlineEnrollmentDeposit)} enrollment deposit is due when you enroll and is applied toward tuition.`);
+        footnoteParts.push(`A ${money(CONFIG.onlineEnrollmentDeposit)} enrollment deposit is due when you enroll and is applied toward tuition.`);
       }
       setResultFootnote(footnoteParts);
       setOutsideSupportAsterisk(hasMatch);
@@ -1778,7 +1777,7 @@ font-size: 16px !important;
 
 <script>
 (function () {
-  var MOCK = {"_readme": "Canned output of hedwig.webchat.answer_prompt (student mode), used by the tuition-chat-widget demo page so the dialog works without the backend. Regenerate per the project README after tuition data changes.", "welcome": "Hi! I can estimate what a Westminster program would cost you, including scholarships and how far the money you raise can go.\n\nI know these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry something like _\"How much does the MATS cost if I raise $3,000?\"_ or _\"How long does the oMAR take at 2 courses per term?\"_", "fallback": "I'm sorry, I couldn't tell which program or cost question that was. I can estimate costs for these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry naming one, like _\"What would the MAC cost me?\"_ - and feel free to mention transfer credits, a scholarship, or how much you can raise.", "answers": [{"match": ["mats"], "prompt": "How much does the MATS cost if I raise $3,000?", "reply": "Hi! Here's what the *MATS (Master of Arts in Theological Studies)* would cost you:\n\n```\nMaster of Arts in Theological Studies\n36 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a September 2026 start\n\nBase tuition (36 cr):              $26,325\n  (9 cr @ $675, 27 cr @ $750)\nApplication fee:                     +$100\n                                ----------\nTotal:                             $26,425\n\nYour scenario:\n  - Matching Scholarship (raise $3,000, WTS matches $3,000): -$6,000\n                                ----------\nYour total:                        $20,425\n\nOther options apart from the Matching Scholarship:\n  - Advancing Women's Ministry Scholarship: $19,844 (saves $6,581)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["mac", "counseling"], "prompt": "What would the MAC cost me with 6 transfer credits?", "reply": "Hi! Here's what the *MAC (Master of Arts in Counseling)* would cost you:\n\n```\nMaster of Arts in Counseling\n61 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a September 2026 start\n\nBase tuition (61 cr):              $45,075\n  (9 cr @ $675, 52 cr @ $750)\nLess 6 transfer credits:           -$4,500\nApplication fee:                     +$100\n                                ----------\nTotal:                             $40,675\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $20,387 (saves $20,288)\n  - International Scholarship: $20,387 (saves $20,288)\n  - SBC Course Recognition: $34,175 (saves $6,500)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["omar", "religion"], "prompt": "How long does the oMAR take at 2 courses per term?", "reply": "Hi! Here's what the *oMAR (Master of Arts in Religion (online))* would cost you:\n\n```\nMaster of Arts in Religion (online)\n74 credit hours - $675/hr through Spring 2027, $750/hr from Summer 2027\nAssumes a Fall 2026 start\nPlan: 2 courses/term -> 13 terms, ~4.3 years\n\nBase tuition (74 cr):              $54,600\n  (12 cr @ $675, 62 cr @ $750)\nApplication fee:                     +$100\n                                ----------\nTotal:                             $54,700\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $28,750 (saves $25,950)\n  - International Match: $27,400 (saves $27,300)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}]};
+  var MOCK = {"_readme": "Canned output of hedwig.webchat.answer_prompt (student mode), used by the tuition-chat-widget demo page so the dialog works without the backend. Regenerate per the project README after tuition data changes.", "welcome": "Hi! I can estimate what a Westminster program would cost you, including scholarships and how far the money you raise can go.\n\nI know these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry something like _\"How much does the MATS cost if I raise $3,000?\"_ or _\"How long does the oMAR take at 2 courses per term?\"_", "fallback": "I'm sorry, I couldn't tell which program or cost question that was. I can estimate costs for these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry naming one, like _\"What would the MAC cost me?\"_ - and feel free to mention transfer credits, a scholarship, or how much you can raise.", "answers": [{"match": ["mats"], "prompt": "How much does the MATS cost if I raise $3,000?", "reply": "Hi! Here's what the *MATS (Master of Arts in Theological Studies)* would cost you:\n\n```\nMaster of Arts in Theological Studies\n36 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a September 2026 start\n\nBase tuition (36 cr):              $26,325\n  (9 cr @ $675, 27 cr @ $750)\n                                ----------\nTotal:                             $26,325\n\nYour scenario:\n  - Matching Scholarship (raise $3,000, WTS matches $3,000): -$6,000\n                                ----------\nYour total:                        $20,325\n\nOther options apart from the Matching Scholarship:\n  - Advancing Women's Ministry Scholarship: $19,744 (saves $6,581)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["mac", "counseling"], "prompt": "What would the MAC cost me with 6 transfer credits?", "reply": "Hi! Here's what the *MAC (Master of Arts in Counseling)* would cost you:\n\n```\nMaster of Arts in Counseling\n61 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a September 2026 start\n\nBase tuition (61 cr):              $45,075\n  (9 cr @ $675, 52 cr @ $750)\nLess 6 transfer credits:           -$4,500\n                                ----------\nTotal:                             $40,575\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $20,287 (saves $20,288)\n  - International Scholarship: $20,287 (saves $20,288)\n  - SBC Course Recognition: $34,075 (saves $6,500)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["omar", "religion"], "prompt": "How long does the oMAR take at 2 courses per term?", "reply": "Hi! Here's what the *oMAR (Master of Arts in Religion (online))* would cost you:\n\n```\nMaster of Arts in Religion (online)\n74 credit hours - $675/hr through Spring 2027, $750/hr from Summer 2027\nAssumes a Fall 2026 start\nPlan: 2 courses/term -> 13 terms, ~4.3 years\n\nBase tuition (74 cr):              $54,600\n  (12 cr @ $675, 62 cr @ $750)\n                                ----------\nTotal:                             $54,600\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $28,650 (saves $25,950)\n  - International Match: $27,300 (saves $27,300)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}]};
   var params = new URLSearchParams(location.search);
   var api = params.get("api");
   if (api) {
