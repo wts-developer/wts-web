@@ -1531,6 +1531,18 @@
       margin: -4px 0 18px;
     }
 
+    /* Funded on-campus programs hide the inputs panel, so there is
+       nothing above the results to change. */
+    .funded-mode .results-update-note {
+      display: none;
+    }
+
+    /* The upcoming-rate-increase note reads as an annotation, like the
+       other italicized notes in step 2. */
+    #rateIncreaseNote {
+      font-style: italic;
+    }
+
     .program-card {
       padding: 16px 18px;
       border-radius: 5px;

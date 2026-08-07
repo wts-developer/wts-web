@@ -1541,6 +1541,18 @@
       margin: -4px 0 18px;
     }
 
+    /* Funded on-campus programs hide the inputs panel, so there is
+       nothing above the results to change. */
+    .funded-mode .results-update-note {
+      display: none;
+    }
+
+    /* The upcoming-rate-increase note reads as an annotation, like the
+       other italicized notes in step 2. */
+    #rateIncreaseNote {
+      font-style: italic;
+    }
+
     .program-card {
       padding: 16px 18px;
       border-radius: 5px;
@@ -2188,7 +2200,7 @@
             <div class="code">61 credits</div>
           </button>
           <button type="button" id="mdivBtn" class="program-card" aria-pressed="false">
-            <div class="name">Master of Divinity, General Ministries (MDiv)</div>
+            <div class="name">Master of Divinity (MDiv), General Ministries</div>
             <div class="card-badges"><span class="online-badge">Online</span> <span class="online-badge campus alt-modality" data-jump="MDivCampus" title="See the on-campus MDiv">On Campus</span></div>
             <div class="code">111 credits</div>
           </button>
@@ -2210,13 +2222,13 @@
             <div class="code">9 credits</div>
           </button>
           <button type="button" id="mdivCampusBtn" class="program-card" aria-pressed="false">
-            <div class="name">Master of Divinity, General Ministries (MDiv)</div>
+            <div class="name">Master of Divinity (MDiv), General Ministries</div>
             <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MDiv" title="See the online MDiv">Online</span></div>
             <div class="code">111 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
           </button>
           <button type="button" id="mdivFellowsBtn" class="program-card" aria-pressed="false">
-            <div class="name">Master of Divinity, Pastoral Fellows (MDiv PF)</div>
+            <div class="name">Master of Divinity (MDiv), Pastoral Fellows</div>
             <div class="card-badges"><span class="online-badge campus">On Campus</span> <span class="online-badge alt-modality" data-jump="MDiv" title="See the online MDiv">Online</span></div>
             <div class="code">111 credits</div>
             <div class="funded-note">Tuition 100% funded</div>
@@ -2670,29 +2682,31 @@
         MDivCampus: {
           name: "MDiv",
           fullName: "Master of Divinity, General Ministries",
+          displayTitle: "Master of Divinity (MDiv), General Ministries",
           credits: 111,
           bucket: "campus",
           funded: true,
           // 2026-2027 academic catalog: full-time residential tuition is
-          // $53,000 per academic year, about $1,910 per credit for MDiv
-          // General students. Used to show the real dollar value of the
-          // full-tuition scholarship.
-          residentialRate: 1910,
+          // $53,000 per academic year. The scholarship value is the
+          // annual rate times the program length, per admissions, with
+          // no per-credit price shown or used.
           annualRate: 53000,
+          years: 4,
           termSystem: "residential",
           theme: CAMPUS_THEME,
           description: "tuition 100% funded for admitted students"
         },
         MDivFellows: {
-          name: "MDiv PF",
+          name: "MDiv",
           fullName: "Master of Divinity, Pastoral Fellows",
+          displayTitle: "Master of Divinity (MDiv), Pastoral Fellows",
           credits: 111,
           bucket: "campus",
           funded: true,
           // 2026-2027 academic catalog: Pastoral Fellows tuition is
-          // $61,000 per academic year, about $2,198 per credit hour.
-          residentialRate: 2198,
+          // $61,000 per academic year.
           annualRate: 61000,
+          years: 4,
           termSystem: "residential",
           theme: CAMPUS_THEME,
           description: "tuition 100% funded for admitted students"
@@ -2703,10 +2717,9 @@
           credits: 74,
           bucket: "campus",
           funded: true,
-          // 2026-2027 academic catalog: $53,000 per academic year, about
-          // $2,149 per credit for MAR residential students.
-          residentialRate: 2149,
+          // 2026-2027 academic catalog: $53,000 per academic year.
           annualRate: 53000,
+          years: 3,
           termSystem: "residential",
           theme: CAMPUS_THEME,
           description: "tuition 100% funded for admitted students"
@@ -2880,24 +2893,24 @@
       MAC: [
         { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support, up to 25% of tuition. Fully matched, it reduces your tuition by up to 50%." },
         { name: "SBC Recognition Fee Scholarship", detail: "May cover part or all of SBC course recognition fees ($1,300 per course)." },
-        { name: "International Student Scholarship", detail: "50% scholarship for students expanding access to biblical counseling globally. Limited scholarships available." }
+        { name: "International Leader Scholarship", detail: "A 50% tuition award for distinguished international leaders who demonstrate a vision for advancing biblical counseling in their local communities, churches, regions, or countries." }
       ],
       MDiv: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the Spring 2027 term, then up to 25% of tuition beginning with the Summer 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the Spring 2027 term, then up to 25% of tuition beginning with the Summer 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA." },
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MAR: [
-        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the Spring 2027 term, then up to 25% of tuition beginning with the Summer 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA; first come, first served." },
+        { id: "match", calc: { type: "match" }, name: "Matching Scholarship", detail: "Dollar-for-dollar match on your additional outside support: up to $675 per term through the Spring 2027 term, then up to 25% of tuition beginning with the Summer 2027 term (AY27-28). Requires a minimum of 4 credits per term and a 3.0 GPA." },
         { name: "International Match", detail: "Up to a 50% match for qualifying international students. Very limited availability." }
       ],
       MDivCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $212,000 over four years. Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, thanks to the generosity of Westminster's donor community. At $53,000/year, the scholarship is worth $212,000 over four years." }
       ],
       MDivFellows: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $61,000/year, the scholarship is worth about $244,000 over four years. Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, thanks to the generosity of Westminster's donor community. At $61,000/year, the scholarship is worth $244,000 over four years." }
       ],
       MARCampus: [
-        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students. At $53,000/year, the scholarship is worth about $159,000 over three years. Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community." }
+        { name: "Full Tuition Funding", detail: "Tuition is 100% funded for admitted full-time students, thanks to the generosity of Westminster's donor community. At $53,000/year, the scholarship is worth $159,000 over three years." }
       ],
       ThM: [
         { name: "Matching Grant", detail: "Dollar-for-dollar match on your additional outside support for full-time ThM students, up to 20% of total tuition, in any modality." }
@@ -3405,27 +3418,24 @@
         const badges = program.funded || program.modality === "campus" ? badge("campus")
           : program.modality === "both" ? `${badge("online")} ${badge("campus")}`
           : badge("online");
-        els.mixProgram.innerHTML = `<span class="mix-program-name">${program.fullName} (${program.name})</span> ${badges}`;
+        els.mixProgram.innerHTML = `<span class="mix-program-name">${program.displayTitle || `${program.fullName} (${program.name})`}</span> ${badges}`;
       }
 
       if (program.funded) {
         // On-campus MDiv and MAR: tuition is 100% funded for admitted
-        // students, so there is nothing to estimate. Show the covered
-        // amount (full credits at the current per-credit rate, as an
-        // illustration) and a $0 cost; the inputs panel is hidden.
-        const gross = program.credits * (program.residentialRate || CONFIG.currentRate);
+        // students, so there is nothing to estimate. The scholarship
+        // value is the annual rate times the program length (per
+        // admissions: no per-credit price), and the cost is $0.
+        const gross = program.annualRate * program.years;
         const fundedNet = 0;
         lastMatchCap = 0;
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
         els.netPrice.textContent = money(fundedNet);
-        const approxWorth = Math.round(gross / 1000) * 1000;
-        const yearCount = Math.round(gross / program.annualRate);
-        const yearsWord = { 3: "three", 4: "four" }[yearCount] || String(yearCount);
+        const yearsWord = { 3: "three", 4: "four" }[program.years] || String(program.years);
         setResultFootnote([
-          `Tuition for the on-campus ${program.fullName} (${program.name}) is 100% funded for admitted full-time students. At ${money(program.annualRate)}/year, the scholarship is worth about ${money(approxWorth)} over ${yearsWord} years.`,
-          `The full program comes to ${money(gross)} in tuition at catalog rates. A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term Community Life Fee; plan for that fee in the remaining terms.`,
-          `Admitted full-time students pay zero out-of-pocket tuition thanks to the generosity of Westminster's donor community.`
+          `Tuition for the on-campus ${program.displayTitle || program.fullName} is 100% funded for admitted full-time students, thanks to the generosity of Westminster's donor community. At ${money(program.annualRate)}/year, the scholarship is worth ${money(gross)} over ${yearsWord} years.`,
+          `A ${money(CONFIG.residentialCommitmentFee)} Commitment Fee is due at admission and covers the first four terms of the ${money(CONFIG.residentialTermFee)} per-term Community Life Fee; plan for that fee in the remaining terms.`
         ]);
         els.miniMatch.textContent = money(gross);
         els.miniRemainingCard.hidden = true;
