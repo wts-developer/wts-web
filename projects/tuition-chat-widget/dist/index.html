@@ -574,7 +574,7 @@ $(function() {
 
 <script>
 (function () {
-  var MOCK = {"_readme": "Canned output of hedwig.webchat.answer_prompt (student mode), used by the tuition-chat-widget demo page so the dialog works without the backend. Regenerate per the project README after tuition data changes.", "welcome": "Hi! I can estimate what a Westminster program would cost you, including scholarships and how far the money you raise can go.\n\nI know these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry something like _\"How much does the MATS cost if I raise $3,000?\"_ or _\"How long does the oMAR take at 2 courses per term?\"_", "fallback": "I'm sorry, I couldn't tell which program or cost question that was. I can estimate costs for these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry naming one, like _\"What would the MAC cost me?\"_ - and feel free to mention transfer credits, a scholarship, or how much you can raise.", "answers": [{"match": ["mats"], "prompt": "How much does the MATS cost if I raise $3,000?", "reply": "Hi! Here's what the *MATS (Master of Arts in Theological Studies)* would cost you:\n\n```\nMaster of Arts in Theological Studies\n36 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a September 2026 start\n\nBase tuition (36 cr):              $26,325\n  (9 cr @ $675, 27 cr @ $750)\n                                ----------\nTotal:                             $26,325\n\nYour scenario:\n  - Matching Scholarship (raise $3,000, WTS matches $3,000): -$6,000\n                                ----------\nYour total:                        $20,325\n\nOther options apart from the Matching Scholarship:\n  - Advancing Women's Ministry Scholarship: $19,744 (saves $6,581)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["mac", "counseling"], "prompt": "What would the MAC cost me with 6 transfer credits?", "reply": "Hi! Here's what the *MAC (Master of Arts in Counseling)* would cost you:\n\n```\nMaster of Arts in Counseling\n61 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a September 2026 start\n\nBase tuition (61 cr):              $45,075\n  (9 cr @ $675, 52 cr @ $750)\nLess 6 transfer credits:           -$4,500\n                                ----------\nTotal:                             $40,575\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $20,287 (saves $20,288)\n  - International Leader Scholarship: $20,287 (saves $20,288)\n  - SBC Course Recognition: $34,075 (saves $6,500)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["omar", "religion"], "prompt": "How long does the oMAR take at 2 courses per term?", "reply": "Hi! Here's what the *oMAR (Master of Arts in Religion (online))* would cost you:\n\n```\nMaster of Arts in Religion (online)\n74 credit hours - $675/hr through Spring 2027, $750/hr from Summer 2027\nAssumes a Fall 2026 start\nPlan: 2 courses/term -> 13 terms, ~4.3 years\n\nBase tuition (74 cr):              $54,600\n  (12 cr @ $675, 62 cr @ $750)\n                                ----------\nTotal:                             $54,600\n\nCost per term at 2 courses/term: about $4,200 on average over 13 terms\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $28,650 (saves $25,950)\n  - International Match: $27,300 (saves $27,300)\n```\n\nGood news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}]};
+  var MOCK = {"_readme": "Canned output of hedwig.webchat.answer_prompt (student mode), used by the tuition-chat-widget demo page so the dialog works without the backend. Regenerate per the project README after tuition data changes.", "welcome": "Hi! I can estimate what a Westminster program would cost you, including scholarships and how far the money you raise can go.\n\nI know these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry something like _\"How much does the MATS cost if I raise $3,000?\"_ or _\"How long does the oMAR take at 2 courses per term?\"_", "fallback": "I'm sorry, I couldn't tell which program or cost question that was. I can estimate costs for these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry naming one, like _\"What would the MAC cost me?\"_ - and feel free to mention transfer credits, a scholarship, or how much you can raise.", "answers": [{"match": ["mats"], "prompt": "How much does the MATS cost if I raise $3,000?", "reply": "Hi! Here's what the *MATS (Master of Arts in Theological Studies)* would cost you:\n\n```\nMaster of Arts in Theological Studies\n36 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a September 2026 start\n\nBase tuition (36 cr):              $26,325\n  (9 cr @ $675, 27 cr @ $750)\n                                ----------\nTotal:                             $26,325\n\nYour scenario:\n  - Matching Scholarship (raise $3,000, WTS matches $3,000): -$6,000\n                                ----------\nYour total:                        $20,325\n\nOther options apart from the Matching Scholarship:\n  - Advancing Women's Ministry Scholarship: $19,744 (saves $6,581)\n```", "outro": "Good news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["mac", "counseling"], "prompt": "What would the MAC cost me with 6 transfer credits?", "reply": "Hi! Here's what the *MAC (Master of Arts in Counseling)* would cost you:\n\n```\nMaster of Arts in Counseling\n61 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a September 2026 start\n\nBase tuition (61 cr):              $45,075\n  (9 cr @ $675, 52 cr @ $750)\nLess 6 transfer credits:           -$4,500\n                                ----------\nTotal:                             $40,575\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $20,287 (saves $20,288)\n  - International Leader Scholarship: $20,287 (saves $20,288)\n  - SBC Course Recognition: $34,075 (saves $6,500)\n```", "outro": "Good news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["omar", "religion"], "prompt": "How long does the oMAR take at 2 courses per term?", "reply": "Hi! Here's what the *oMAR (Master of Arts in Religion (online))* would cost you:\n\n```\nMaster of Arts in Religion (online)\n74 credit hours - $675/hr through Spring 2027, $750/hr from Summer 2027\nAssumes a Fall 2026 start\nPlan: 2 courses/term -> 13 terms, ~4.3 years\n\nBase tuition (74 cr):              $54,600\n  (12 cr @ $675, 62 cr @ $750)\n                                ----------\nTotal:                             $54,600\n\nCost per term at 2 courses/term: about $4,200 on average over 13 terms\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $28,650 (saves $25,950)\n  - International Match: $27,300 (saves $27,300)\n```", "outro": "Good news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}]};
   var params = new URLSearchParams(location.search);
   var api = params.get("api");
   if (api) {
@@ -591,7 +591,7 @@ $(function() {
       for (var i = 0; i < MOCK.answers.length; i++) {
         var a = MOCK.answers[i];
         for (var j = 0; j < a.match.length; j++) {
-          if (t.indexOf(a.match[j]) !== -1) return { reply: a.reply, routed: true };
+          if (t.indexOf(a.match[j]) !== -1) return { reply: a.reply, routed: true, outro: a.outro || null };
         }
       }
       return { reply: MOCK.fallback, routed: false };
@@ -640,10 +640,13 @@ $(function() {
 
      Talks to the Hedwig web-chat API (hedwig/webchat/ in the
      hedwig-admissions-slackbot repo): POST {apiBase}/api/chat
-     {"message": "..."} -> {"reply": <Slack-mrkdwn string>, "routed": bool}.
-     The reply is Slack mrkdwn because the same engine serves Slack; the
-     mini-renderer below covers the three constructs tuition answers use
-     (``` code blocks, *bold*, _italic_). */
+     {"message": "..."} -> {"reply": <Slack-mrkdwn string>, "routed": bool,
+     "outro": str|null}. The outro is the generic closing boilerplate
+     (no hidden fees, talk to your counselor); it arrives as its own field
+     so the widget can show it once per conversation instead of after
+     every answer. The reply is Slack mrkdwn because the same engine
+     serves Slack; the mini-renderer below covers the three constructs
+     tuition answers use (``` code blocks, *bold*, _italic_). */
 
   function runChat(root, app, config) {
     "use strict";
@@ -692,6 +695,9 @@ $(function() {
 
     var state = loadState();
     if (!Array.isArray(state.transcript)) state.transcript = [];
+    // The closing boilerplate shows once per browser session; the flag
+    // rides the same sessionStorage state as the transcript.
+    if (typeof state.outroShown !== "boolean") state.outroShown = false;
 
     // ---- mrkdwn mini-renderer -----------------------------------------
 
@@ -871,6 +877,11 @@ $(function() {
           typing.remove();
           addBubble("bot", payload.reply);
           record("bot", payload.reply);
+          if (payload.outro && !state.outroShown) {
+            state.outroShown = true;
+            addBubble("bot", payload.outro);
+            record("bot", payload.outro); // record() also persists the flag
+          }
         })
         .catch(function (err) {
           typing.remove();
