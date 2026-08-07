@@ -5,10 +5,13 @@
 
    Talks to the Hedwig web-chat API (hedwig/webchat/ in the
    hedwig-admissions-slackbot repo): POST {apiBase}/api/chat
-   {"message": "..."} -> {"reply": <Slack-mrkdwn string>, "routed": bool}.
-   The reply is Slack mrkdwn because the same engine serves Slack; the
-   mini-renderer below covers the three constructs tuition answers use
-   (``` code blocks, *bold*, _italic_). */
+   {"message": "..."} -> {"reply": <Slack-mrkdwn string>, "routed": bool,
+   "outro": str|null}. The outro is the generic closing boilerplate
+   (no hidden fees, talk to your counselor); it arrives as its own field
+   so the widget can show it once per conversation instead of after
+   every answer. The reply is Slack mrkdwn because the same engine
+   serves Slack; the mini-renderer below covers the three constructs
+   tuition answers use (``` code blocks, *bold*, _italic_). */
 
 function runChat(root, app, config) {
   "use strict";
@@ -57,6 +60,9 @@ function runChat(root, app, config) {
 
   var state = loadState();
   if (!Array.isArray(state.transcript)) state.transcript = [];
+  // The closing boilerplate shows once per browser session; the flag
+  // rides the same sessionStorage state as the transcript.
+  if (typeof state.outroShown !== "boolean") state.outroShown = false;
 
   // ---- mrkdwn mini-renderer -----------------------------------------
 
@@ -236,6 +242,11 @@ function runChat(root, app, config) {
         typing.remove();
         addBubble("bot", payload.reply);
         record("bot", payload.reply);
+        if (payload.outro && !state.outroShown) {
+          state.outroShown = true;
+          addBubble("bot", payload.outro);
+          record("bot", payload.outro); // record() also persists the flag
+        }
       })
       .catch(function (err) {
         typing.remove();
