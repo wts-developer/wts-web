@@ -10,6 +10,8 @@ Inputs (src/):
 
 Outputs (dist/):
   wts-cost-estimator.js      — single-file embeddable widget (Shadow DOM)
+  calculator-only.html       — same mockup without the chat launcher,
+                               matching the v1 rollout
   index.html                 — clickable mockup: captured tuition page with
                                the widget injected after the hero
   calculator-standalone.html — the estimator on its own page (parity with
@@ -228,25 +230,25 @@ embed_block = f"""
 <!-- ================ END PROPOSED ADDITION ================ -->
 """
 
-if chat_embed:
-    embed_block += chat_embed
-
-mockup = captured_page.replace(ANCHOR, embed_block + ANCHOR, 1)
-# Resolve the captured page's relative URLs against production.
-mockup = mockup.replace("<head>", '<head><base href="https://www.wts.edu/">', 1)
-# Capture artifact fix: the hero copy starts at opacity 0 and relies on a
-# Webflow interaction to fade in, which doesn't always fire in this captured
-# copy (notably on mobile), leaving the above-the-fold section blank. Force it
-# visible; the production page is unaffected. Not part of the proposed change.
-mockup = mockup.replace(
-    "</head>",
-    "<style>.tuition-hero-new [data-w-id][style*=\"opacity\"] { opacity: 1 !important; }</style></head>",
-    1,
-)
-mockup = mockup.replace("<title>", "<title>[MOCKUP] ", 1)
-mockup = mockup.replace(
-    "<!DOCTYPE html>",
-    """<!DOCTYPE html>
+def build_mockup(embed):
+    """Assemble the captured tuition page with `embed` injected below the
+    hero, plus the shared capture fixes and mockup banner."""
+    page = captured_page.replace(ANCHOR, embed + ANCHOR, 1)
+    # Resolve the captured page's relative URLs against production.
+    page = page.replace("<head>", '<head><base href="https://www.wts.edu/">', 1)
+    # Capture artifact fix: the hero copy starts at opacity 0 and relies on a
+    # Webflow interaction to fade in, which doesn't always fire in this captured
+    # copy (notably on mobile), leaving the above-the-fold section blank. Force it
+    # visible; the production page is unaffected. Not part of the proposed change.
+    page = page.replace(
+        "</head>",
+        "<style>.tuition-hero-new [data-w-id][style*=\"opacity\"] { opacity: 1 !important; }</style></head>",
+        1,
+    )
+    page = page.replace("<title>", "<title>[MOCKUP] ", 1)
+    page = page.replace(
+        "<!DOCTYPE html>",
+        """<!DOCTYPE html>
 <!-- ================================================================
      LIVING MOCKUP — not a wts.edu production page.
      This is a captured copy of https://www.wts.edu/admissions/tuition-financial-aid
@@ -254,8 +256,15 @@ mockup = mockup.replace(
      injected directly below the hero (search for "BEGIN PROPOSED ADDITION").
      Built from https://github.com/wts-developer/wts-web
      ================================================================ -->""",
-    1,
-)
+        1,
+    )
+    return page
+
+
+# The combined mockup carries the chat launcher; the calculator-only
+# variant matches the v1 rollout (calculator ships first, chat later).
+mockup = build_mockup(embed_block + chat_embed if chat_embed else embed_block)
+calculator_only = build_mockup(embed_block)
 
 # ---------------------------------------------------------------------
 
@@ -264,6 +273,7 @@ dist.mkdir(exist_ok=True)
 for name, content in [
     ("wts-cost-estimator.js", widget),
     ("index.html", mockup),
+    ("calculator-only.html", calculator_only),
     ("calculator-standalone.html", standalone),
 ]:
     (dist / name).write_text(content)
