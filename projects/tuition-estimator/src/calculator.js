@@ -511,12 +511,16 @@
         pcts[0] = Math.max(0, 100 - pcts[1] - pcts[2]);
       }
 
+      // Slices are drawn from the same rounded percentages the labels
+      // show (max distortion about half a point, imperceptible), so a
+      // slice labeled 50% is exactly half the pie and equal labels are
+      // equal wedges. Drawing from raw values made the fully matched
+      // MDiv read 25/25/50 over a 49.2% gold slice, which looked wrong.
       let angle = 0;
       values.forEach((item, idx) => {
-        const pct = item.value / total;
         const start = angle;
-        const end = angle + pct * 360;
-        item.path.setAttribute("d", item.value > 0 ? describeSlice(110, 110, 100, start, end) : "");
+        const end = angle + (pcts[idx] / 100) * 360;
+        item.path.setAttribute("d", item.value > 0 && pcts[idx] > 0 ? describeSlice(110, 110, 100, start, end) : "");
         positionPieLabel(item.label, pcts[idx], start, end);
         angle = end;
       });
