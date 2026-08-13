@@ -123,10 +123,15 @@
           fullName: "Doctor of Ministry",
           bucket: "advanced",
           coursePriced: true,
-          // Published program card: $34,000 total true-cost price for the
-          // 8-course program, up to 20% baseline scholarship, and up to a
-          // 20% Ministry Partnership Match on ministry partner payments.
-          trueCost: 34000,
+          // Best current cost estimate per admissions: coursework
+          // (8 courses x $3,650 = $29,200) + one year of the $1,750
+          // continuation fee + the $2,600 thesis fee = $33,550. Students
+          // finishing over more years pay the continuation fee again, so
+          // many land at $35,300 or $37,050; the estimate assumes one
+          // continuation year. Up to 20% baseline scholarship and up to
+          // a 20% Ministry Partnership Match on ministry partner
+          // payments.
+          trueCost: 33550,
           baselinePct: 0.20,
           matchPct: 0.20,
           modality: "campus",
@@ -297,7 +302,7 @@
       ],
       DMin: [
         { name: "Baseline Scholarship", detail: "Up to $6,800 (20% of the total program cost), applied automatically." },
-        { name: "Ministry Partnership Match", detail: "Dollar-for-dollar match on ministry partner (e.g. church) payments, up to $6,800 (20% of the total program cost)." }
+        { name: "Ministry Partnership Match", detail: "Dollar-for-dollar match on ministry partner (e.g. church) payments, up to $6,710 (20% of the total program cost)." }
       ],
       PhD: [
         { name: "Committee Scholarships", detail: "PhD scholarships are determined individually by the committee and are not included in this estimate." }
@@ -327,7 +332,7 @@
       sbcScholarshipBlock: $("sbcScholarshipBlock"), sbcScholarshipYes: $("sbcScholarshipYes"), sbcScholarshipNo: $("sbcScholarshipNo"),
       sbcDetails: $("sbcDetails"), sbcCourseList: $("sbcCourseList"), sbcSelectionNote: $("sbcSelectionNote"), sbcCoverage: $("sbcCoverage"), sbcCoverageLabel: $("sbcCoverageLabel"), sbcFeeNote: $("sbcFeeNote"),
       netPrice: $("netPrice"),
-      miniMatch: $("miniMatch"), miniRemaining: $("miniRemaining"), miniRemainingCard: $("miniRemainingCard"), miniGross: $("miniGross"),
+      miniMatch: $("miniMatch"), miniRemaining: $("miniRemaining"), miniRemainingCard: $("miniRemainingCard"), miniGross: $("miniGross"), miniGrossLabel: $("miniGrossLabel"),
       miniCreditsCard: $("miniCreditsCard"), miniCreditsRemaining: $("miniCreditsRemaining"),
       miniSbcCard: $("miniSbcCard"), miniSbcScholarship: $("miniSbcScholarship"),
       summaryModeLabel: $("summaryModeLabel"),
@@ -791,6 +796,13 @@
     function calculate() {
       updateMacOnlyVisibility();
       const program = CONFIG.programs[selectedProgram];
+      // DMin's tuition figure is itself an estimate (coursework +
+      // continuation + thesis fees), so its tile carries an asterisk
+      // pointing at the footnote that unpacks it.
+      if (els.miniGrossLabel) {
+        els.miniGrossLabel.textContent = selectedProgram === "DMin"
+          ? "Tuition Before Support*" : "Tuition Before Support";
+      }
       if (els.mixProgram) {
         const badge = kind => kind === "campus"
           ? '<span class="online-badge campus">On Campus</span>'
@@ -865,7 +877,7 @@
         const communityFeeSentence = `Residential students also pay a ${money(CONFIG.residentialTermFee)} per-term Community Life Fee, not included in this estimate.`;
         const footnotes = {
           ThM: [MATCH_FOOTNOTE, `The estimate excludes other program fees, such as the $750 matriculation fee and the $1,550 thesis fee for thesis-track students. ${communityFeeSentence}`],
-          DMin: [`*The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the published $34,000 total program cost. The baseline scholarship is applied automatically.`],
+          DMin: [`*Tuition reflects coursework (8 courses at $3,650 each), one year of the $1,750 continuation fee, and the $2,600 thesis fee, for $33,550 total. Students who take longer to finish pay the continuation fee for each additional year. The Ministry Partnership Match applies dollar-for-dollar to ministry partner (e.g. church) payments, up to 20% of the total program cost. The baseline scholarship is applied automatically.`],
           PhD: [`PhD scholarships are determined individually by the committee and are not included in this estimate. The estimate excludes other program fees, such as the $1,400 matriculation fee and the $3,600 dissertation fee. ${communityFeeSentence}`]
         };
         setResultFootnote(footnotes[selectedProgram] || []);
