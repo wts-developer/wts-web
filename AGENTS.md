@@ -120,6 +120,7 @@ Multiple people and agents work in this repo. All changes land on
 Published URLs (from `main`):
 
 - Combined UAT mockup: <https://wts-developer.github.io/wts-web/tuition-estimator/>
+- Calculator-only mockup (no chat): <https://wts-developer.github.io/wts-web/tuition-estimator/calculator-only.html>
 - Estimator widget: <https://wts-developer.github.io/wts-web/tuition-estimator/wts-cost-estimator.js>
 - Chat widget: <https://wts-developer.github.io/wts-web/tuition-chat-widget/wts-tuition-chat.js>
 

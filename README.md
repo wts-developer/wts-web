@@ -42,6 +42,7 @@ python3 -m http.server 8437 -d projects/tuition-estimator/dist
 `main`. One-time setup: repo **Settings → Pages → Source: GitHub Actions**.
 
 - Mockup: `https://wts-developer.github.io/wts-web/tuition-estimator/`
+- Calculator-only mockup (no chat, matches the v1 rollout): `https://wts-developer.github.io/wts-web/tuition-estimator/calculator-only.html`
 - Widget: `https://wts-developer.github.io/wts-web/tuition-estimator/wts-cost-estimator.js`
 - Standalone estimator: `https://wts-developer.github.io/wts-web/tuition-estimator/calculator-standalone.html`
 - Chat mockup: `https://wts-developer.github.io/wts-web/tuition-chat-widget/`
