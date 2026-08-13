@@ -65,7 +65,9 @@ then open `http://localhost:8438/?api=http://localhost:8787`.
   mock = json.load(open(path))
   mock["welcome"], mock["fallback"] = WELCOME_REPLY, FALLBACK_REPLY
   for a in mock["answers"]:
-      a["reply"] = answer_prompt(a["prompt"])["reply"]
+      r = answer_prompt(a["prompt"])
+      a["reply"] = r["reply"]
+      a["outro"] = r.get("outro")
   json.dump(mock, open(path, "w"), indent=2)
   EOF
   python3 build.py
@@ -79,6 +81,7 @@ then open `http://localhost:8438/?api=http://localhost:8787`.
 |---|---|
 | `reply` | Slack-mrkdwn answer text, always student-framed |
 | `routed` | `true` if the real tuition engine answered; `false` for greeting/fallback copy |
+| `outro` | Closing boilerplate (no hidden fees, counselor pointer) as a separate string, or `null`; the widget renders it once per browser session |
 
 Errors (400/413/429) may include a user-displayable `reply`, which the
 widget shows; otherwise it falls back to a generic apology. CORS is

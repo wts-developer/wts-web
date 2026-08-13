@@ -167,7 +167,7 @@ demo_config = f"""
       for (var i = 0; i < MOCK.answers.length; i++) {{
         var a = MOCK.answers[i];
         for (var j = 0; j < a.match.length; j++) {{
-          if (t.indexOf(a.match[j]) !== -1) return {{ reply: a.reply, routed: true }};
+          if (t.indexOf(a.match[j]) !== -1) return {{ reply: a.reply, routed: true, outro: a.outro || null }};
         }}
       }}
       return {{ reply: MOCK.fallback, routed: false }};
