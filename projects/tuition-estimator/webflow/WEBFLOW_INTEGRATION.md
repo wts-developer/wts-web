@@ -22,7 +22,7 @@ Tuition" section. Everything else on the page is untouched.
 4. Publish. That's the whole integration.
 
 If you'd rather not depend on our hosting, download `wts-cost-estimator.js`
-(~105 KB, single file) and serve it from any host you control, then point the
+(~150 KB, single file) and serve it from any host you control, then point the
 `src` at it. It exceeds Webflow's inline custom-code character limit, so it
 does need to be hosted as a file rather than pasted inline.
 
@@ -32,14 +32,20 @@ does need to be hosted as a file rather than pasted inline.
   into the site and the site's styles cannot break it. No classes or IDs are
   added to the global page other than the `wts-cost-estimator` container div.
 - Shows a centered "Tuition Savings Calculator" header, then a three-step
-  flow: step 1 Choose Your Program and step 2 Financial Information side by
-  side, with the step 3 results card (estimated cost plus the cost and
-  scholarship mix) spanning the full width beneath them.
+  vertical flow: step 1 Choose Your Program (category tabs and program
+  cards), step 2 Financial Information, and the step 3 results card
+  (estimated cost plus the cost and scholarship mix), with an Apply
+  Today button beneath.
 - Adds one Google Fonts stylesheet (Lato) to the page head if not already
   present. The serif headline face uses the site's existing Typekit Kepler
   families.
 - Makes **no network calls** other than that fonts stylesheet; all tuition
-  math is client-side. No analytics, no cookies, no personal data.
+  math is client-side. No cookies, no personal data. If Google Tag
+  Manager is on the page (it is on wts.edu), the widget pushes
+  interaction events to `window.dataLayer` under the event name
+  `wts_tuition_savings_calculator` for GA4/WebFX; see
+  [ANALYTICS_EVENTS.md](ANALYTICS_EVENTS.md). Without a dataLayer this
+  is inert.
 - Is plain vanilla JS with no dependencies (no jQuery, no framework), and
   does not interfere with Webflow's own scripts.
 
