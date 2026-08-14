@@ -236,6 +236,12 @@ def build_mockup(embed):
     page = captured_page.replace(ANCHOR, embed + ANCHOR, 1)
     # Resolve the captured page's relative URLs against production.
     page = page.replace("<head>", '<head><base href="https://www.wts.edu/">', 1)
+    # Neutralize the captured page's live analytics (GTM container and
+    # GA4 gtag config): stakeholders viewing the mockups must not land
+    # in wts.edu's real Google Analytics as github.io pageviews. The
+    # production page keeps its own tags; the estimator widget itself
+    # loads no analytics.
+    page = page.replace("googletagmanager.com", "gtm-disabled.invalid")
     # Capture artifact fix: the hero copy starts at opacity 0 and relies on a
     # Webflow interaction to fade in, which doesn't always fire in this captured
     # copy (notably on mobile), leaving the above-the-fold section blank. Force it
