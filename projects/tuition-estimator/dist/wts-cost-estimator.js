@@ -1117,6 +1117,22 @@
       }
     }
 
+    // Analytics: push structured interaction events for the site's
+    // Google Tag Manager (ingested by GA4/WebFX). Event schema is
+    // documented in webflow/ANALYTICS_EVENTS.md. A silent no-op when
+    // GTM is absent (mockups, standalone page, local dev), and it must
+    // never break the calculator.
+    function track(action, params) {
+      try {
+        const dl = window.dataLayer;
+        if (!dl || typeof dl.push !== "function") return;
+        dl.push(Object.assign(
+          { event: "wts_tuition_savings_calculator", estimator_action: action },
+          params || {}
+        ));
+      } catch (e) { /* analytics failures are not the calculator's problem */ }
+    }
+
     let selectedScholarshipId = null;
 
     function scholarshipOptions(key) {
@@ -1168,6 +1184,7 @@
       els.scholarshipList.querySelectorAll('input[name="scholarshipChoice"]').forEach(input => {
         input.addEventListener("change", () => {
           selectedScholarshipId = input.value;
+          track("scholarship_select", { scholarship: input.value, program: selectedProgram });
           calculate();
         });
       });
@@ -1208,10 +1225,16 @@
     }
 
     Object.entries(programButtons).forEach(([key, btn]) => {
-      if (btn) btn.addEventListener("click", () => selectProgram(key));
+      if (btn) btn.addEventListener("click", () => {
+        track("program_select", { program: key, modality: CONFIG.programs[key].bucket });
+        selectProgram(key);
+      });
     });
     root.querySelectorAll(".bucket-tab").forEach(tab => {
-      tab.addEventListener("click", () => selectBucket(tab.dataset.bucket));
+      tab.addEventListener("click", () => {
+        track("modality_select", { modality: tab.dataset.bucket });
+        selectBucket(tab.dataset.bucket);
+      });
     });
     // "Also online" / "Also on campus" chips jump to the same degree in
     // the other modality, which lives on a different bucket tab.
@@ -1219,6 +1242,7 @@
       chip.addEventListener("click", event => {
         event.stopPropagation();
         const key = chip.dataset.jump;
+        track("program_select", { program: key, modality: CONFIG.programs[key].bucket, source: "modality_chip" });
         selectBucket(CONFIG.programs[key].bucket);
         selectProgram(key);
       });
@@ -1230,6 +1254,7 @@
     if (els.maxMatchBtn) {
       els.maxMatchBtn.addEventListener("click", () => {
         els.fundsRaised.value = Math.round(lastMatchCap);
+        track("support_amount", { amount: Math.round(lastMatchCap), source: "max_match", program: selectedProgram });
         calculate();
       });
     }
@@ -1237,6 +1262,7 @@
     root.querySelectorAll(".quick-amount:not(.max-match)").forEach(button => {
       button.addEventListener("click", () => {
         els.fundsRaised.value = button.dataset.amount;
+        track("support_amount", { amount: Number(button.dataset.amount), source: "quick", program: selectedProgram });
         calculate();
       });
     });
@@ -1251,6 +1277,28 @@
       els.customCreditsField.style.display = els.creditsPerTerm.value === "custom" ? "block" : "none";
       calculate();
     });
+
+    els.fundsRaised.addEventListener("change", () => {
+      track("support_amount", {
+        amount: Math.max(0, Number(els.fundsRaised.value || 0)),
+        source: "typed",
+        program: selectedProgram
+      });
+    });
+
+    els.startTerm.addEventListener("change", () => {
+      track("start_term", { term: els.startTerm.value, program: selectedProgram });
+    });
+
+    const applyButton = root.querySelectorAll(".apply-cta .apply-button")[0];
+    if (applyButton) {
+      applyButton.addEventListener("click", () => {
+        track("apply_click", {
+          program: selectedProgram,
+          estimated_net: Number(els.netPrice.textContent.replace(/[^0-9.-]/g, "")) || 0
+        });
+      });
+    }
 
 
     root.querySelectorAll(".sbc-course").forEach(input => {
