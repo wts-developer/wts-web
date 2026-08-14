@@ -53,7 +53,11 @@ then open `http://localhost:8438/?api=http://localhost:8787`.
   `*bold*`, `_italic_`), HTML-escaped first.
 - Open/closed state + transcript persist in `sessionStorage` for the visit.
 - `src/mock-answers.json` is canned `answer_prompt()` output powering the
-  no-backend demo. Regenerate after tuition data changes:
+  no-backend demo. All content is public tuition data. Regenerate after
+  tuition data changes (a human runs this on a Westminster device; per
+  the repo data policy in AGENTS.md, agents must not run commands that
+  pull data through themselves from live systems, and must instead hand
+  the human the command and receive back only a succinct confirmation):
 
   ```sh
   cd ../../../hedwig-admissions-slackbot && source .venv/bin/activate && python - <<'EOF'

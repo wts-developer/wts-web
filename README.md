@@ -11,6 +11,18 @@ for integration into the production Webflow site.
 | [projects/tuition-estimator](projects/tuition-estimator/) | ✅ ready | Living, clickable mockup of the [tuition page](https://www.wts.edu/admissions/tuition-financial-aid) with the Online Program Cost Estimator embedded front-and-center, plus a one-tag embeddable widget for Webflow |
 | [projects/tuition-chat-widget](projects/tuition-chat-widget/) | ✅ ready | Floating bottom-right chat dialog for the tuition page: one-tag Shadow-DOM embed, answered by the Hedwig web-chat API (`hedwig-admissions-slackbot` repo, `hedwig/webchat/`) |
 
+> **Data policy (important):** Westminster is bound by FERPA and its
+> AI Acceptable Use Policy. This repo holds public data only (published
+> tuition figures, captures of public wts.edu pages); student records,
+> applicant data, and PII must never enter it. AI coding agents must
+> never call the Hedwig API or any Westminster system, not even to test
+> response shapes: the agent stops, hands the human the exact command
+> to run on a Westminster device, and the human reviews, redacts, and
+> reports back only a succinct answer. Approved data paths are the
+> deployed Hedwig app on Westminster-managed infrastructure and scripts
+> hand-executed by humans on Westminster devices. Details in
+> [AGENTS.md](AGENTS.md#data-policy-ferpa-and-the-westminster-ai-acceptable-use-policy).
+
 AI coding agents and new contributors: start with [AGENTS.md](AGENTS.md)
 for ground rules, dev servers, and verification steps.
 

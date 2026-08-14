@@ -18,6 +18,39 @@ Embed elements.
 | `site/` | Landing page for the GitHub Pages site |
 | `.github/workflows/pages.yml` | Publishes every project's `dist/` to GitHub Pages on push to `main` |
 
+## Data policy: FERPA and the Westminster AI Acceptable Use Policy
+
+This policy is enforced strictly and overrides convenience. Westminster
+is bound by FERPA and GLBA, and its AI Acceptable Use Policy prohibits
+institutional data from flowing through AI tools.
+
+1. **This repo holds public data only.** Published tuition and
+   scholarship figures, captures of public wts.edu pages, and canned
+   chat answers derived from them. Never commit, paste, or process
+   student records, applicant information, financial records, or any
+   personally identifiable information here, in any form.
+2. **Agents are never a data conduit.** Coding agents (Claude, Codex,
+   Copilot, and friends) must not call the Hedwig API or any other
+   Westminster system, even to test response shapes or functionality,
+   and must not read live API responses, logs, or exports. When a task
+   needs live data to proceed, the agent must STOP and hand the human
+   the exact command (curl, script, or URL) to run themselves. The
+   human runs it on a Westminster device, reviews the output, redacts
+   or anonymizes anything sensitive, and returns only a succinct
+   answer to the agent (a single figure, "matches", or "differs at X"),
+   never the raw payload.
+3. **Approved data paths.** Data may flow through the deployed Hedwig
+   application on Westminster-managed infrastructure, and through
+   scripts hand-executed by a human on Westminster devices. Nothing
+   else.
+4. **Agent-safe testing exists.** The chat widget's mock mode
+   (`?mock=1`) exercises the full UI against canned public answers with
+   no network calls, and the calculator is entirely client-side. Use
+   these for agent-driven verification.
+5. **Disclose AI involvement.** AI-assisted commits carry a
+   Co-Authored-By trailer; keep that convention.
+6. **Report concerns** about AI or data handling to aiethics@wts.edu.
+
 ## Ground rules
 
 1. **Python 3 standard library only.** Builds, dev servers, and tooling
@@ -89,7 +122,9 @@ Hedwig repo).
   March, June, September).
 - If you changed anything the chatbot also answers, confirm the
   calculator and a chat reply agree to the dollar for the same
-  scenario.
+  scenario. Agents verify against the canned answers in mock mode
+  (`?mock=1`); only a human may query the live API, per the data
+  policy above, reporting back just the figure.
 
 ## Branches, PRs, and review
 
