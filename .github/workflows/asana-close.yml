@@ -1,0 +1,111 @@
+name: Close Asana tasks on merged PRs
+
+# Completes Asana tasks referenced in a merged PR's description.
+# Convention: put "closes <asana task URL>" (case-insensitive) in the PR
+# body, one per task. Only MERGED PRs complete tasks; a PR closed
+# without merging leaves its tasks open.
+#
+# Needs an ASANA_PAT secret (an Asana personal access token, ideally
+# from a service account). Set it once at the wts-developer org level
+# and share it with the repos that need it, or per-repo with:
+#   gh secret set ASANA_PAT --repo wts-developer/<repo>
+#
+# Other wts repos can reuse this without copying the logic by adding a
+# three-line caller workflow:
+#
+#   name: Close Asana tasks
+#   on:
+#     pull_request:
+#       types: [closed]
+#   jobs:
+#     close:
+#       uses: wts-developer/wts-web/.github/workflows/asana-close.yml@main
+#       secrets:
+#         ASANA_PAT: ${{ secrets.ASANA_PAT }}
+#
+# This is deterministic automation on GitHub-managed runners: no AI in
+# the loop, and the only data touched is the Asana task id from the PR
+# body and its completion state.
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_call:
+    secrets:
+      ASANA_PAT:
+        required: true
+
+permissions: {}
+
+jobs:
+  close-asana:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Complete referenced Asana tasks
+        env:
+          ASANA_PAT: ${{ secrets.ASANA_PAT }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          python3 - <<'PYEOF'
+          import json
+          import os
+          import re
+          import sys
+          import urllib.request
+
+          body = os.environ.get("PR_BODY") or ""
+          pat = os.environ.get("ASANA_PAT") or ""
+          pr_url = os.environ.get("PR_URL") or ""
+
+          # "closes <asana task URL>": accept any app.asana.com URL and
+          # read the task gid as the last long digit run in its path
+          # (covers both classic /0/<project>/<task> and newer
+          # /1/<workspace>/.../task/<task> URL shapes).
+          refs = re.findall(
+              r"closes\s+<?(https://app\.asana\.com/[^\s>),]+)",
+              body, re.IGNORECASE,
+          )
+          gids = []
+          for url in refs:
+              digits = re.findall(r"/(\d{6,})", url)
+              if digits:
+                  gids.append(digits[-1])
+          gids = list(dict.fromkeys(gids))
+
+          if not gids:
+              print("No 'closes <asana task URL>' references in the PR body; nothing to do.")
+              sys.exit(0)
+          if not pat:
+              print("::error::ASANA_PAT secret is not set but the PR references Asana tasks.")
+              sys.exit(1)
+
+          def call(path, payload, method):
+              req = urllib.request.Request(
+                  f"https://app.asana.com/api/1.0{path}",
+                  data=json.dumps({"data": payload}).encode(),
+                  headers={
+                      "Authorization": f"Bearer {pat}",
+                      "Content-Type": "application/json",
+                  },
+                  method=method,
+              )
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  return json.load(resp)
+
+          failures = 0
+          for gid in gids:
+              try:
+                  call(f"/tasks/{gid}", {"completed": True}, "PUT")
+                  call(
+                      f"/tasks/{gid}/stories",
+                      {"text": f"Completed automatically: merged {pr_url}"},
+                      "POST",
+                  )
+                  print(f"Completed Asana task {gid}")
+              except Exception as exc:
+                  print(f"::error::Could not complete Asana task {gid}: {exc}")
+                  failures += 1
+          sys.exit(1 if failures else 0)
+          PYEOF
