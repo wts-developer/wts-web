@@ -8,8 +8,8 @@ for integration into the production Webflow site.
 
 | Project | Status | What it is |
 |---|---|---|
-| [projects/tuition-estimator](projects/tuition-estimator/) | ✅ ready | Living, clickable mockup of the [tuition page](https://www.wts.edu/admissions/tuition-financial-aid) with the Online Program Cost Estimator embedded front-and-center, plus a one-tag embeddable widget for Webflow |
-| [projects/tuition-chat-widget](projects/tuition-chat-widget/) | ✅ ready | Floating bottom-right chat dialog for the tuition page: one-tag Shadow-DOM embed, answered by the Hedwig web-chat API (`hedwig-admissions-slackbot` repo, `hedwig/webchat/`) |
+| [projects/tuition-estimator](projects/tuition-estimator/) | ✅ v1, shipping | Living, clickable mockup of the [tuition page](https://www.wts.edu/admissions/tuition-financial-aid) with the Tuition Savings Calculator embedded below the hero, plus a one-tag embeddable widget for Webflow |
+| [projects/tuition-chat-widget](projects/tuition-chat-widget/) | 🧪 v2, in UAT | Floating bottom-right chat dialog for the tuition page: one-tag Shadow-DOM embed, answered by the Hedwig web-chat API (`hedwig-admissions-slackbot` repo, `hedwig/webchat/`) |
 
 > **Data policy (important):** Westminster is bound by FERPA and its
 > AI Acceptable Use Policy. This repo holds public data only (published
