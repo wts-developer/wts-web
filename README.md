@@ -37,6 +37,8 @@ for ground rules, dev servers, and verification steps.
 - Builds are Python 3 standard library only (`python3 build.py`), so they run
   anywhere with no Node toolchain required. If a future project needs one, add it
   per-project.
+- If you are making changes to satisfy an Asana task, use `close <task id>` to automatically
+  close the task upon merge.
 
 ## Local development
 
