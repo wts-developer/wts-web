@@ -78,6 +78,14 @@ jobs:
               print("::error::ASANA_PAT secret is not set but the PR references Asana tasks.")
               sys.exit(1)
 
+          def get(path):
+              req = urllib.request.Request(
+                  f"https://app.asana.com/api/1.0{path}",
+                  headers={"Authorization": f"Bearer {pat}"},
+              )
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  return json.load(resp)
+
           def call(path, payload, method):
               req = urllib.request.Request(
                   f"https://app.asana.com/api/1.0{path}",
@@ -129,10 +137,42 @@ jobs:
 
           linkify_body()
 
+          def set_status_complete(gid):
+              """Best effort: project boards often track a Status enum
+              custom field separately from Asana's built-in completed
+              flag. If the task has a field named Status with a
+              Complete option, select it; otherwise skip quietly."""
+              try:
+                  fields = get(
+                      f"/tasks/{gid}?opt_fields=custom_fields.name,"
+                      "custom_fields.resource_subtype,"
+                      "custom_fields.enum_options.name,"
+                      "custom_fields.enum_options.enabled"
+                  )["data"].get("custom_fields") or []
+                  for field in fields:
+                      if (field.get("name") or "").strip().lower() != "status":
+                          continue
+                      if field.get("resource_subtype") != "enum":
+                          continue
+                      for option in field.get("enum_options") or []:
+                          name = (option.get("name") or "").strip().lower()
+                          if name == "complete" and option.get("enabled", True):
+                              call(
+                                  f"/tasks/{gid}",
+                                  {"custom_fields": {field["gid"]: option["gid"]}},
+                                  "PUT",
+                              )
+                              print(f"Set Status=Complete on Asana task {gid}")
+                              return
+                  print(f"Task {gid}: no Status field with a Complete option; left as is")
+              except Exception as exc:
+                  print(f"::warning::Could not set Status on Asana task {gid}: {exc}")
+
           failures = 0
           for gid in gids:
               try:
                   call(f"/tasks/{gid}", {"completed": True}, "PUT")
+                  set_status_complete(gid)
                   call(
                       f"/tasks/{gid}/stories",
                       {"text": f"Completed automatically: merged {pr_url}"},
