@@ -17,7 +17,7 @@ Embed elements.
 | `projects/tuition-chat-widget/` | Floating chat dialog widget answered by the Hedwig web-chat API (separate repo: `hedwig-admissions-slackbot`) |
 | `site/` | Landing page for the GitHub Pages site |
 | `.github/workflows/pages.yml` | Publishes every project's `dist/` to GitHub Pages on push to `main` |
-| `.github/workflows/asana-close.yml` | Completes Asana tasks referenced as `closes <asana task URL>` in merged PR bodies; reusable from other wts repos |
+| `.github/workflows/asana-close.yml` | Completes Asana tasks referenced as `closes <asana task URL>` in merged PR bodies; standalone, copy into other wts repos to enable there |
 
 ## Data policy: FERPA and the Westminster AI Acceptable Use Policy
 

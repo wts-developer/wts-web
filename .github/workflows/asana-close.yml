@@ -10,18 +10,9 @@ name: Close Asana tasks on merged PRs
 # and share it with the repos that need it, or per-repo with:
 #   gh secret set ASANA_PAT --repo wts-developer/<repo>
 #
-# Other wts repos can reuse this without copying the logic by adding a
-# three-line caller workflow:
-#
-#   name: Close Asana tasks
-#   on:
-#     pull_request:
-#       types: [closed]
-#   jobs:
-#     close:
-#       uses: wts-developer/wts-web/.github/workflows/asana-close.yml@main
-#       secrets:
-#         ASANA_PAT: ${{ secrets.ASANA_PAT }}
+# This file is deliberately standalone: to enable the same behavior in
+# another wts repo, copy it into that repo's .github/workflows/ as is.
+# No repo depends on another for this to work.
 #
 # This is deterministic automation on GitHub-managed runners: no AI in
 # the loop, and the only data touched is the Asana task id from the PR
@@ -30,10 +21,6 @@ name: Close Asana tasks on merged PRs
 on:
   pull_request:
     types: [closed]
-  workflow_call:
-    secrets:
-      ASANA_PAT:
-        required: true
 
 permissions: {}
 
