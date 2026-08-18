@@ -17,6 +17,7 @@ Embed elements.
 | `projects/tuition-chat-widget/` | Floating chat dialog widget answered by the Hedwig web-chat API (separate repo: `hedwig-admissions-slackbot`) |
 | `site/` | Landing page for the GitHub Pages site |
 | `.github/workflows/pages.yml` | Publishes every project's `dist/` to GitHub Pages on push to `main` |
+| `.github/workflows/asana-close.yml` | Completes Asana tasks referenced as `closes <asana task URL>` in merged PR bodies; reusable from other wts repos |
 
 ## Data policy: FERPA and the Westminster AI Acceptable Use Policy
 
@@ -139,7 +140,9 @@ Multiple people and agents work in this repo. All changes land on
    should rebuild and diff if in doubt.
 3. **Open a PR against `main`** with: what changed and why, how it was
    verified (which pages, which viewports, which dollar figures), and a
-   screenshot when the change is visual.
+   screenshot when the change is visual. If the work has an Asana task,
+   include `closes <asana task URL>` in the PR body; merging the PR
+   completes the task automatically (`.github/workflows/asana-close.yml`).
 4. **Review before merge.** At least one human approval. Changes to
    policy data (rates, scholarship rules, caps, term calendars, fees)
    additionally need the admissions or financial aid direction that
