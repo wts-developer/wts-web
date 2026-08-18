@@ -1,9 +1,9 @@
 name: Close Asana tasks on merged PRs
 
 # Completes Asana tasks referenced in a merged PR's description.
-# Convention: put "closes <asana task URL>" (case-insensitive) in the PR
-# body, one per task. Only MERGED PRs complete tasks; a PR closed
-# without merging leaves its tasks open.
+# Convention: put "closes <asana task URL>" or "closes <bare task id>"
+# (case-insensitive) in the PR body, one per task. Only MERGED PRs
+# complete tasks; a PR closed without merging leaves its tasks open.
 #
 # Needs an ASANA_PAT secret (an Asana personal access token, ideally
 # from a service account). Set it once at the wts-developer org level
@@ -59,6 +59,10 @@ jobs:
               digits = re.findall(r"/(\d{6,})", url)
               if digits:
                   gids.append(digits[-1])
+          # "closes <bare task id>": a long digit run works too (Asana
+          # gids are 10+ digits, so this can't collide with GitHub's
+          # "closes #123" issue references).
+          gids += re.findall(r"closes\s+(\d{10,})\b", body, re.IGNORECASE)
           gids = list(dict.fromkeys(gids))
 
           if not gids:
