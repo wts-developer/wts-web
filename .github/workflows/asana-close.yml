@@ -22,7 +22,10 @@ on:
   pull_request:
     types: [closed]
 
-permissions: {}
+# pull-requests: write lets the job rewrite bare task ids in the PR
+# body into clickable Asana links after completing them.
+permissions:
+  pull-requests: write
 
 jobs:
   close-asana:
@@ -34,6 +37,9 @@ jobs:
           ASANA_PAT: ${{ secrets.ASANA_PAT }}
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           python3 - <<'PYEOF'
           import json
@@ -80,6 +86,44 @@ jobs:
               )
               with urllib.request.urlopen(req, timeout=30) as resp:
                   return json.load(resp)
+
+          # Retroactively turn bare task ids in the PR body into
+          # clickable Asana links (URL references already auto-link).
+          # Best effort: a failure here never blocks task completion.
+          def linkify_body():
+              gh_token = os.environ.get("GITHUB_TOKEN") or ""
+              repo = os.environ.get("REPO") or ""
+              pr_number = os.environ.get("PR_NUMBER") or ""
+              if not (gh_token and repo and pr_number):
+                  return
+              new_body = re.sub(
+                  r"(closes\s+)(\d{10,})\b",
+                  lambda m: (
+                      f"{m.group(1)}[{m.group(2)}]"
+                      f"(https://app.asana.com/0/0/{m.group(2)}/f)"
+                  ),
+                  body, flags=re.IGNORECASE,
+              )
+              if new_body == body:
+                  return
+              try:
+                  req = urllib.request.Request(
+                      f"https://api.github.com/repos/{repo}/pulls/{pr_number}",
+                      data=json.dumps({"body": new_body}).encode(),
+                      headers={
+                          "Authorization": f"Bearer {gh_token}",
+                          "Accept": "application/vnd.github+json",
+                          "Content-Type": "application/json",
+                      },
+                      method="PATCH",
+                  )
+                  with urllib.request.urlopen(req, timeout=30):
+                      pass
+                  print("Linked bare Asana task ids in the PR body")
+              except Exception as exc:
+                  print(f"::warning::Could not linkify the PR body: {exc}")
+
+          linkify_body()
 
           failures = 0
           for gid in gids:
