@@ -129,10 +129,13 @@ Hedwig repo).
 
 ## Branches, PRs, and review
 
-Multiple people and agents work in this repo. All changes land on
-`main` through pull requests; do not push to `main` directly.
+Multiple people and agents work in this repo. Every change, feature
+or bug fix or docs, lands on `main` through a pull request; nobody
+works directly on `main` and nobody merges without review.
 
-1. **Branch per change**, named `<area>/<short-slug>`, for example
+1. **Branch first, always.** Cut a fresh branch from up-to-date
+   `origin/main` before your first edit; never commit on `main`, even
+   locally. Name it `<area>/<short-slug>`, for example
    `estimator/max-match-copy`, `chat/cold-start-note`,
    `docs/uat-checklist`. Keep each branch to one reviewable change.
 2. **Commit source and rebuilt `dist/` together** on the branch. A PR
@@ -153,7 +156,10 @@ Multiple people and agents work in this repo. All changes land on
    minute. Do not merge unverified or half-done work; it goes straight
    in front of stakeholders.
 6. **Agents: stop at the PR.** Push the branch, open the PR, report the
-   link. Never merge your own PR and never force-push shared branches.
+   link. Never merge a PR (not even your own), never push to `main`,
+   and never force-push shared branches. Before pushing a follow-up
+   commit to a PR branch, confirm the PR is still open; if it merged,
+   cherry-pick onto a fresh branch and open a new PR.
 
 Published URLs (from `main`):
 
