@@ -37,6 +37,9 @@ for ground rules, dev servers, and verification steps.
 - Builds are Python 3 standard library only (`python3 build.py`), so they run
   anywhere with no Node toolchain required. If a future project needs one, add it
   per-project.
+- Shared GitHub Actions automation (like the Asana task auto-close on merged
+  PRs) lives in [wts-github-hooks](https://github.com/wts-developer/wts-github-hooks);
+  this repo only carries small caller workflows.
 - If you are making changes to satisfy an Asana task, use `close <task id>` to automatically
   close the task upon merge.
 
