@@ -361,32 +361,6 @@
       margin-top: 24px;
     }
 
-    /* Apply CTA below the results card, echoing the site's gold
-       main-button (uppercase, square corners). */
-    .apply-cta {
-      text-align: center;
-      margin-top: 26px;
-    }
-
-    .apply-cta .apply-button {
-      display: inline-block;
-      background: var(--wts-gold);
-      color: #fff;
-      font-family: var(--sans);
-      font-weight: 700;
-      font-size: .95rem;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      text-decoration: none;
-      padding: 17px 46px;
-      border-radius: 2px;
-      transition: background .16s ease;
-    }
-
-    .apply-cta .apply-button:hover {
-      background: #a3763a;
-    }
-
     .panel, .card {
       background: rgba(255,255,255,.94);
       border: 1px solid var(--border);
