@@ -1457,9 +1457,14 @@ font-size: 16px !important;
       }
       setResultFootnote(footnoteParts);
       setOutsideSupportAsterisk(hasMatch);
-      els.miniMatch.textContent = money(totalWtsAid);
+      // Tiles use the same fee-inclusive figures as the pie: tuition
+      // before support counts the SBC recognition fee for every course
+      // selected for transfer (the fee is owed regardless of the credit
+      // reduction), and WTS support counts the fee scholarship, so the
+      // four tiles keep their arithmetic identity.
+      els.miniMatch.textContent = money(pieWtsScholarshipSupport);
       els.miniRemaining.textContent = money(fundsApplied);
-      els.miniGross.textContent = money(gross);
+      els.miniGross.textContent = money(pieTotal);
       els.miniCreditsRemaining.textContent = num(wtsCreditsRemaining);
       els.miniSbcScholarship.textContent = money(sbcRecognitionScholarship);
       els.sbcCoverageLabel.textContent = `${sbcCoveragePct}%`;
