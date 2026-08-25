@@ -178,27 +178,44 @@ widget = f"""/*!
 """
 
 # ---------------------------------------------------------------------
-# 4. Standalone calculator page (parity with the Apps Script original)
+# 4. Standalone calculator page: embed parity on a bare host
 # ---------------------------------------------------------------------
+# Exactly what wts.edu runs: the embeddable widget on an otherwise empty
+# page, starting with the "Tuition & Scholarships / Tuition Savings
+# Calculator" header (the widget's embed CSS shows it and hides the old
+# standalone hero). The host loads wts.edu's Adobe Fonts kit so
+# kepler-std-display renders identically to production; the widget loads
+# Lato itself, as it does on the real page. Shareable as a single file
+# and as a template: the script below is byte-identical to
+# dist/wts-cost-estimator.js.
 
+standalone_inline = widget.replace("</", "<\\/")
 standalone = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WTS Online Program Cost Estimator</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="{FONTS_URL}" rel="stylesheet">
+  <title>Tuition Savings Calculator</title>
+  <script src="https://use.typekit.net/lgi4kha.js"></script>
+  <script>try {{ Typekit.load({{ async: true }}); }} catch (e) {{}}</script>
   <style>
-{css}
+    body {{ margin: 0; background: #fff; }}
+    .host-section {{ max-width: 1240px; margin: 0 auto; padding: 40px 24px 24px; }}
   </style>
 </head>
 <body>
-{body_html}
-<script>
-{logic_src}
-</script>
+  <div class="host-section">
+    <!-- ==============================================================
+         Below is the same integration wts.edu uses: one container div
+         plus the widget script (inlined here so this page is a single
+         shareable file; production references the script by URL, see
+         webflow/embed-snippet.html).
+         ============================================================== -->
+    <div id="wts-cost-estimator"></div>
+    <script>
+{standalone_inline}
+    </script>
+  </div>
 </body>
 </html>
 """
