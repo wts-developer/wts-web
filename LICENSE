@@ -1,0 +1,37 @@
+Copyright (c) 2026 Westminster Theological Seminary. All rights reserved.
+
+INTERNAL USE LICENSE
+
+This repository is published publicly so that Westminster Theological
+Seminary (WTS) staff, contractors, and service providers can view,
+reference, and integrate its contents (for example, embedding the built
+widgets on wts.edu), and so that others may read the code for
+reference.
+
+Permission is granted:
+
+1. To WTS faculty, staff, students, and administrators, and to
+   contractors and service providers working on WTS's behalf: to use,
+   copy, modify, build, and deploy this software and its outputs for
+   WTS purposes, including as a template or starting point for other
+   WTS projects.
+2. To anyone: to view and study the source code for reference and
+   evaluation.
+
+All other rights are reserved. No permission is granted to reuse,
+redistribute, modify, or deploy this software or derivative works
+outside of Westminster Theological Seminary without prior written
+permission (contact communications@wts.edu).
+
+Westminster's name, logos, and branding identify WTS and its programs
+and may not be used in derivative works. The tuition, scholarship, and
+fee figures embedded in this software describe WTS programs and should
+not be reproduced in other contexts, where they may be inaccurate or
+misleading.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL WTS OR THE CONTRIBUTORS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH
+THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

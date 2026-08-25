@@ -26,6 +26,9 @@ for integration into the production Webflow site.
 AI coding agents and new contributors: start with [AGENTS.md](AGENTS.md)
 for ground rules, dev servers, and verification steps.
 
+Licensed for internal WTS use; anyone may read the code for reference,
+and WTS teams may reuse it as a template. See [LICENSE](LICENSE).
+
 ## Conventions
 
 - Each project lives under `projects/<name>/` and is self-contained: its own
