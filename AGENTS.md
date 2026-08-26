@@ -115,8 +115,8 @@ Hedwig repo).
 
 - Open the mockup and the standalone page; exercise what you touched on
   desktop and a narrow (mobile) viewport.
-- Spot-check money: MATS with a September 2026 start and $0 support
-  should read $26,325 (blended tuition; the $100 application fee is
+- Spot-check money: MATS with a January 2027 start and $0 support
+  should read $26,550 (blended tuition; the $100 application fee is
   deliberately excluded everywhere as a pre-program admin expense, not
   program cost). MDiv and MAR use a three-semester
   Summer/Fall/Spring calendar; MAC and MATS use four terms (January,

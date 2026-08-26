@@ -421,7 +421,9 @@
 
     // The start-term choices depend on the program's calendar: no March
     // term exists for MDiv/MAR, and their terms carry semester names.
-    const START_TERM_KEYS = ["2026-09", "2027-01", "2027-03", "2027-06", "2027-09"];
+    // September 2026 was removed once that term's enrollment closed, so
+    // January 2027 is the earliest (and default) start.
+    const START_TERM_KEYS = ["2027-01", "2027-03", "2027-06", "2027-09"];
 
     function refreshStartTermOptions(program) {
       if (!els.startTerm) return;
