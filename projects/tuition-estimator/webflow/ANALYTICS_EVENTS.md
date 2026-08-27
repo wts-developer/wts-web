@@ -32,12 +32,14 @@ Every push has the same envelope:
 | `scholarship_select` | A scholarship radio is changed | `scholarship` (option id, e.g. `match`), `program` |
 | `support_amount` | An outside-support amount is committed: typed (on blur), a quick-amount button, or the Maximum Matching Scholarship button | `amount` (number), `source` (`typed` / `quick` / `max_match`), `program` |
 | `start_term` | The start-term dropdown changes | `term` (`YYYY-MM`), `program` |
+| `contact_click` | The Contact Us button under the results card is clicked | `program`, `estimated_net` (the estimated cost after support shown at click time, as a number) |
 
 ## Suggested GTM wiring (for WebFX)
 
 1. **Trigger**: Custom Event, event name `wts_tuition_savings_calculator`.
 2. **Variables**: Data Layer Variables for `estimator_action`, `program`,
-   `modality`, `scholarship`, `amount`, `source`, and `term`.
+   `modality`, `scholarship`, `amount`, `source`, `term`, and
+   `estimated_net`.
 3. **Tag**: one GA4 Event tag using `estimator_action` as the event name
    (or keep the umbrella name and map `estimator_action` as a parameter),
    forwarding the variables above.

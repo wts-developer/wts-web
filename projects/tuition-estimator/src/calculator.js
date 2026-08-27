@@ -1272,6 +1272,16 @@
       track("start_term", { term: els.startTerm.value, program: selectedProgram });
     });
 
+    const contactButton = document.querySelectorAll(".contact-cta .contact-button")[0];
+    if (contactButton) {
+      contactButton.addEventListener("click", () => {
+        track("contact_click", {
+          program: selectedProgram,
+          estimated_net: Number(els.netPrice.textContent.replace(/[^0-9.-]/g, "")) || 0
+        });
+      });
+    }
+
 
     document.querySelectorAll(".sbc-course").forEach(input => {
       input.addEventListener("change", () => {

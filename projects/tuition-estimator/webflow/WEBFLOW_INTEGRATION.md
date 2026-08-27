@@ -34,7 +34,8 @@ does need to be hosted as a file rather than pasted inline.
 - Shows a centered "Tuition Savings Calculator" header, then a three-step
   vertical flow: step 1 Choose Your Program (category tabs and program
   cards), step 2 Financial Information, and the step 3 results card
-  (estimated cost plus the cost and scholarship mix).
+  (estimated cost plus the cost and scholarship mix), with a Contact
+  Us button beneath.
 - Adds one Google Fonts stylesheet (Lato) to the page head if not already
   present. The serif headline face uses the site's existing Typekit Kepler
   families.
