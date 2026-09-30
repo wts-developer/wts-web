@@ -151,11 +151,19 @@ works directly on `main` and nobody merges without review.
    additionally need the admissions or financial aid direction that
    authorized them linked or quoted in the PR, and a note confirming
    the Hedwig engine and canned chat answers were reconciled.
-5. **Merging is deploying.** GitHub Pages publishes `main`
-   automatically, and the shared UAT link updates within about a
-   minute. Do not merge unverified or half-done work; it goes straight
-   in front of stakeholders.
-6. **Agents: stop at the PR.** Push the branch, open the PR, report the
+5. **PRs get a staging preview.** `.github/workflows/preview.yml`
+   builds every PR touching `projects/` and publishes it to
+   <https://wts-developer.github.io/wts-web-previews/> (a separate
+   repo's Pages site), commenting the link on the PR. One shared slot:
+   the newest build wins. Share that link for stakeholder review
+   BEFORE merging; nothing there touches production.
+6. **Merging is deploying to production.** GitHub Pages publishes
+   `main` automatically, and the live wts.edu embed loads the widget
+   from this site, so a merge reaches the production page within about
+   ten minutes (and the shared UAT link within one). Never merge
+   unverified work, and hold policy-data merges for stakeholder
+   sign-off on the staging preview.
+7. **Agents: stop at the PR.** Push the branch, open the PR, report the
    link. Never merge a PR (not even your own), never push to `main`,
    and never force-push shared branches. Before pushing a follow-up
    commit to a PR branch, confirm the PR is still open; if it merged,
