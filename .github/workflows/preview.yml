@@ -1,0 +1,140 @@
+name: PR staging preview
+
+# Builds a PR's mockups and publishes them to the separate
+# wts-developer/wts-web-previews repo, which has its own GitHub Pages
+# site. This keeps staging review completely off this repo's Pages
+# site, which serves the LIVE wts.edu widget (merging to main here is
+# a production deploy). Single preview slot by design: the most recent
+# run wins, so two open PRs overwrite each other.
+#
+# One-time setup (human):
+# 1. Create the public repo wts-developer/wts-web-previews with any
+#    initial commit, then enable Pages on it: Settings, Pages, source
+#    "Deploy from a branch", branch main, folder / (root).
+# 2. Create a fine-grained personal access token scoped to ONLY that
+#    repo with Contents read and write, and save it in THIS repo as
+#    the PREVIEW_PUSH_TOKEN secret.
+#
+# Deterministic automation on GitHub runners: public tuition data
+# only, no AI in the loop, per the repo data policy.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "projects/**"
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+
+# One preview slot: a newer run cancels an in-flight older one.
+concurrency:
+  group: pr-preview
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      HEAD_REF: ${{ github.event.pull_request.head.ref }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build (chat first, then estimator)
+        run: |
+          python3 projects/tuition-chat-widget/build.py
+          python3 projects/tuition-estimator/build.py
+
+      - name: Assemble the preview site
+        run: |
+          mkdir -p preview/tuition-estimator preview/tuition-chat-widget
+          cp -R projects/tuition-estimator/dist/. preview/tuition-estimator/
+          cp -R projects/tuition-chat-widget/dist/. preview/tuition-chat-widget/
+          # Branch-based Pages runs Jekyll unless told not to; without
+          # this, some built files would be silently dropped.
+          touch preview/.nojekyll
+          python3 - <<'PYEOF'
+          import datetime
+          import html
+          import os
+
+          pr = os.environ.get("PR_NUMBER") or "manual run"
+          sha = (os.environ.get("HEAD_SHA") or os.environ.get("GITHUB_SHA") or "")[:9]
+          branch = os.environ.get("HEAD_REF") or os.environ.get("GITHUB_REF_NAME") or ""
+          when = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+          pr_link = (
+              f'<a href="https://github.com/wts-developer/wts-web/pull/{pr}">PR #{pr}</a>'
+              if str(pr).isdigit() else html.escape(str(pr))
+          )
+          open("preview/index.html", "w").write(f"""<!DOCTYPE html>
+          <html lang="en">
+          <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>wts-web staging preview</title>
+          <style>
+            body {{ font-family: -apple-system, "Segoe UI", sans-serif; margin: 0; color: #1f2023; }}
+            .banner {{ background: #8c2233; color: #fff; padding: 14px 24px; font-weight: 700; }}
+            main {{ max-width: 720px; margin: 0 auto; padding: 32px 24px; }}
+            li {{ margin: 10px 0; }}
+            .meta {{ color: #56575a; font-size: .9rem; }}
+          </style>
+          </head>
+          <body>
+          <div class="banner">STAGING PREVIEW. This is not wts.edu and not the production widget.</div>
+          <main>
+          <h1>wts-web staging preview</h1>
+          <p class="meta">Built from {pr_link}, branch <code>{html.escape(branch)}</code>,
+          commit <code>{sha}</code>, at {when}. One preview slot: a newer PR build replaces this page.</p>
+          <ul>
+            <li><a href="tuition-estimator/">Combined mockup</a> (captured tuition page: calculator + chat)</li>
+            <li><a href="tuition-estimator/calculator-only.html">Calculator-only mockup</a> (matches the production rollout)</li>
+            <li><a href="tuition-estimator/calculator-standalone.html">Standalone calculator</a> (embed on a bare page)</li>
+            <li><a href="tuition-chat-widget/">Chat widget mockup</a></li>
+          </ul>
+          </main>
+          </body>
+          </html>
+          """)
+          print("index written")
+          PYEOF
+
+      - name: Publish to wts-web-previews
+        env:
+          PREVIEW_PUSH_TOKEN: ${{ secrets.PREVIEW_PUSH_TOKEN }}
+        run: |
+          if [ -z "$PREVIEW_PUSH_TOKEN" ]; then
+            echo "::error::PREVIEW_PUSH_TOKEN secret is not set; see the setup comment at the top of this workflow."
+            exit 1
+          fi
+          cd preview
+          git init -qb main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Preview build: PR #${PR_NUMBER:-manual} (${HEAD_SHA:-$GITHUB_SHA})"
+          git push -qf "https://x-access-token:${PREVIEW_PUSH_TOKEN}@github.com/wts-developer/wts-web-previews.git" main
+          echo "Pushed; Pages serves it at https://wts-developer.github.io/wts-web-previews/ within a minute or two."
+
+      - name: Comment the preview link on the PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MARKER="<!-- pr-staging-preview -->"
+          BODY="$MARKER
+          **Staging preview**: https://wts-developer.github.io/wts-web-previews/ (live a minute or two after this comment; built from ${HEAD_SHA:0:9})
+
+          One shared preview slot: a build from another PR replaces it. Re-run this workflow on the PR to reclaim the slot."
+          EXISTING=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY" > /dev/null
+            echo "Updated existing preview comment"
+          else
+            gh pr comment "$PR_NUMBER" --body "$BODY"
+            echo "Posted preview comment"
+          fi
