@@ -14,6 +14,12 @@ per-program WTS scholarship support), and a combined results card holding
 chart. The longer-form sections of the original prototype (estimate summary,
 per-term table, market comparison) exist only on the standalone page.
 
+> **Reviewing a change before it ships?** Every PR touching this
+> project publishes a staging build to
+> <https://wts-developer.github.io/wts-web-previews/> (link is also
+> commented on the PR). Production wts.edu only updates when the PR
+> merges.
+
 ## Outputs (`dist/`, committed)
 
 | File | Purpose |
