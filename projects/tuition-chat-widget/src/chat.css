@@ -166,8 +166,15 @@
 }
 .wts-chat--open .wts-chat__panel { display: flex; }
 
+/* Larger, for reading longer answers and cost tables. Never past the window. */
+.wts-chat--expanded .wts-chat__panel {
+  width: min(760px, calc(100vw - 44px));
+  height: min(820px, calc(100vh - 120px));
+}
+
 @media (max-width: 480px) {
-  .wts-chat__panel {
+  .wts-chat__panel,
+  .wts-chat--expanded .wts-chat__panel {
     right: 8px;
     left: 8px;
     width: auto;
@@ -181,8 +188,8 @@
 .wts-chat__header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 14px 14px 14px 16px;
   color: #fff;
   background: var(--accent);
   flex-shrink: 0;
@@ -209,10 +216,15 @@
   letter-spacing: .01em;
 }
 .wts-chat__subtitle {
-  font-size: 11.5px;
+  font-size: 11px;
   opacity: .85;
-  letter-spacing: .04em;
+  letter-spacing: .03em;
   text-transform: uppercase;
+  /* One line beside two header buttons; trimmed rather than wrapped if a
+     narrow phone still can't fit it. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .wts-chat__close {
   margin-left: auto;
@@ -222,10 +234,34 @@
   cursor: pointer;
   font-size: 22px;
   line-height: 1;
-  padding: 6px;
+  padding: 5px;
   border-radius: 8px;
 }
 .wts-chat__close:hover { background: rgba(255, 255, 255, .15); }
+/* The expand button sits just before close and takes the push to the right. */
+.wts-chat__expand {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+.wts-chat__expand + .wts-chat__close { margin-left: 0; }
+.wts-chat__expand:hover { background: rgba(255, 255, 255, .15); }
+.wts-chat__expand:focus-visible { outline: 2px solid var(--wts-gold); }
+.wts-chat__expand svg { width: 18px; height: 18px; display: block; }
+.wts-chat__expand .icon-shrink { display: none; }
+.wts-chat--expanded .wts-chat__expand .icon-grow { display: none; }
+.wts-chat--expanded .wts-chat__expand .icon-shrink { display: block; }
+/* Phones already get a full-width panel; there is nothing to expand to.
+   After the rules above, so it wins. */
+@media (max-width: 480px) {
+  .wts-chat__expand { display: none; }
+}
 .wts-chat__close:focus-visible { outline: 2px solid var(--wts-gold); }
 
 /* ---- Messages ------------------------------------------------------ */

@@ -59,6 +59,7 @@ function runChat(root, app, config) {
   var launcher = app.querySelector(".wts-chat__launcher");
   var panel = app.querySelector(".wts-chat__panel");
   var closeBtn = app.querySelector(".wts-chat__close");
+  var expandBtn = app.querySelector(".wts-chat__expand");
   var messagesEl = app.querySelector(".wts-chat__messages");
   var form = app.querySelector(".wts-chat__composer");
   var input = app.querySelector(".wts-chat__input");
@@ -338,6 +339,26 @@ function runChat(root, app, config) {
       });
   }
 
+  // ---- larger / smaller ------------------------------------------------
+  // Remembered for the visit with the transcript; a new tab starts small.
+
+  function setExpanded(expanded) {
+    app.classList.toggle("wts-chat--expanded", expanded);
+    expandBtn.setAttribute("aria-pressed", String(expanded));
+    var label = expanded ? "Make the chat smaller" : "Make the chat larger";
+    expandBtn.setAttribute("aria-label", label);
+    expandBtn.title = label;
+    state.expanded = expanded;
+    saveState();
+    // Cost tables were sized for the old width.
+    fitAllPres();
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  expandBtn.addEventListener("click", function () {
+    setExpanded(!app.classList.contains("wts-chat--expanded"));
+  });
+
   // ---- open/close ------------------------------------------------------
 
   function setOpen(open) {
@@ -386,5 +407,6 @@ function runChat(root, app, config) {
   });
 
   restoreTranscript();
+  if (state.expanded) setExpanded(true);
   if (state.open) setOpen(true);
 }

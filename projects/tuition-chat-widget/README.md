@@ -132,6 +132,10 @@ the key the Hedwig maintainer gives you:
 The page's origin must be in Hedwig's CORS allowlist.
 
 `?theme=dark` (or `auto`) on the mockup previews the themes.
+
+The header's expand button switches the panel between its usual size and a larger
+one (up to 760 by 820 pixels, never past the window), remembered for the visit.
+Phones already get a full-width panel and don't show it.
 `?mock=agent` on the mockup labels every canned answer as the
 assistant's (with one canned deadline answer), to check AI mode with no
 network call.
