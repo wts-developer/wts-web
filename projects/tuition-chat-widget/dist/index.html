@@ -575,26 +575,36 @@ $(function() {
 <script>
 (function () {
   var MOCK = {"_readme": "Canned output of hedwig.webchat.answer_prompt (student mode), used by the tuition-chat-widget demo page so the dialog works without the backend. Regenerate per the project README after tuition data changes.", "welcome": "Hi! I can estimate what a Westminster program would cost you, including scholarships and how far the money you raise can go.\n\nI know these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry something like _\"How much does the MATS cost if I raise $3,000?\"_ or _\"How long does the oMAR take at 2 courses per term?\"_", "fallback": "I'm sorry, I couldn't tell which program or cost question that was. I can estimate costs for these programs: *BI, BLC-G, BLC-H, FT, MAC, MATS, MDiv-G, TH, TSC, oMAR, oMDR, rMAR*.\n\nTry naming one, like _\"What would the MAC cost me?\"_ - and feel free to mention transfer credits, a scholarship, or how much you can raise.", "answers": [{"match": ["mats"], "prompt": "How much does the MATS cost if I raise $3,000?", "reply": "Hi! Here's what the *MATS (Master of Arts in Theological Studies)* would cost you:\n\n```\nMaster of Arts in Theological Studies\n36 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a January 2027 start\n\nBase tuition (36 cr):              $26,550\n  (6 cr @ $675, 30 cr @ $750)\n                                ----------\nTotal:                             $26,550\n\nYour scenario:\n  - Matching Scholarship (raise $3,000, WTS matches $3,000): -$6,000\n                                ----------\nYour total:                        $20,550\n\nOther options apart from the Matching Scholarship:\n  - Advancing Women's Ministry Scholarship: $19,912 (saves $6,638)\n  - Missionary Scholarship: $21,240 (saves $5,310)\n  - Christian Educator Scholarship: $21,240 (saves $5,310)\n  - Church Officer Scholarship: $21,240 (saves $5,310)\n```", "outro": "Good news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["mac", "counseling"], "prompt": "What would the MAC cost me with 6 transfer credits?", "reply": "Hi! Here's what the *MAC (Master of Arts in Counseling)* would cost you:\n\n```\nMaster of Arts in Counseling\n61 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a January 2027 start\n\nBase tuition (61 cr):              $45,300\n  (6 cr @ $675, 55 cr @ $750)\nLess 6 transfer credits:           -$4,500\n                                ----------\nTotal:                             $40,800\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $20,400 (saves $20,400)\n  - International Leader Scholarship: $20,400 (saves $20,400)\n  - SBC Course Recognition: $34,300 (saves $6,500)\n```", "outro": "Good news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}, {"match": ["omar", "religion"], "prompt": "How long does the oMAR take at 2 courses per term?", "reply": "Hi! Here's what the *oMAR (Master of Arts in Religion (online))* would cost you:\n\n```\nMaster of Arts in Religion (online)\n74 credit hours - $675/hr through Spring 2027, $750/hr from Summer 2027\nAssumes a Spring 2027 start\nPlan: 2 courses/term -> 13 terms, ~4.3 years\n\nBase tuition (74 cr):              $55,050\n  (6 cr @ $675, 68 cr @ $750)\n                                ----------\nTotal:                             $55,050\n\nCost per term at 2 courses/term: about $4,235 on average over 13 terms\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $28,200 (saves $26,850)\n  - International Match: $27,525 (saves $27,525)\n```", "outro": "Good news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."}]};
+  var AGENT_DEADLINE = "The application deadline for the online MDiv depends on your start term. For *Spring 2027* it's *January 8, 2027*, and for *Summer 2027* it's *April 30, 2027* (Eastern Time). If you'd like help choosing a term, you can book a call with an admissions counselor at https://calendly.com/wtsadmissions/mdiv.";
   var params = new URLSearchParams(location.search);
   var api = params.get("api");
   if (api) {
     window.WTS_TUITION_CHAT_CONFIG = { apiBase: api };
     return;
   }
-  if (!params.get("mock")) {
+  var mode = params.get("mock");
+  if (!mode) {
     return; // no config: the widget uses its built-in live API base
   }
+  function engine(t) {
+    if (/^(hi|hello|hey)\b/.test(t)) return { reply: MOCK.welcome, routed: false };
+    for (var i = 0; i < MOCK.answers.length; i++) {
+      var a = MOCK.answers[i];
+      for (var j = 0; j < a.match.length; j++) {
+        if (t.indexOf(a.match[j]) !== -1) return { reply: a.reply, routed: true, outro: a.outro || null };
+      }
+    }
+    return { reply: MOCK.fallback, routed: false };
+  }
+  var turn = 0;
   window.WTS_TUITION_CHAT_CONFIG = {
+    ai: mode === "agent",
     mock: function (text) {
       var t = text.toLowerCase();
-      if (/^(hi|hello|hey)\b/.test(t)) return { reply: MOCK.welcome, routed: false };
-      for (var i = 0; i < MOCK.answers.length; i++) {
-        var a = MOCK.answers[i];
-        for (var j = 0; j < a.match.length; j++) {
-          if (t.indexOf(a.match[j]) !== -1) return { reply: a.reply, routed: true, outro: a.outro || null };
-        }
-      }
-      return { reply: MOCK.fallback, routed: false };
+      if (mode !== "agent") return engine(t);
+      turn += 1;
+      var reply = /deadline/.test(t) ? AGENT_DEADLINE : engine(t).reply;
+      return { reply: reply, routed: true, outro: null, source: "agent", conversation: "mock-" + turn };
     },
   };
 })();
@@ -609,8 +619,12 @@ $(function() {
  * live in a Shadow DOM, so nothing collides with the host page's CSS.
  *
  * Configuration (optional):
- *   <script src=".../wts-tuition-chat.js" data-api-base="https://..."><\/script>
- *   or window.WTS_TUITION_CHAT_CONFIG = { apiBase: "https://...", mock: fn }
+ *   <script src=".../wts-tuition-chat.js" data-api-base="https://..."
+ *           data-agent-key="..." data-ai><\/script>
+ *   or window.WTS_TUITION_CHAT_CONFIG = { apiBase: "https://...", agentKey: "...",
+ *                                         ai: true, mock: fn }
+ *   agentKey: sent as X-Webchat-Key, for internal test pages only, never wts.edu.
+ *   ai: say from the start that an AI assistant answers.
  *
  * Source: https://github.com/wts-developer/wts-web (projects/tuition-chat-widget)
  */
@@ -640,13 +654,21 @@ $(function() {
 
      Talks to the Hedwig web-chat API (hedwig/webchat/ in the
      hedwig-admissions-slackbot repo): POST {apiBase}/api/chat
-     {"message": "..."} -> {"reply": <Slack-mrkdwn string>, "routed": bool,
-     "outro": str|null}. The outro is the generic closing boilerplate
+     {"message": "...", "conversation": token|null} -> {"reply": <Slack-mrkdwn
+     string>, "routed": bool, "outro": str|null, "source": "agent"|"engine",
+     "conversation": token|null}. The outro is the generic closing boilerplate
      (no hidden fees, talk to your counselor); it arrives as its own field
      so the widget can show it once per conversation instead of after
      every answer. The reply is Slack mrkdwn because the same engine
      serves Slack; the mini-renderer below covers the three constructs
-     tuition answers use (``` code blocks, *bold*, _italic_). */
+     tuition answers use (``` code blocks, *bold*, _italic_).
+
+     source "agent" means Westminster's AI assistant (an Agentforce agent)
+     answered; "engine" means Hedwig's own tuition calculator did. The
+     conversation token keeps the assistant's context from one message to
+     the next. config.agentKey, when the embedding page sets one, goes in
+     the X-Webchat-Key header: Hedwig limits the assistant to requests that
+     carry it until launch. The public wts.edu embed sets none. */
 
   function runChat(root, app, config) {
     "use strict";
@@ -668,6 +690,22 @@ $(function() {
       "including scholarships and how far the money you raise can go. " +
       "Try one of these, or ask in your own words:";
 
+    // AI mode: Westminster's AI assistant answers. The copy has to say so
+    // before anyone types, so it turns on from the embed's config, and also
+    // from the first answer the assistant gives.
+    var AI_SUGGESTIONS = SUGGESTIONS.concat([
+      "When is the application deadline for the online MDiv?",
+    ]);
+    var AI_WELCOME =
+      "Hi! I'm Westminster's AI assistant. Ask me about tuition, " +
+      "scholarships, application deadlines or how to apply. Try one of " +
+      "these, or ask in your own words:";
+    var AI_PLACEHOLDER = "Ask about tuition, scholarships or applying\u2026";
+    var AI_DISCLAIMER =
+      "You're chatting with an AI assistant. It answers from Westminster's " +
+      "published tuition and admissions information and can make mistakes: " +
+      "confirm details with an admissions counselor.";
+
     var launcher = app.querySelector(".wts-chat__launcher");
     var panel = app.querySelector(".wts-chat__panel");
     var closeBtn = app.querySelector(".wts-chat__close");
@@ -675,6 +713,7 @@ $(function() {
     var form = app.querySelector(".wts-chat__composer");
     var input = app.querySelector(".wts-chat__input");
     var sendBtn = app.querySelector(".wts-chat__send");
+    var disclaimerEl = app.querySelector(".wts-chat__disclaimer");
 
     // ---- session persistence (open state + transcript survive page
     // navigation within the visit, reset when the tab closes) ----------
@@ -698,6 +737,14 @@ $(function() {
     // The closing boilerplate shows once per browser session; the flag
     // rides the same sessionStorage state as the transcript.
     if (typeof state.outroShown !== "boolean") state.outroShown = false;
+    if (typeof state.conversation !== "string") state.conversation = null;
+
+    function setAiMode() {
+      state.ai = true;
+      input.placeholder = AI_PLACEHOLDER;
+      disclaimerEl.textContent = AI_DISCLAIMER;
+    }
+    if (config.agentKey || config.ai || state.ai) setAiMode();
 
     // ---- mrkdwn mini-renderer -----------------------------------------
 
@@ -791,7 +838,7 @@ $(function() {
     function addSuggestionChips() {
       var wrap = document.createElement("div");
       wrap.className = "wts-chat__chips";
-      SUGGESTIONS.forEach(function (q) {
+      (state.ai ? AI_SUGGESTIONS : SUGGESTIONS).forEach(function (q) {
         var chip = document.createElement("button");
         chip.type = "button";
         chip.className = "wts-chat__chip";
@@ -804,7 +851,7 @@ $(function() {
     }
 
     function showWelcome() {
-      addBubble("bot", WELCOME);
+      addBubble("bot", state.ai ? AI_WELCOME : WELCOME);
       addSuggestionChips();
     }
 
@@ -823,10 +870,12 @@ $(function() {
         // Demo/mockup mode: canned answers, no network. See dist/index.html.
         return Promise.resolve(config.mock(text));
       }
+      var headers = { "Content-Type": "application/json" };
+      if (config.agentKey) headers["X-Webchat-Key"] = config.agentKey;
       return fetch(config.apiBase.replace(/\/$/, "") + "/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        headers: headers,
+        body: JSON.stringify({ message: text, conversation: state.conversation }),
       }).then(function (resp) {
         return resp.json().then(function (payload) {
           if (!resp.ok) {
@@ -875,6 +924,11 @@ $(function() {
         .then(function (payload) { return typingPause(payload, startedAt); })
         .then(function (payload) {
           typing.remove();
+          // A reply without a token ends the assistant's conversation (the
+          // engine answered, or the session lapsed); the next message starts
+          // a fresh one.
+          state.conversation = payload.conversation || null;
+          if (payload.source === "agent" && !state.ai) setAiMode();
           addBubble("bot", payload.reply);
           record("bot", payload.reply);
           if (payload.outro && !state.outroShown) {
@@ -953,9 +1007,10 @@ $(function() {
     var config = { apiBase: DEFAULT_API_BASE };
     var overrides = window.WTS_TUITION_CHAT_CONFIG || {};
     for (var k in overrides) config[k] = overrides[k];
-    if (currentScript && currentScript.dataset && currentScript.dataset.apiBase) {
-      config.apiBase = currentScript.dataset.apiBase;
-    }
+    var data = (currentScript && currentScript.dataset) || {};
+    if (data.apiBase) config.apiBase = data.apiBase;
+    if (data.agentKey) config.agentKey = data.agentKey;
+    if (data.ai !== undefined) config.ai = true;
     return config;
   }
 

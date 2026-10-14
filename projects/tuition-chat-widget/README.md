@@ -8,13 +8,26 @@ a Westminster-branded (identity-less, for now) assistant.
 
 The answers come from the **Hedwig** backend (`../hedwig-admissions-slackbot`,
 developed alongside this repo): a public, unauthenticated HTTP API
-(`hedwig/webchat/`) that runs the same deterministic answer engine the
-admissions team uses in Slack: NLU intent detection → tuition calculator →
-student-framed rendering. **No AI model answers prospects**; every reply is
-computed from the published tuition data in `hedwig/tuition/programs.py`,
-and the exact answers were QA'd by counselors through Hedwig's Slack UAT
-harness (which now literally calls the same `answer_prompt()` function this
-widget hits).
+(`hedwig/webchat/`). Two things can answer behind it:
+
+- **Hedwig's tuition engine**, the same deterministic pipeline the
+  admissions team uses in Slack: NLU intent detection, then the tuition
+  calculator, then student-framed rendering. No AI model; every figure is
+  computed from the published tuition data in `hedwig/tuition/programs.py`,
+  and the answers were QA'd by counselors through Hedwig's Slack UAT
+  harness. **This is what answers on wts.edu today.**
+- **Westminster's AI assistant** (the *WTS Prospective Student Helper*
+  Agentforce agent), which answers tuition, scholarship and application
+  questions in conversation from a reviewed reference library
+  (`libraries/admissions-reference/` in edcloud-salesforce). Hedwig sends a
+  message to it first when it is configured and the request may reach it,
+  and falls back to the engine when it cannot. Until launch, only internal
+  test pages that send the test key (`agentKey`, below) reach it.
+
+When the assistant answers, the widget switches to **AI mode**: the welcome,
+the input placeholder and the footer say that an AI assistant is answering
+and can make mistakes. AI mode also turns on from the embed's config
+(`agentKey` or `ai`), so the notice is there before anyone types.
 
 ## Outputs (`dist/`, committed)
 
@@ -79,18 +92,47 @@ then open `http://localhost:8438/?api=http://localhost:8787`.
 
 ## Backend contract
 
-`POST {apiBase}/api/chat` with `{"message": str}` (≤500 chars) returns:
+`POST {apiBase}/api/chat` with `{"message": str, "conversation": str|null}`
+(message ≤500 chars) returns:
 
 | Field | Meaning |
 |---|---|
 | `reply` | Slack-mrkdwn answer text, always student-framed |
-| `routed` | `true` if the real tuition engine answered; `false` for greeting/fallback copy |
+| `routed` | `true` if the engine or the assistant answered; `false` for greeting/fallback copy |
 | `outro` | Closing boilerplate (no hidden fees, counselor pointer) as a separate string, or `null`; the widget renders it once per browser session |
+| `source` | `"agent"` (the AI assistant) or `"engine"`; absent when Hedwig has no assistant configured |
+| `conversation` | Token to send with the next message so the assistant keeps its context; `null` or absent ends the conversation |
+
+With `agentKey` set, the widget sends it in an `X-Webchat-Key` header.
+Hedwig lets only requests carrying its `WEBCHAT_AGENT_KEY` reach the
+assistant until launch; everything else gets the engine.
 
 Errors (400/413/429) may include a user-displayable `reply`, which the
 widget shows; otherwise it falls back to a generic apology. CORS is
 allowlisted server-side (`WEBCHAT_ALLOWED_ORIGINS`); rate limiting is
 20 requests/minute/IP.
+
+## Configuration
+
+| Option | Script attribute | `window.WTS_TUITION_CHAT_CONFIG` | Effect |
+|---|---|---|---|
+| API base | `data-api-base` | `apiBase` | Backend to call; defaults to the production Render service |
+| Test key | `data-agent-key` | `agentKey` | Sent as `X-Webchat-Key`; turns AI mode on. **Internal test pages only**, never the public wts.edu embed: anything in a public page is readable by everyone |
+| AI mode | `data-ai` | `ai: true` | Says from the start that an AI assistant answers. For wts.edu once the assistant launches |
+
+An internal test page (behind its own sign-in) embeds it like this, with
+the key the Hedwig maintainer gives you:
+
+```html
+<script src="https://wts-developer.github.io/wts-web/tuition-chat-widget/wts-tuition-chat.js"
+        data-agent-key="..." defer></script>
+```
+
+The page's origin must be in Hedwig's CORS allowlist.
+
+`?mock=agent` on the mockup labels every canned answer as the
+assistant's (with one canned deadline answer), to check AI mode with no
+network call.
 
 ## For the webmaster
 

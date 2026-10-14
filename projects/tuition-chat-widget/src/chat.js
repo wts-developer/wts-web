@@ -5,13 +5,21 @@
 
    Talks to the Hedwig web-chat API (hedwig/webchat/ in the
    hedwig-admissions-slackbot repo): POST {apiBase}/api/chat
-   {"message": "..."} -> {"reply": <Slack-mrkdwn string>, "routed": bool,
-   "outro": str|null}. The outro is the generic closing boilerplate
+   {"message": "...", "conversation": token|null} -> {"reply": <Slack-mrkdwn
+   string>, "routed": bool, "outro": str|null, "source": "agent"|"engine",
+   "conversation": token|null}. The outro is the generic closing boilerplate
    (no hidden fees, talk to your counselor); it arrives as its own field
    so the widget can show it once per conversation instead of after
    every answer. The reply is Slack mrkdwn because the same engine
    serves Slack; the mini-renderer below covers the three constructs
-   tuition answers use (``` code blocks, *bold*, _italic_). */
+   tuition answers use (``` code blocks, *bold*, _italic_).
+
+   source "agent" means Westminster's AI assistant (an Agentforce agent)
+   answered; "engine" means Hedwig's own tuition calculator did. The
+   conversation token keeps the assistant's context from one message to
+   the next. config.agentKey, when the embedding page sets one, goes in
+   the X-Webchat-Key header: Hedwig limits the assistant to requests that
+   carry it until launch. The public wts.edu embed sets none. */
 
 function runChat(root, app, config) {
   "use strict";
@@ -33,6 +41,22 @@ function runChat(root, app, config) {
     "including scholarships and how far the money you raise can go. " +
     "Try one of these, or ask in your own words:";
 
+  // AI mode: Westminster's AI assistant answers. The copy has to say so
+  // before anyone types, so it turns on from the embed's config, and also
+  // from the first answer the assistant gives.
+  var AI_SUGGESTIONS = SUGGESTIONS.concat([
+    "When is the application deadline for the online MDiv?",
+  ]);
+  var AI_WELCOME =
+    "Hi! I'm Westminster's AI assistant. Ask me about tuition, " +
+    "scholarships, application deadlines or how to apply. Try one of " +
+    "these, or ask in your own words:";
+  var AI_PLACEHOLDER = "Ask about tuition, scholarships or applying\u2026";
+  var AI_DISCLAIMER =
+    "You're chatting with an AI assistant. It answers from Westminster's " +
+    "published tuition and admissions information and can make mistakes: " +
+    "confirm details with an admissions counselor.";
+
   var launcher = app.querySelector(".wts-chat__launcher");
   var panel = app.querySelector(".wts-chat__panel");
   var closeBtn = app.querySelector(".wts-chat__close");
@@ -40,6 +64,7 @@ function runChat(root, app, config) {
   var form = app.querySelector(".wts-chat__composer");
   var input = app.querySelector(".wts-chat__input");
   var sendBtn = app.querySelector(".wts-chat__send");
+  var disclaimerEl = app.querySelector(".wts-chat__disclaimer");
 
   // ---- session persistence (open state + transcript survive page
   // navigation within the visit, reset when the tab closes) ----------
@@ -63,6 +88,14 @@ function runChat(root, app, config) {
   // The closing boilerplate shows once per browser session; the flag
   // rides the same sessionStorage state as the transcript.
   if (typeof state.outroShown !== "boolean") state.outroShown = false;
+  if (typeof state.conversation !== "string") state.conversation = null;
+
+  function setAiMode() {
+    state.ai = true;
+    input.placeholder = AI_PLACEHOLDER;
+    disclaimerEl.textContent = AI_DISCLAIMER;
+  }
+  if (config.agentKey || config.ai || state.ai) setAiMode();
 
   // ---- mrkdwn mini-renderer -----------------------------------------
 
@@ -156,7 +189,7 @@ function runChat(root, app, config) {
   function addSuggestionChips() {
     var wrap = document.createElement("div");
     wrap.className = "wts-chat__chips";
-    SUGGESTIONS.forEach(function (q) {
+    (state.ai ? AI_SUGGESTIONS : SUGGESTIONS).forEach(function (q) {
       var chip = document.createElement("button");
       chip.type = "button";
       chip.className = "wts-chat__chip";
@@ -169,7 +202,7 @@ function runChat(root, app, config) {
   }
 
   function showWelcome() {
-    addBubble("bot", WELCOME);
+    addBubble("bot", state.ai ? AI_WELCOME : WELCOME);
     addSuggestionChips();
   }
 
@@ -188,10 +221,12 @@ function runChat(root, app, config) {
       // Demo/mockup mode: canned answers, no network. See dist/index.html.
       return Promise.resolve(config.mock(text));
     }
+    var headers = { "Content-Type": "application/json" };
+    if (config.agentKey) headers["X-Webchat-Key"] = config.agentKey;
     return fetch(config.apiBase.replace(/\/$/, "") + "/api/chat", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text }),
+      headers: headers,
+      body: JSON.stringify({ message: text, conversation: state.conversation }),
     }).then(function (resp) {
       return resp.json().then(function (payload) {
         if (!resp.ok) {
@@ -240,6 +275,11 @@ function runChat(root, app, config) {
       .then(function (payload) { return typingPause(payload, startedAt); })
       .then(function (payload) {
         typing.remove();
+        // A reply without a token ends the assistant's conversation (the
+        // engine answered, or the session lapsed); the next message starts
+        // a fresh one.
+        state.conversation = payload.conversation || null;
+        if (payload.source === "agent" && !state.ai) setAiMode();
         addBubble("bot", payload.reply);
         record("bot", payload.reply);
         if (payload.outro && !state.outroShown) {
