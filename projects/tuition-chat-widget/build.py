@@ -41,6 +41,16 @@ captured_page = (ROOT / "../tuition-estimator/src/wts-tuition-page.html").read_t
 # window.WTS_TUITION_CHAT_CONFIG.
 DEFAULT_API_BASE = "https://hedwig-webchat-api.onrender.com"
 
+# The canned AI-assistant answer for ?mock=agent. Public: the online MDiv
+# row of the published application deadline table.
+AGENT_DEADLINE = (
+    "The application deadline for the online MDiv depends on your start term. "
+    "For *Spring 2027* it's *January 8, 2027*, and for *Summer 2027* it's "
+    "*April 30, 2027* (Eastern Time). If you'd like help choosing a term, you "
+    "can book a call with an admissions counselor at "
+    "https://calendly.com/wtsadmissions/mdiv."
+)
+
 # Same faces as the estimator widget (Kepler comes from wts.edu's Typekit).
 FONTS_URL = (
     "https://fonts.googleapis.com/css2"
@@ -68,8 +78,12 @@ widget = f"""/*!
  * live in a Shadow DOM, so nothing collides with the host page's CSS.
  *
  * Configuration (optional):
- *   <script src=".../wts-tuition-chat.js" data-api-base="https://..."></script>
- *   or window.WTS_TUITION_CHAT_CONFIG = {{ apiBase: "https://...", mock: fn }}
+ *   <script src=".../wts-tuition-chat.js" data-api-base="https://..."
+ *           data-agent-key="..." data-ai></script>
+ *   or window.WTS_TUITION_CHAT_CONFIG = {{ apiBase: "https://...", agentKey: "...",
+ *                                         ai: true, mock: fn }}
+ *   agentKey: sent as X-Webchat-Key, for internal test pages only, never wts.edu.
+ *   ai: say from the start that an AI assistant answers.
  *
  * Source: https://github.com/wts-developer/wts-web (projects/tuition-chat-widget)
  */
@@ -98,9 +112,10 @@ widget = f"""/*!
     var config = {{ apiBase: DEFAULT_API_BASE }};
     var overrides = window.WTS_TUITION_CHAT_CONFIG || {{}};
     for (var k in overrides) config[k] = overrides[k];
-    if (currentScript && currentScript.dataset && currentScript.dataset.apiBase) {{
-      config.apiBase = currentScript.dataset.apiBase;
-    }}
+    var data = (currentScript && currentScript.dataset) || {{}};
+    if (data.apiBase) config.apiBase = data.apiBase;
+    if (data.agentKey) config.agentKey = data.agentKey;
+    if (data.ai !== undefined) config.ai = true;
     return config;
   }}
 
@@ -146,31 +161,44 @@ widget = f"""/*!
 # production Webflow embed (the widget's own DEFAULT_API_BASE). Escape
 # hatches: `?api=<url>` points at another backend (local dev), and
 # `?mock=1` forces the canned keyword-matched answers from
-# src/mock-answers.json for offline demos.
+# src/mock-answers.json for offline demos. `?mock=agent` does the same but
+# labels every answer as the AI assistant's and adds one canned deadline
+# answer (from the published deadline table), so AI mode can be checked
+# with no network call.
 demo_config = f"""
 <script>
 (function () {{
   var MOCK = {json.dumps(mock)};
+  var AGENT_DEADLINE = {json.dumps(AGENT_DEADLINE)};
   var params = new URLSearchParams(location.search);
   var api = params.get("api");
   if (api) {{
     window.WTS_TUITION_CHAT_CONFIG = {{ apiBase: api }};
     return;
   }}
-  if (!params.get("mock")) {{
+  var mode = params.get("mock");
+  if (!mode) {{
     return; // no config: the widget uses its built-in live API base
   }}
+  function engine(t) {{
+    if (/^(hi|hello|hey)\\b/.test(t)) return {{ reply: MOCK.welcome, routed: false }};
+    for (var i = 0; i < MOCK.answers.length; i++) {{
+      var a = MOCK.answers[i];
+      for (var j = 0; j < a.match.length; j++) {{
+        if (t.indexOf(a.match[j]) !== -1) return {{ reply: a.reply, routed: true, outro: a.outro || null }};
+      }}
+    }}
+    return {{ reply: MOCK.fallback, routed: false }};
+  }}
+  var turn = 0;
   window.WTS_TUITION_CHAT_CONFIG = {{
+    ai: mode === "agent",
     mock: function (text) {{
       var t = text.toLowerCase();
-      if (/^(hi|hello|hey)\\b/.test(t)) return {{ reply: MOCK.welcome, routed: false }};
-      for (var i = 0; i < MOCK.answers.length; i++) {{
-        var a = MOCK.answers[i];
-        for (var j = 0; j < a.match.length; j++) {{
-          if (t.indexOf(a.match[j]) !== -1) return {{ reply: a.reply, routed: true, outro: a.outro || null }};
-        }}
-      }}
-      return {{ reply: MOCK.fallback, routed: false }};
+      if (mode !== "agent") return engine(t);
+      turn += 1;
+      var reply = /deadline/.test(t) ? AGENT_DEADLINE : engine(t).reply;
+      return {{ reply: reply, routed: true, outro: null, source: "agent", conversation: "mock-" + turn }};
     }},
   }};
 }})();

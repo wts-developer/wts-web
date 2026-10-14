@@ -24,9 +24,13 @@ Two options, depending on rollout scope:
   questions as one-tap chips.
 - Answers come from the Hedwig web-chat API (`hedwig-admissions-slackbot`
   repo, `hedwig/webchat/`), which serves the same student-framed tuition
-  answers the admissions team QA'd in Slack UAT. No AI model is involved;
-  it's a deterministic NLU + calculator pipeline over published tuition
-  data, so answers can't hallucinate numbers.
+  answers the admissions team QA'd in Slack UAT. On wts.edu today no AI
+  model is involved: it's a deterministic NLU + calculator pipeline over
+  published tuition data, so answers can't hallucinate numbers.
+- Westminster's AI assistant, which also answers application questions,
+  is in internal testing. When it launches on wts.edu, the snippet gains
+  `data-ai`, and the widget says plainly that an AI assistant is
+  answering. Never add `data-agent-key` to a wts.edu page.
 - Open/closed state and the conversation survive page navigation within
   the visit (sessionStorage); nothing persists after the tab closes, and
   no cookies are set.
