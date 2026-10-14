@@ -323,6 +323,15 @@
   overflow-x: hidden;
 }
 .wts-chat__msg p { margin: 0 0 8px; }
+.wts-chat__msg a {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  /* A long address wraps inside the bubble instead of widening it. */
+  overflow-wrap: anywhere;
+}
+.wts-chat__msg a:hover { text-decoration-thickness: 2px; }
+.wts-chat__msg a:focus-visible { outline: 2px solid var(--wts-gold); outline-offset: 1px; }
 .wts-chat__msg p:last-child { margin-bottom: 0; }
 
 /* Typing indicator: three pulsing dots in a bot bubble. */

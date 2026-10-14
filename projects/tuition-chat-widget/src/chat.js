@@ -142,11 +142,31 @@ function runChat(root, app, config) {
     return s.replace(/&/g, "&amp;").replace(/[<]/g, "&lt;").replace(/[>]/g, "&gt;");
   }
 
-  function inlineMrkdwn(s) {
-    // Bold/italic only; the escapes above make this injection-safe.
+  // Bare http(s) addresses become links that open in a new tab. Matched on
+  // the escaped text, so &lt; and &gt; (an address wrapped in <...>) end a
+  // link instead of joining it; quotes and spaces can't appear in one.
+  var URL_PATTERN = /https?:\/\/(?:(?!&gt;|&lt;)[^\s"'<>])+/g;
+
+  function boldItalic(s) {
     return s
       .replace(/\*([^*\n]+)\*/g, "<strong>$1</strong>")
       .replace(/_([^_\n]+)_/g, "<em>$1</em>");
+  }
+
+  function inlineMrkdwn(s) {
+    // Bold/italic outside links only, so an underscore in an address stays
+    // put. The escapes above make all of this injection-safe.
+    var html = "";
+    var last = 0;
+    s.replace(URL_PATTERN, function (match, offset) {
+      // Sentence punctuation after an address isn't part of it.
+      var url = match.replace(/[.,;:!?)\]]+$/, "");
+      html += boldItalic(s.slice(last, offset));
+      html += '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + "</a>";
+      last = offset + url.length;
+      return match;
+    });
+    return html + boldItalic(s.slice(last));
   }
 
   function renderMrkdwn(text) {
