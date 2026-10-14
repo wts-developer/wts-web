@@ -99,7 +99,7 @@
      serves Slack; the mini-renderer below covers the three constructs
      tuition answers use (``` code blocks, *bold*, _italic_).
 
-     source "agent" means Westminster's AI assistant (an Agentforce agent)
+     source "agent" means the Admissions Assistant (an Agentforce agent)
      answered; "engine" means Hedwig's own tuition calculator did. The
      conversation token keeps the assistant's context from one message to
      the next. config.agentKey, when the embedding page sets one, goes in
@@ -125,14 +125,14 @@
       "including scholarships and how far the money you raise can go. " +
       "Try one of these, or ask in your own words:";
 
-    // AI mode: Westminster's AI assistant answers. The copy has to say so
+    // AI mode: the Admissions Assistant, an AI, answers. The copy has to say so
     // before anyone types, so it turns on from the embed's config, and also
     // from the first answer the assistant gives.
     var AI_SUGGESTIONS = SUGGESTIONS.concat([
       "When is the application deadline for the online MDiv?",
     ]);
     var AI_WELCOME =
-      "Hi! I'm Westminster's AI assistant. Ask me about tuition, " +
+      "Hi! I'm the Admissions Assistant. Ask me about tuition, " +
       "scholarships, application deadlines or how to apply. Try one of " +
       "these, or ask in your own words:";
     var AI_PLACEHOLDER = "Ask about tuition, scholarships or applying\u2026";
