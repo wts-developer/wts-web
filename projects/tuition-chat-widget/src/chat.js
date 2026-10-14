@@ -82,6 +82,42 @@ function runChat(root, app, config) {
     } catch (e) { /* storage full or blocked: chat still works, just won't persist */ }
   }
 
+  // ---- theme -----------------------------------------------------------
+  // config.theme: "light" (default: wts.edu has no dark mode, and a dark
+  // chat on a light page looks broken), "dark", or "auto" for pages that
+  // have a dark mode: follow the page when it marks its theme (data-theme
+  // on <html>, or a "dark" class), else the visitor's system setting, and
+  // keep following both as they change.
+  var theme = config.theme || "light";
+  var systemDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  var pageRoot = document.documentElement;
+
+  function isDark() {
+    if (theme === "dark") return true;
+    if (theme !== "auto") return false;
+    var page = pageRoot.getAttribute("data-theme");
+    if (page === "dark") return true;
+    if (page === "light") return false;
+    if (pageRoot.classList.contains("dark")) return true;
+    return !!(systemDark && systemDark.matches);
+  }
+
+  function applyTheme() {
+    app.classList.toggle("wts-chat--dark", isDark());
+  }
+
+  applyTheme();
+  if (theme === "auto") {
+    if (systemDark) {
+      if (systemDark.addEventListener) systemDark.addEventListener("change", applyTheme);
+      else if (systemDark.addListener) systemDark.addListener(applyTheme);
+    }
+    new MutationObserver(applyTheme).observe(pageRoot, {
+      attributes: true,
+      attributeFilter: ["data-theme", "class"],
+    });
+  }
+
   var state = loadState();
   if (!Array.isArray(state.transcript)) state.transcript = [];
   // The closing boilerplate shows once per browser session; the flag

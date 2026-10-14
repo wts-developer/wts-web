@@ -119,6 +119,7 @@ allowlisted server-side (`WEBCHAT_ALLOWED_ORIGINS`); rate limiting is
 | API base | `data-api-base` | `apiBase` | Backend to call; defaults to the production Render service |
 | Test key | `data-agent-key` | `agentKey` | Sent as `X-Webchat-Key`; turns AI mode on. **Internal test pages only**, never the public wts.edu embed: anything in a public page is readable by everyone |
 | AI mode | `data-ai` | `ai: true` | Says from the start that an AI assistant answers. For wts.edu once the assistant launches |
+| Theme | `data-theme` | `theme` | `light` (default), `dark`, or `auto`. `auto` follows the page when it marks its theme (`data-theme="dark"` or a `dark` class on `<html>`), else the visitor's system setting, and switches live when either changes. wts.edu stays `light`: it has no dark mode, and a dark chat on a light page looks broken |
 
 An internal test page (behind its own sign-in) embeds it like this, with
 the key the Hedwig maintainer gives you:
@@ -130,6 +131,7 @@ the key the Hedwig maintainer gives you:
 
 The page's origin must be in Hedwig's CORS allowlist.
 
+`?theme=dark` (or `auto`) on the mockup previews the themes.
 `?mock=agent` on the mockup labels every canned answer as the
 assistant's (with one canned deadline answer), to check AI mode with no
 network call.

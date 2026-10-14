@@ -79,11 +79,13 @@ widget = f"""/*!
  *
  * Configuration (optional):
  *   <script src=".../wts-tuition-chat.js" data-api-base="https://..."
- *           data-agent-key="..." data-ai></script>
+ *           data-agent-key="..." data-ai data-theme="auto"></script>
  *   or window.WTS_TUITION_CHAT_CONFIG = {{ apiBase: "https://...", agentKey: "...",
- *                                         ai: true, mock: fn }}
+ *                                         ai: true, theme: "auto", mock: fn }}
  *   agentKey: sent as X-Webchat-Key, for internal test pages only, never wts.edu.
  *   ai: say from the start that an AI assistant answers.
+ *   theme: "light" (default), "dark", or "auto" (follow the page's data-theme,
+ *          else the visitor's system setting).
  *
  * Source: https://github.com/wts-developer/wts-web (projects/tuition-chat-widget)
  */
@@ -116,6 +118,7 @@ widget = f"""/*!
     if (data.apiBase) config.apiBase = data.apiBase;
     if (data.agentKey) config.agentKey = data.agentKey;
     if (data.ai !== undefined) config.ai = true;
+    if (data.theme) config.theme = data.theme;
     return config;
   }}
 
@@ -201,6 +204,13 @@ demo_config = f"""
       return {{ reply: reply, routed: true, outro: null, source: "agent", conversation: "mock-" + turn }};
     }},
   }};
+}})();
+// ?theme=dark|auto|light previews the widget's themes on the mockup.
+(function () {{
+  var theme = new URLSearchParams(location.search).get("theme");
+  if (!theme) return;
+  window.WTS_TUITION_CHAT_CONFIG = window.WTS_TUITION_CHAT_CONFIG || {{}};
+  window.WTS_TUITION_CHAT_CONFIG.theme = theme;
 }})();
 </script>
 """
