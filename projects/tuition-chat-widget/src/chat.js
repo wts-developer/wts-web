@@ -32,7 +32,6 @@ function runChat(root, app, config) {
   // mismatched, so don't suggest that phrasing until the engine has a
   // duration-first framing.
   var SUGGESTIONS = [
-    "How much does the MATS cost if I raise $3,000?",
     "What would the MAC cost me with 6 transfer credits?",
   ];
 
@@ -309,7 +308,7 @@ function runChat(root, app, config) {
     app.classList.toggle("wts-chat--open", open);
     launcher.setAttribute("aria-expanded", String(open));
     launcher.setAttribute("aria-label",
-      open ? "Close tuition assistant chat" : "Open tuition assistant chat");
+      open ? "Close admissions assistant chat" : "Open admissions assistant chat");
     state.open = open;
     // Opening collapses the labeled launcher pill to the quieter icon
     // circle. Deliberately not persisted: a fresh page load gets the
