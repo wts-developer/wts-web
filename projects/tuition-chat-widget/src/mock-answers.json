@@ -9,7 +9,7 @@
         "counseling"
       ],
       "prompt": "What would the MAC cost me with 6 transfer credits?",
-      "reply": "Hi! Here's what the *MAC (Master of Arts in Counseling)* would cost you:\n\n```\nMaster of Arts in Counseling\n61 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a January 2027 start\n\nBase tuition (61 cr):              $45,300\n  (6 cr @ $675, 55 cr @ $750)\nLess 6 transfer credits:           -$4,500\n                                ----------\nTotal:                             $40,800\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $20,400 (saves $20,400)\n  - International Leader Scholarship: $20,400 (saves $20,400)\n  - SBC Course Recognition: $34,300 (saves $6,500)\n```",
+      "reply": "Hi! Here's what the *MAC (Master of Arts in Counseling)* would cost you:\n\n```\nMaster of Arts in Counseling\n61 credit hours - $675/hr through Mar 2027, $750/hr from Jun 2027\nAssumes a January 2027 start at 1 course (3 credits) per term\n\nBase tuition (61 cr):              $45,300\n  (6 cr @ $675, 55 cr @ $750)\nLess 6 transfer credits:           -$4,500\n                                ----------\nTotal:                             $40,800\n\nScholarships you may qualify for (pick one):\n  - Matching Scholarship: $20,400 (saves $20,400)\n  - International Leader Scholarship: $20,400 (saves $20,400)\n  - SBC Course Recognition: $34,300 (saves $6,500)\n```",
       "outro": "Good news: no lab fees or hidden charges. You'll buy your own books (used, digital, or public-domain options all work fine).\n\nIf you have questions about any of this or want to talk through your options, reach out to your admissions counselor. They're here to help."
     },
     {

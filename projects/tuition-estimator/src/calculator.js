@@ -43,6 +43,9 @@
           matchType: "onlineHybrid",
           perTermMatch: 675,
           percentAfter: 0.25,
+          // The match needs at least 4 credits a term (see its detail text).
+          // Below that it is not included, and the default pace holds it.
+          minCreditsPerTerm: 4,
           termSystem: "residential",
           theme: ONLINE_THEME,
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
@@ -55,6 +58,9 @@
           matchType: "onlineHybrid",
           perTermMatch: 675,
           percentAfter: 0.25,
+          // The match needs at least 4 credits a term (see its detail text).
+          // Below that it is not included, and the default pace holds it.
+          minCreditsPerTerm: 4,
           termSystem: "residential",
           theme: ONLINE_THEME,
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
@@ -441,6 +447,25 @@
         const boundary = program.termSystem === "residential" ? "Summer 2027" : "June 2027";
         els.rateIncreaseNote.textContent = `Tuition increases from $675 to $750/credit beginning in the ${boundary} term.`;
       }
+    }
+
+    // The pace an estimate assumes until someone picks one: one course a
+    // term, or the fewest whole courses that hold the program's matching
+    // scholarship minimum (2 courses for the online MAR and MDiv), so the
+    // estimate never shows a match at a pace that would not get it. Mirrors
+    // Hedwig's calculator.default_courses_per_term. Direction: Curtis
+    // Patrick, 2026-10-14, "it should be at least 2 course per term".
+    function defaultCreditsPerTerm(program) {
+      return Math.max(1, Math.ceil((program.minCreditsPerTerm || 0) / 3)) * 3;
+    }
+
+    // Once someone picks a pace, switching programs keeps it.
+    let paceChosen = false;
+
+    function applyDefaultPace(program) {
+      if (paceChosen || !els.creditsPerTerm) return;
+      els.creditsPerTerm.value = String(defaultCreditsPerTerm(program));
+      els.customCreditsField.style.display = "none";
     }
 
     function capFor(program, gross, startTerm, creditsPerTerm = 3, rows = []) {
@@ -930,7 +955,11 @@
       const isPercentScholarship = !!(scholarship && scholarship.calc.type === "percentTuition");
       const scholarshipAid = isPercentScholarship ? gross * scholarship.calc.pct : 0;
       const fundsApplied = Math.min(fundsRaisedRequested, Math.max(0, gross - scholarshipAid));
-      const matchCap = isPercentScholarship ? 0 : capFor(program, gross, startTerm, creditsPerTerm, rows);
+      // Under the match's per-term credit minimum the match is not included.
+      const belowMatchMinimum = !!program.minCreditsPerTerm && creditsPerTerm < program.minCreditsPerTerm;
+      const matchCap = (isPercentScholarship || belowMatchMinimum)
+        ? 0
+        : capFor(program, gross, startTerm, creditsPerTerm, rows);
       lastMatchCap = matchCap;
       updateMaxMatchButton();
       const standardMatch = scholarshipIncluded && !isPercentScholarship
@@ -954,6 +983,9 @@
       // is the selected scholarship.
       const hasMatch = !isPercentScholarship && matchCap > 0;
       const footnoteParts = [hasMatch ? MATCH_FOOTNOTE : ""];
+      if (belowMatchMinimum && !isPercentScholarship) {
+        footnoteParts.push(`The matching scholarship needs at least ${program.minCreditsPerTerm} credits per term, so it is not included at this pace.`);
+      }
       if (program.certificate) {
         if (program.stackable) {
           footnoteParts.push("The three Theological Studies Certificate emphases plus three electives stack into a full MATS.");
@@ -1179,6 +1211,7 @@
       selectedProgram = key;
       selectedScholarshipId = null; // back to the program's default scholarship
       setTheme(key);
+      applyDefaultPace(CONFIG.programs[key]);
 
       Object.keys(programButtons).forEach(k => document.body.classList.remove(`program-${k.toLowerCase()}`));
       document.body.classList.add(`program-${key.toLowerCase()}`);
@@ -1259,6 +1292,7 @@
     });
 
     els.creditsPerTerm.addEventListener("change", () => {
+      paceChosen = true;
       els.customCreditsField.style.display = els.creditsPerTerm.value === "custom" ? "block" : "none";
       calculate();
     });
@@ -1295,6 +1329,7 @@
 
     document.body.classList.add(`program-${selectedProgram.toLowerCase()}`);
     setTheme(selectedProgram);
+    applyDefaultPace(CONFIG.programs[selectedProgram]);
     renderScholarships(selectedProgram);
     updateMacOnlyVisibility();
     calculate();
