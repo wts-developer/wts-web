@@ -126,6 +126,10 @@ function runChat(root, app, config) {
   if (typeof state.outroShown !== "boolean") state.outroShown = false;
   if (typeof state.conversation !== "string") state.conversation = null;
 
+  // What AI mode replaces, for reset().
+  var basePlaceholder = input.placeholder;
+  var baseDisclaimer = disclaimerEl.textContent;
+
   function setAiMode() {
     state.ai = true;
     input.placeholder = AI_PLACEHOLDER;
@@ -297,6 +301,8 @@ function runChat(root, app, config) {
   }
 
   var pending = false;
+  // Bumped by reset(), so a reply that lands afterwards is dropped.
+  var session = 0;
 
   // Hold the typing indicator on screen for a beat even when the answer
   // comes back instantly (mock mode, warm API): an immediate wall of
@@ -326,10 +332,12 @@ function runChat(root, app, config) {
     messagesEl.appendChild(typing);
     messagesEl.scrollTop = messagesEl.scrollHeight;
     var startedAt = Date.now();
+    var asked = session;
 
     askBackend(text)
       .then(function (payload) { return typingPause(payload, startedAt); })
       .then(function (payload) {
+        if (asked !== session) return;
         typing.remove();
         // A reply without a token ends the assistant's conversation (the
         // engine answered, or the session lapsed); the next message starts
@@ -345,6 +353,7 @@ function runChat(root, app, config) {
         }
       })
       .catch(function (err) {
+        if (asked !== session) return;
         typing.remove();
         var reply = err.reply ||
           "Sorry - I couldn't reach the tuition service just now. " +
@@ -353,6 +362,7 @@ function runChat(root, app, config) {
         record("bot", reply);
       })
       .finally(function () {
+        if (asked !== session) return;
         pending = false;
         sendBtn.disabled = false;
         input.focus();
@@ -426,7 +436,32 @@ function runChat(root, app, config) {
     }
   });
 
+  // ---- reset -------------------------------------------------------------
+  // For the embedding page when someone signs out: forget the conversation
+  // (transcript, the assistant's token) and close the chat, as a new tab
+  // would find it, so the next person on a shared computer doesn't see it.
+
+  function reset() {
+    session++;
+    pending = false;
+    sendBtn.disabled = false;
+    input.value = "";
+    state = { transcript: [], outroShown: false, conversation: null };
+    input.placeholder = basePlaceholder;
+    disclaimerEl.textContent = baseDisclaimer;
+    if (config.agentKey || config.ai) setAiMode();
+    messagesEl.textContent = "";
+    showWelcome();
+    app.classList.remove("wts-chat--engaged");
+    setExpanded(false);
+    setOpen(false);
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch (e) { /* storage blocked: nothing was saved */ }
+  }
+
   restoreTranscript();
   if (state.expanded) setExpanded(true);
   if (state.open) setOpen(true);
+  return { reset: reset };
 }
