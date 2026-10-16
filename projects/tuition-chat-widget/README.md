@@ -64,7 +64,14 @@ then open `http://localhost:8438/?api=http://localhost:8787`.
   because the same engine serves Slack; a mini-renderer in `chat.js` handles
   the three constructs tuition answers use (``` code blocks → `<pre>`,
   `*bold*`, `_italic_`), HTML-escaped first.
-- Open/closed state + transcript persist in `sessionStorage` for the visit.
+- Open/closed state + transcript persist in `sessionStorage` for the visit,
+  under `wtsTuitionChat.v1`. A page that signs people out (the applicant
+  portal) calls `window.WTSTuitionChat.reset()`, which forgets the
+  conversation and closes the chat, so the next person on a shared computer
+  doesn't see it; if the script may not have run yet, it removes that key
+  too.
+- `fonts: false` in the config skips the Google Fonts stylesheet, for pages
+  that serve Lato themselves or whose CSP blocks `fonts.googleapis.com`.
 - `src/mock-answers.json` is canned `answer_prompt()` output powering the
   no-backend demo. All content is public tuition data. Regenerate after
   tuition data changes (a human runs this on a Westminster device; per
