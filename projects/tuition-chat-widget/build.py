@@ -81,11 +81,20 @@ widget = f"""/*!
  *   <script src=".../wts-tuition-chat.js" data-api-base="https://..."
  *           data-agent-key="..." data-ai data-theme="auto"></script>
  *   or window.WTS_TUITION_CHAT_CONFIG = {{ apiBase: "https://...", agentKey: "...",
- *                                         ai: true, theme: "auto", mock: fn }}
+ *                                         ai: true, theme: "auto", fonts: false,
+ *                                         mock: fn }}
  *   agentKey: sent as X-Webchat-Key, for internal test pages only, never wts.edu.
  *   ai: say from the start that an AI assistant answers.
  *   theme: "light" (default), "dark", or "auto" (follow the page's data-theme,
  *          else the visitor's system setting).
+ *   fonts: false skips the Google Fonts stylesheet, for pages that serve Lato
+ *          themselves (or whose CSP blocks fonts.googleapis.com).
+ *
+ * window.WTSTuitionChat.reset() forgets the conversation and closes the chat,
+ * for pages that sign people out (a shared computer's next visitor must not
+ * see it). It also clears sessionStorage "wtsTuitionChat.v1", where the
+ * widget keeps the conversation; a page that may sign someone out before
+ * this script has run removes that key itself.
  *
  * Source: https://github.com/wts-developer/wts-web (projects/tuition-chat-widget)
  */
@@ -122,9 +131,19 @@ widget = f"""/*!
     return config;
   }}
 
+  var chat = null;
+  var resetWaiting = false;
+  window.WTSTuitionChat = {{
+    reset: function () {{
+      if (chat) chat.reset();
+      else resetWaiting = true; // before DOMContentLoaded: reset once booted
+    }},
+  }};
+
   function boot(host) {{
     if (host.shadowRoot) return; // already booted
-    ensureFonts();
+    var config = resolveConfig();
+    if (config.fonts !== false) ensureFonts();
     var shadow = host.attachShadow({{ mode: "open" }});
     var style = document.createElement("style");
     style.textContent = CSS;
@@ -133,7 +152,8 @@ widget = f"""/*!
     wrapper.innerHTML = HTML;
     var app = wrapper.firstElementChild;
     shadow.appendChild(app);
-    runChat(shadow, app, resolveConfig());
+    chat = runChat(shadow, app, config);
+    if (resetWaiting) chat.reset();
   }}
 
   function init() {{

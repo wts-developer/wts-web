@@ -65,11 +65,20 @@
  *   <script src=".../wts-tuition-chat.js" data-api-base="https://..."
  *           data-agent-key="..." data-ai data-theme="auto"><\/script>
  *   or window.WTS_TUITION_CHAT_CONFIG = { apiBase: "https://...", agentKey: "...",
- *                                         ai: true, theme: "auto", mock: fn }
+ *                                         ai: true, theme: "auto", fonts: false,
+ *                                         mock: fn }
  *   agentKey: sent as X-Webchat-Key, for internal test pages only, never wts.edu.
  *   ai: say from the start that an AI assistant answers.
  *   theme: "light" (default), "dark", or "auto" (follow the page's data-theme,
  *          else the visitor's system setting).
+ *   fonts: false skips the Google Fonts stylesheet, for pages that serve Lato
+ *          themselves (or whose CSP blocks fonts.googleapis.com).
+ *
+ * window.WTSTuitionChat.reset() forgets the conversation and closes the chat,
+ * for pages that sign people out (a shared computer's next visitor must not
+ * see it). It also clears sessionStorage "wtsTuitionChat.v1", where the
+ * widget keeps the conversation; a page that may sign someone out before
+ * this script has run removes that key itself.
  *
  * Source: https://github.com/wts-developer/wts-web (projects/tuition-chat-widget)
  */
@@ -219,6 +228,10 @@
     // rides the same sessionStorage state as the transcript.
     if (typeof state.outroShown !== "boolean") state.outroShown = false;
     if (typeof state.conversation !== "string") state.conversation = null;
+
+    // What AI mode replaces, for reset().
+    var basePlaceholder = input.placeholder;
+    var baseDisclaimer = disclaimerEl.textContent;
 
     function setAiMode() {
       state.ai = true;
@@ -391,6 +404,8 @@
     }
 
     var pending = false;
+    // Bumped by reset(), so a reply that lands afterwards is dropped.
+    var session = 0;
 
     // Hold the typing indicator on screen for a beat even when the answer
     // comes back instantly (mock mode, warm API): an immediate wall of
@@ -420,10 +435,12 @@
       messagesEl.appendChild(typing);
       messagesEl.scrollTop = messagesEl.scrollHeight;
       var startedAt = Date.now();
+      var asked = session;
 
       askBackend(text)
         .then(function (payload) { return typingPause(payload, startedAt); })
         .then(function (payload) {
+          if (asked !== session) return;
           typing.remove();
           // A reply without a token ends the assistant's conversation (the
           // engine answered, or the session lapsed); the next message starts
@@ -439,6 +456,7 @@
           }
         })
         .catch(function (err) {
+          if (asked !== session) return;
           typing.remove();
           var reply = err.reply ||
             "Sorry - I couldn't reach the tuition service just now. " +
@@ -447,6 +465,7 @@
           record("bot", reply);
         })
         .finally(function () {
+          if (asked !== session) return;
           pending = false;
           sendBtn.disabled = false;
           input.focus();
@@ -520,9 +539,34 @@
       }
     });
 
+    // ---- reset -------------------------------------------------------------
+    // For the embedding page when someone signs out: forget the conversation
+    // (transcript, the assistant's token) and close the chat, as a new tab
+    // would find it, so the next person on a shared computer doesn't see it.
+
+    function reset() {
+      session++;
+      pending = false;
+      sendBtn.disabled = false;
+      input.value = "";
+      state = { transcript: [], outroShown: false, conversation: null };
+      input.placeholder = basePlaceholder;
+      disclaimerEl.textContent = baseDisclaimer;
+      if (config.agentKey || config.ai) setAiMode();
+      messagesEl.textContent = "";
+      showWelcome();
+      app.classList.remove("wts-chat--engaged");
+      setExpanded(false);
+      setOpen(false);
+      try {
+        sessionStorage.removeItem(STORAGE_KEY);
+      } catch (e) { /* storage blocked: nothing was saved */ }
+    }
+
     restoreTranscript();
     if (state.expanded) setExpanded(true);
     if (state.open) setOpen(true);
+    return { reset: reset };
   }
 
   function resolveConfig() {
@@ -537,9 +581,19 @@
     return config;
   }
 
+  var chat = null;
+  var resetWaiting = false;
+  window.WTSTuitionChat = {
+    reset: function () {
+      if (chat) chat.reset();
+      else resetWaiting = true; // before DOMContentLoaded: reset once booted
+    },
+  };
+
   function boot(host) {
     if (host.shadowRoot) return; // already booted
-    ensureFonts();
+    var config = resolveConfig();
+    if (config.fonts !== false) ensureFonts();
     var shadow = host.attachShadow({ mode: "open" });
     var style = document.createElement("style");
     style.textContent = CSS;
@@ -548,7 +602,8 @@
     wrapper.innerHTML = HTML;
     var app = wrapper.firstElementChild;
     shadow.appendChild(app);
-    runChat(shadow, app, resolveConfig());
+    chat = runChat(shadow, app, config);
+    if (resetWaiting) chat.reset();
   }
 
   function init() {
