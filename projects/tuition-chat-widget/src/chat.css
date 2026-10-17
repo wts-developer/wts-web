@@ -393,6 +393,11 @@
   color: var(--ink);
   background: var(--panel);
 }
+/* iOS Safari zooms the whole page into any text box under 16px when it's tapped, and
+   stays zoomed after the keyboard closes, leaving the panel off the edge of the screen. */
+@media (pointer: coarse) {
+  .wts-chat__input { font-size: 16px; }
+}
 .wts-chat__input:focus {
   outline: 2px solid var(--accent-ink);
   outline-offset: -1px;
