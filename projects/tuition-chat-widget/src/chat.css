@@ -261,6 +261,8 @@
    After the rules above, so it wins. */
 @media (max-width: 480px) {
   .wts-chat__expand { display: none; }
+  /* With expand hidden, close takes the push to the right edge itself. */
+  .wts-chat__expand + .wts-chat__close { margin-left: auto; }
 }
 .wts-chat__close:focus-visible { outline: 2px solid var(--wts-gold); }
 
