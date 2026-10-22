@@ -696,6 +696,35 @@
       box-shadow: 0 0 0 3px rgba(189,139,65,.22);
     }
 
+    /* Average per-term figures: a quieter second row under the main
+       tiles, so the full-program answer stays the headline. */
+    .per-term-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr 2fr;
+      gap: 12px;
+      margin-top: 12px;
+      align-items: stretch;
+    }
+
+    .per-term-strip[hidden] { display: none; }
+
+    .per-term-strip .mini {
+      background: rgba(255,255,255,.05);
+      padding: 10px 14px;
+    }
+
+    .mini.bucket-student-soft {
+      border-color: rgba(189,139,65,.75);
+    }
+
+    .per-term-note {
+      margin: 0;
+      align-self: center;
+      font-size: .85rem;
+      line-height: 1.45;
+      color: rgba(255,255,255,.8);
+    }
+
     .match-footnote {
       margin: 16px 0 0;
       font-style: italic;
@@ -1302,6 +1331,8 @@
       .hero, .builder-grid { grid-template-columns: 1fr; }
       .program-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .result-mini-grid { grid-template-columns: 1fr; }
+      .per-term-strip { grid-template-columns: 1fr 1fr; }
+      .per-term-note { grid-column: 1 / -1; }
     }
 
     @media (max-width: 700px) {

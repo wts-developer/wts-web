@@ -12,6 +12,10 @@
           credits: 36,
           matchType: "fixedCap",
           fixedCap: 5000,
+          // Enrollment status by credits per term, from the 2026-2027
+          // academic catalog's Enrollment Status table: full time at
+          // fullTime credits or more, half time from halfTime credits.
+          enrollmentStatus: { fullTime: 6, halfTime: 2 },
           bucket: "online",
           termSystem: "online",
           theme: ONLINE_THEME,
@@ -26,6 +30,10 @@
           // by up to 50% (25% raised + 25% matched).
           matchType: "percentCap",
           percentCap: 0.25,
+          // Enrollment status by credits per term, from the 2026-2027
+          // academic catalog's Enrollment Status table: full time at
+          // fullTime credits or more, half time from halfTime credits.
+          enrollmentStatus: { fullTime: 6, halfTime: 2 },
           bucket: "online",
           termSystem: "online",
           theme: ONLINE_THEME,
@@ -46,6 +54,10 @@
           // The match needs at least 4 credits a term (see its detail text).
           // Below that it is not included, and the default pace holds it.
           minCreditsPerTerm: 4,
+          // Enrollment status by credits per term, from the 2026-2027
+          // academic catalog's Enrollment Status table: full time at
+          // fullTime credits or more, half time from halfTime credits.
+          enrollmentStatus: { fullTime: 8, halfTime: 4 },
           termSystem: "residential",
           theme: ONLINE_THEME,
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
@@ -61,6 +73,10 @@
           // The match needs at least 4 credits a term (see its detail text).
           // Below that it is not included, and the default pace holds it.
           minCreditsPerTerm: 4,
+          // Enrollment status by credits per term, from the 2026-2027
+          // academic catalog's Enrollment Status table: full time at
+          // fullTime credits or more, half time from halfTime credits.
+          enrollmentStatus: { fullTime: 8, halfTime: 4 },
           termSystem: "residential",
           theme: ONLINE_THEME,
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
@@ -342,6 +358,7 @@
       sbcDetails: $("sbcDetails"), sbcCourseList: $("sbcCourseList"), sbcSelectionNote: $("sbcSelectionNote"), sbcCoverage: $("sbcCoverage"), sbcCoverageLabel: $("sbcCoverageLabel"), sbcFeeNote: $("sbcFeeNote"),
       netPrice: $("netPrice"),
       miniMatch: $("miniMatch"), miniRemaining: $("miniRemaining"), miniRemainingCard: $("miniRemainingCard"), miniGross: $("miniGross"), miniGrossLabel: $("miniGrossLabel"),
+      perTermStrip: $("perTermStrip"), perTermGross: $("perTermGross"), perTermNet: $("perTermNet"), perTermNote: $("perTermNote"),
       miniCreditsCard: $("miniCreditsCard"), miniCreditsRemaining: $("miniCreditsRemaining"),
       miniSbcCard: $("miniSbcCard"), miniSbcScholarship: $("miniSbcScholarship"),
       summaryModeLabel: $("summaryModeLabel"),
@@ -827,6 +844,39 @@
       els.maxMatchBtn.textContent = `Maximum Matching Scholarship amount: ${money(cap)}`;
     }
 
+    // Enrollment status for a pace, per the catalog thresholds in
+    // CONFIG; null when the catalog gives none (certificates).
+    function enrollmentStatusFor(program, creditsPerTerm) {
+      const status = program.enrollmentStatus;
+      if (!status) return null;
+      if (creditsPerTerm >= status.fullTime) return "full time";
+      if (creditsPerTerm >= status.halfTime) return "half time";
+      return "less than half time";
+    }
+
+    // Average tuition per term, before and after support, across every
+    // term of the plan. Terms differ (the $750 rate from June/Summer
+    // 2027, a short final term), so this is the blended average, not a
+    // list rate; the term table shows each term. Rounded half-up to
+    // whole dollars by money(), like every other figure.
+    function renderPerTerm(program, rows, creditsPerTerm, gross, studentPaid) {
+      if (!els.perTermStrip) return;
+      els.perTermStrip.hidden = rows.length === 0;
+      if (!rows.length) return;
+      els.perTermGross.textContent = money(gross / rows.length);
+      els.perTermNet.textContent = money(studentPaid / rows.length);
+      const status = enrollmentStatusFor(program, creditsPerTerm);
+      const termWord = rows.length === 1 ? "term" : "terms";
+      const blended = rows.some(row => row.rate !== rows[0].rate);
+      const boundary = program.termSystem === "residential" ? "Summer 2027" : "June 2027";
+      els.perTermNote.textContent =
+        `Averaged over ${rows.length} ${termWord} at ${num(creditsPerTerm)} credits per term` +
+        (status ? ` (${status})` : "") + ". " +
+        (blended
+          ? `Credits cost ${money(CONFIG.currentRate)} before ${boundary} and ${money(CONFIG.futureRate)} from then on, so see the table below for each term.`
+          : "See the table below for each term.");
+    }
+
     function calculate() {
       updateMacOnlyVisibility();
       const program = CONFIG.programs[selectedProgram];
@@ -857,6 +907,7 @@
         lastMatchCap = 0;
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
+        if (els.perTermStrip) els.perTermStrip.hidden = true;
         els.netPrice.textContent = money(fundedNet);
         const yearsWord = { 3: "three", 4: "four" }[program.years] || String(program.years);
         setResultFootnote([
@@ -906,6 +957,7 @@
         const remainingEligibleMatch = Math.max(0, matchCap - match);
 
         updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
+        if (els.perTermStrip) els.perTermStrip.hidden = true;
 
         els.netPrice.textContent = money(totalOutOfPocket);
         const communityFeeSentence = `Residential students also pay a ${money(CONFIG.residentialTermFee)} per-term Community Life Fee, not included in this estimate.`;
@@ -1029,6 +1081,7 @@
       els.legendMatch.textContent = money(pieWtsScholarshipSupport);
 
       els.termCountLabel.textContent = `${rows.length} ${rows.length === 1 ? "term" : "terms"}`;
+      renderPerTerm(program, rows, creditsPerTerm, gross, studentPaid);
 
       const raisedRatio = gross > 0 ? fundsApplied / gross : 0;
       const matchRatio = gross > 0 ? totalWtsAid / gross : 0;
