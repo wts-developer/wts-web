@@ -462,6 +462,16 @@
       color: var(--wts-ink);
     }
 
+    /* Custom chevron: the native arrow sat flush against the right
+       border. Inline data URI, so no external request. */
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 44px;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2356575a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 16px center / 16px;
+      cursor: pointer;
+    }
+
     select:focus, input:focus, button:focus {
       outline: 3px solid color-mix(in srgb, var(--accent) 24%, transparent);
       outline-offset: 2px;
@@ -694,6 +704,49 @@
       border-color: var(--wts-gold);
       background: linear-gradient(135deg, rgba(189,139,65,.34), rgba(255,255,255,.10));
       box-shadow: 0 0 0 3px rgba(189,139,65,.22);
+    }
+
+    /* Full program / per term switch: one set of tile figures at a
+       time, so the card does not grow a second row of numbers. */
+    .cost-view {
+      display: inline-flex;
+      gap: 2px;
+      margin-bottom: 12px;
+      padding: 3px;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
+    }
+
+    .cost-view-btn {
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(255,255,255,.8);
+      padding: 6px 14px;
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .cost-view-btn[aria-pressed="true"] {
+      background: var(--wts-gold);
+      color: #1f1f1f;
+      font-weight: 700;
+    }
+
+    .mini-value .per-term-unit {
+      font-size: .7em;
+      font-weight: 400;
+      opacity: .8;
+    }
+
+    .per-term-note {
+      margin: 12px 0 0;
+      font-size: .85rem;
+      line-height: 1.45;
+      color: rgba(255,255,255,.8);
     }
 
     .match-footnote {

@@ -158,6 +158,21 @@
               <div class="help" id="rateIncreaseNote">Tuition increases from $675 to $750/credit beginning in the June 2027 term.</div>
             </div>
 
+            <div class="field" id="enrollmentField">
+              <div class="label-title">Will you study full time or part time?</div>
+              <div class="choice-row" role="group" aria-label="Enrollment status">
+                <button type="button" id="fullTimeBtn" class="choice" aria-pressed="false">
+                  <strong>Full time</strong>
+                  <span id="fullTimeDetail">2 courses (6 credits) per term</span>
+                </button>
+                <button type="button" id="partTimeBtn" class="choice" aria-pressed="true">
+                  <strong>Part time</strong>
+                  <span id="partTimeDetail">1 course (3 credits) per term</span>
+                </button>
+              </div>
+              <div class="help">Full time as defined in the 2026-2027 academic catalog.</div>
+            </div>
+
             <div class="field mac-only" id="sbcScholarshipBlock" hidden>
               <div class="label-title">Would you like to have SBC courses recognized for credit in the MAC?</div>
               <div class="choice-row" role="group" aria-label="SBC course recognition selection">
@@ -282,6 +297,11 @@
         <p class="annotation results-update-note">Estimates update automatically as you change your answers above.</p>
           <article class="result-card" aria-label="Estimated cost after support">
 
+            <div class="cost-view" id="costView" role="group" aria-label="Show costs for">
+              <button type="button" class="cost-view-btn" data-view="term" aria-pressed="true">Per term</button>
+              <button type="button" class="cost-view-btn" data-view="total" aria-pressed="false">Full program</button>
+            </div>
+
             <div class="result-mini-grid">
               <div class="mini">
                 <div class="mini-label" id="miniGrossLabel">Tuition Before Support</div>
@@ -308,6 +328,8 @@
                 <div class="mini-value" id="miniSbcScholarship">$0</div>
               </div>
             </div>
+
+            <p class="per-term-note" id="perTermNote" hidden></p>
 
             <div class="mix-panel" aria-label="Cost and savings breakdown chart">
               <div class="mix-program" id="mixProgram"></div>
