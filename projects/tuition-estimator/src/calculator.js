@@ -904,9 +904,9 @@
       return "less than half time";
     }
 
-    // "total" shows the tiles for the full program; "term" shows the
-    // same tiles averaged per term.
-    let costView = "total";
+    // "term" (the default) shows the tiles averaged per term; "total"
+    // shows them for the full program.
+    let costView = "term";
 
     const MIX_TITLE = "Cost & Savings Breakdown";
 
