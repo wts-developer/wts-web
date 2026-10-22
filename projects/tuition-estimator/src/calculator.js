@@ -358,6 +358,8 @@
       sbcDetails: $("sbcDetails"), sbcCourseList: $("sbcCourseList"), sbcSelectionNote: $("sbcSelectionNote"), sbcCoverage: $("sbcCoverage"), sbcCoverageLabel: $("sbcCoverageLabel"), sbcFeeNote: $("sbcFeeNote"),
       netPrice: $("netPrice"),
       miniMatch: $("miniMatch"), miniRemaining: $("miniRemaining"), miniRemainingCard: $("miniRemainingCard"), miniGross: $("miniGross"), miniGrossLabel: $("miniGrossLabel"),
+      enrollmentField: $("enrollmentField"), fullTimeBtn: $("fullTimeBtn"), partTimeBtn: $("partTimeBtn"),
+      fullTimeDetail: $("fullTimeDetail"), partTimeDetail: $("partTimeDetail"),
       perTermStrip: $("perTermStrip"), perTermGross: $("perTermGross"), perTermNet: $("perTermNet"), perTermNote: $("perTermNote"),
       miniCreditsCard: $("miniCreditsCard"), miniCreditsRemaining: $("miniCreditsRemaining"),
       miniSbcCard: $("miniSbcCard"), miniSbcScholarship: $("miniSbcScholarship"),
@@ -478,9 +480,33 @@
 
     // Once someone picks a pace, switching programs keeps it.
     let paceChosen = false;
+    // "full" or "part" once someone uses the full/part-time toggle, so a
+    // program switch keeps the status (full time is 6 credits for MATS
+    // but 8 for the online MDiv); picking an exact pace clears it.
+    let statusChosen = null;
+
+    // The fewest whole courses a term that the catalog counts as full time.
+    function fullTimeCreditsPerTerm(program) {
+      return Math.ceil(program.enrollmentStatus.fullTime / 3) * 3;
+    }
+
+    function paceForStatus(program, status) {
+      return status === "full" ? fullTimeCreditsPerTerm(program) : defaultCreditsPerTerm(program);
+    }
+
+    function paceText(credits) {
+      const courses = credits / 3;
+      return `${num(courses)} ${courses === 1 ? "course" : "courses"} (${num(credits)} credits) per term`;
+    }
 
     function applyDefaultPace(program) {
-      if (paceChosen || !els.creditsPerTerm) return;
+      if (!els.creditsPerTerm) return;
+      if (statusChosen && program.enrollmentStatus) {
+        els.creditsPerTerm.value = String(paceForStatus(program, statusChosen));
+        els.customCreditsField.style.display = "none";
+        return;
+      }
+      if (paceChosen) return;
       els.creditsPerTerm.value = String(defaultCreditsPerTerm(program));
       els.customCreditsField.style.display = "none";
     }
@@ -844,6 +870,30 @@
       els.maxMatchBtn.textContent = `Maximum Matching Scholarship amount: ${money(cap)}`;
     }
 
+    // The full/part-time toggle shows for programs with catalog
+    // thresholds and reflects the current pace, however it was set.
+    function renderEnrollmentToggle(program, creditsPerTerm) {
+      if (!els.enrollmentField) return;
+      const show = !!program.enrollmentStatus && !program.funded && !program.coursePriced;
+      els.enrollmentField.hidden = !show;
+      if (!show) return;
+      const isFullTime = creditsPerTerm >= program.enrollmentStatus.fullTime;
+      els.fullTimeBtn.setAttribute("aria-pressed", String(isFullTime));
+      els.partTimeBtn.setAttribute("aria-pressed", String(!isFullTime));
+      els.fullTimeDetail.textContent = paceText(fullTimeCreditsPerTerm(program));
+      els.partTimeDetail.textContent = paceText(defaultCreditsPerTerm(program));
+    }
+
+    function selectEnrollmentStatus(status) {
+      const program = CONFIG.programs[selectedProgram];
+      if (!program.enrollmentStatus) return;
+      statusChosen = status;
+      paceChosen = true;
+      els.creditsPerTerm.value = String(paceForStatus(program, status));
+      els.customCreditsField.style.display = "none";
+      calculate();
+    }
+
     // Enrollment status for a pace, per the catalog thresholds in
     // CONFIG; null when the catalog gives none (certificates).
     function enrollmentStatusFor(program, creditsPerTerm) {
@@ -908,6 +958,7 @@
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
         if (els.perTermStrip) els.perTermStrip.hidden = true;
+        renderEnrollmentToggle(program, 0);
         els.netPrice.textContent = money(fundedNet);
         const yearsWord = { 3: "three", 4: "four" }[program.years] || String(program.years);
         setResultFootnote([
@@ -958,6 +1009,7 @@
 
         updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
         if (els.perTermStrip) els.perTermStrip.hidden = true;
+        renderEnrollmentToggle(program, 0);
 
         els.netPrice.textContent = money(totalOutOfPocket);
         const communityFeeSentence = `Residential students also pay a ${money(CONFIG.residentialTermFee)} per-term Community Life Fee, not included in this estimate.`;
@@ -1082,6 +1134,7 @@
 
       els.termCountLabel.textContent = `${rows.length} ${rows.length === 1 ? "term" : "terms"}`;
       renderPerTerm(program, rows, creditsPerTerm, gross, studentPaid);
+      renderEnrollmentToggle(program, creditsPerTerm);
 
       const raisedRatio = gross > 0 ? fundsApplied / gross : 0;
       const matchRatio = gross > 0 ? totalWtsAid / gross : 0;
@@ -1344,8 +1397,12 @@
       el.addEventListener("change", calculate);
     });
 
+    els.fullTimeBtn?.addEventListener("click", () => selectEnrollmentStatus("full"));
+    els.partTimeBtn?.addEventListener("click", () => selectEnrollmentStatus("part"));
+
     els.creditsPerTerm.addEventListener("change", () => {
       paceChosen = true;
+      statusChosen = null;
       els.customCreditsField.style.display = els.creditsPerTerm.value === "custom" ? "block" : "none";
       calculate();
     });

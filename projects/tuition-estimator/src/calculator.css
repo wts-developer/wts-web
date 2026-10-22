@@ -706,8 +706,6 @@
       align-items: stretch;
     }
 
-    .per-term-strip[hidden] { display: none; }
-
     .per-term-strip .mini {
       background: rgba(255,255,255,.05);
       padding: 10px 14px;
