@@ -1187,14 +1187,25 @@
     // documented in webflow/ANALYTICS_EVENTS.md. A silent no-op when
     // GTM is absent (mockups, standalone page, local dev), and it must
     // never break the calculator.
+    //
+    // GTM merges every push into one persistent data model, so a key left
+    // out of a push keeps its value from an earlier event. Each push
+    // therefore names every parameter, with undefined for the ones this
+    // action does not use, so GA4 only receives what the event carries.
+    const TRACK_PARAMS = ["program", "modality", "scholarship", "amount", "source", "term", "estimated_net"];
+
     function track(action, params) {
       try {
         const dl = window.dataLayer;
         if (!dl || typeof dl.push !== "function") return;
-        dl.push(Object.assign(
-          { event: "wts_tuition_savings_calculator", estimator_action: action },
-          params || {}
-        ));
+        const payload = { event: "wts_tuition_savings_calculator", estimator_action: action };
+        TRACK_PARAMS.forEach(key => { payload[key] = undefined; });
+        Object.assign(payload, params || {});
+        // Any event about a program also reports that program's modality.
+        if (payload.program && payload.modality === undefined && CONFIG.programs[payload.program]) {
+          payload.modality = CONFIG.programs[payload.program].bucket;
+        }
+        dl.push(payload);
       } catch (e) { /* analytics failures are not the calculator's problem */ }
     }
 
@@ -1360,7 +1371,7 @@
     const contactButton = root.querySelectorAll(".contact-cta .contact-button")[0];
     if (contactButton) {
       contactButton.addEventListener("click", () => {
-        track("contact_click", {
+        track("calculator_contact_click", {
           program: selectedProgram,
           estimated_net: Number(els.netPrice.textContent.replace(/[^0-9.-]/g, "")) || 0
         });
