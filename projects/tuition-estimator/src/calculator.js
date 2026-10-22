@@ -919,7 +919,7 @@
     // Per-term view: each tile is its full-program figure divided by the
     // number of terms. Terms differ (the $750 rate from June/Summer 2027,
     // a short final term), so these are blended averages, not list
-    // rates; the term table shows each term. Rounded half-up to whole
+    // rates. Rounded half-up to whole
     // dollars by money(), like every other figure.
     function renderCostView(program, rows, creditsPerTerm, tiles) {
       if (!els.costView) return;
@@ -944,13 +944,13 @@
       const termWord = n === 1 ? "term" : "terms";
       const blended = rows.some(row => row.rate !== rows[0].rate);
       const boundary = program.termSystem === "residential" ? "Summer 2027" : "June 2027";
-      els.perTermNote.textContent =
+      els.perTermNote.textContent = (
         `Averaged over ${n} ${termWord} at ${num(creditsPerTerm)} credits per term` +
         (status ? ` (${status})` : "") + ". " +
         (tiles.sbcFee > 0 ? "The SBC recognition fee is spread across terms. " : "") +
         (blended
-          ? `Credits cost ${money(CONFIG.currentRate)} before ${boundary} and ${money(CONFIG.futureRate)} from then on, so see the table below for each term.`
-          : "See the table below for each term.");
+          ? `Credits cost ${money(CONFIG.currentRate)} before ${boundary} and ${money(CONFIG.futureRate)} from then on.`
+          : "")).trim();
     }
 
     function calculate() {

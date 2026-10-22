@@ -462,6 +462,16 @@
       color: var(--wts-ink);
     }
 
+    /* Custom chevron: the native arrow sat flush against the right
+       border. Inline data URI, so no external request. */
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 44px;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2356575a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 16px center / 16px;
+      cursor: pointer;
+    }
+
     select:focus, input:focus, button:focus {
       outline: 3px solid color-mix(in srgb, var(--accent) 24%, transparent);
       outline-offset: 2px;
