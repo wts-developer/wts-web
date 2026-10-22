@@ -696,28 +696,44 @@
       box-shadow: 0 0 0 3px rgba(189,139,65,.22);
     }
 
-    /* Average per-term figures: a quieter second row under the main
-       tiles, so the full-program answer stays the headline. */
-    .per-term-strip {
-      display: grid;
-      grid-template-columns: 1fr 1fr 2fr;
-      gap: 12px;
-      margin-top: 12px;
-      align-items: stretch;
+    /* Full program / per term switch: one set of tile figures at a
+       time, so the card does not grow a second row of numbers. */
+    .cost-view {
+      display: inline-flex;
+      gap: 2px;
+      margin-bottom: 12px;
+      padding: 3px;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
     }
 
-    .per-term-strip .mini {
-      background: rgba(255,255,255,.05);
-      padding: 10px 14px;
+    .cost-view-btn {
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(255,255,255,.8);
+      padding: 6px 14px;
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
     }
 
-    .mini.bucket-student-soft {
-      border-color: rgba(189,139,65,.75);
+    .cost-view-btn[aria-pressed="true"] {
+      background: var(--wts-gold);
+      color: #1f1f1f;
+      font-weight: 700;
+    }
+
+    .mini-value .per-term-unit {
+      font-size: .7em;
+      font-weight: 400;
+      opacity: .8;
     }
 
     .per-term-note {
-      margin: 0;
-      align-self: center;
+      margin: 12px 0 0;
       font-size: .85rem;
       line-height: 1.45;
       color: rgba(255,255,255,.8);
@@ -1329,8 +1345,6 @@
       .hero, .builder-grid { grid-template-columns: 1fr; }
       .program-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .result-mini-grid { grid-template-columns: 1fr; }
-      .per-term-strip { grid-template-columns: 1fr 1fr; }
-      .per-term-note { grid-column: 1 / -1; }
     }
 
     @media (max-width: 700px) {

@@ -297,6 +297,11 @@
         <p class="annotation results-update-note">Estimates update automatically as you change your answers above.</p>
           <article class="result-card" aria-label="Estimated cost after support">
 
+            <div class="cost-view" id="costView" role="group" aria-label="Show costs for">
+              <button type="button" class="cost-view-btn" data-view="total" aria-pressed="true">Full program</button>
+              <button type="button" class="cost-view-btn" data-view="term" aria-pressed="false">Per term</button>
+            </div>
+
             <div class="result-mini-grid">
               <div class="mini">
                 <div class="mini-label" id="miniGrossLabel">Tuition Before Support</div>
@@ -324,17 +329,7 @@
               </div>
             </div>
 
-            <div class="per-term-strip" id="perTermStrip" aria-label="Average cost per term">
-              <div class="mini">
-                <div class="mini-label">Avg. Tuition Per Term Before Support</div>
-                <div class="mini-value" id="perTermGross">$2,213</div>
-              </div>
-              <div class="mini bucket-student-soft">
-                <div class="mini-label">Avg. Tuition Cost Per Term After Support</div>
-                <div class="mini-value" id="perTermNet">$2,213</div>
-              </div>
-              <p class="per-term-note" id="perTermNote"></p>
-            </div>
+            <p class="per-term-note" id="perTermNote" hidden></p>
 
             <div class="mix-panel" aria-label="Cost and savings breakdown chart">
               <div class="mix-program" id="mixProgram"></div>

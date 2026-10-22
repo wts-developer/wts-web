@@ -360,7 +360,7 @@
       miniMatch: $("miniMatch"), miniRemaining: $("miniRemaining"), miniRemainingCard: $("miniRemainingCard"), miniGross: $("miniGross"), miniGrossLabel: $("miniGrossLabel"),
       enrollmentField: $("enrollmentField"), fullTimeBtn: $("fullTimeBtn"), partTimeBtn: $("partTimeBtn"),
       fullTimeDetail: $("fullTimeDetail"), partTimeDetail: $("partTimeDetail"),
-      perTermStrip: $("perTermStrip"), perTermGross: $("perTermGross"), perTermNet: $("perTermNet"), perTermNote: $("perTermNote"),
+      costView: $("costView"), perTermNote: $("perTermNote"),
       miniCreditsCard: $("miniCreditsCard"), miniCreditsRemaining: $("miniCreditsRemaining"),
       miniSbcCard: $("miniSbcCard"), miniSbcScholarship: $("miniSbcScholarship"),
       summaryModeLabel: $("summaryModeLabel"),
@@ -904,24 +904,43 @@
       return "less than half time";
     }
 
-    // Average tuition per term, before and after support, across every
-    // term of the plan. Terms differ (the $750 rate from June/Summer
-    // 2027, a short final term), so this is the blended average, not a
-    // list rate; the term table shows each term. Rounded half-up to
-    // whole dollars by money(), like every other figure.
-    function renderPerTerm(program, rows, creditsPerTerm, gross, studentPaid) {
-      if (!els.perTermStrip) return;
-      els.perTermStrip.hidden = rows.length === 0;
-      if (!rows.length) return;
-      els.perTermGross.textContent = money(gross / rows.length);
-      els.perTermNet.textContent = money(studentPaid / rows.length);
+    // "total" shows the tiles for the full program; "term" shows the
+    // same tiles averaged per term.
+    let costView = "total";
+
+    function hideCostView() {
+      if (els.costView) els.costView.hidden = true;
+      if (els.perTermNote) els.perTermNote.hidden = true;
+    }
+
+    // Per-term view: each tile is its full-program figure divided by the
+    // number of terms. Terms differ (the $750 rate from June/Summer 2027,
+    // a short final term), so these are blended averages, not list
+    // rates; the term table shows each term. Rounded half-up to whole
+    // dollars by money(), like every other figure.
+    function renderCostView(program, rows, creditsPerTerm, tiles) {
+      if (!els.costView) return;
+      els.costView.hidden = rows.length === 0;
+      els.costView.querySelectorAll(".cost-view-btn").forEach(btn => {
+        btn.setAttribute("aria-pressed", String(btn.dataset.view === costView));
+      });
+      const perTerm = costView === "term" && rows.length > 0;
+      els.perTermNote.hidden = !perTerm;
+      if (!perTerm) return;
+      const n = rows.length;
+      const unit = '<span class="per-term-unit"> / term</span>';
+      [[els.miniGross, tiles.gross], [els.miniMatch, tiles.match], [els.miniRemaining, tiles.raised],
+        [els.netPrice, tiles.net], [els.miniSbcScholarship, tiles.sbc]].forEach(([el, value]) => {
+        if (el) el.innerHTML = money(value / n) + unit;
+      });
       const status = enrollmentStatusFor(program, creditsPerTerm);
-      const termWord = rows.length === 1 ? "term" : "terms";
+      const termWord = n === 1 ? "term" : "terms";
       const blended = rows.some(row => row.rate !== rows[0].rate);
       const boundary = program.termSystem === "residential" ? "Summer 2027" : "June 2027";
       els.perTermNote.textContent =
-        `Averaged over ${rows.length} ${termWord} at ${num(creditsPerTerm)} credits per term` +
+        `Averaged over ${n} ${termWord} at ${num(creditsPerTerm)} credits per term` +
         (status ? ` (${status})` : "") + ". " +
+        (tiles.sbcFee > 0 ? "The SBC recognition fee is spread across terms. " : "") +
         (blended
           ? `Credits cost ${money(CONFIG.currentRate)} before ${boundary} and ${money(CONFIG.futureRate)} from then on, so see the table below for each term.`
           : "See the table below for each term.");
@@ -957,7 +976,7 @@
         lastMatchCap = 0;
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
-        if (els.perTermStrip) els.perTermStrip.hidden = true;
+        hideCostView();
         renderEnrollmentToggle(program, 0);
         els.netPrice.textContent = money(fundedNet);
         const yearsWord = { 3: "three", 4: "four" }[program.years] || String(program.years);
@@ -1008,7 +1027,7 @@
         const remainingEligibleMatch = Math.max(0, matchCap - match);
 
         updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
-        if (els.perTermStrip) els.perTermStrip.hidden = true;
+        hideCostView();
         renderEnrollmentToggle(program, 0);
 
         els.netPrice.textContent = money(totalOutOfPocket);
@@ -1133,7 +1152,10 @@
       els.legendMatch.textContent = money(pieWtsScholarshipSupport);
 
       els.termCountLabel.textContent = `${rows.length} ${rows.length === 1 ? "term" : "terms"}`;
-      renderPerTerm(program, rows, creditsPerTerm, gross, studentPaid);
+      renderCostView(program, rows, creditsPerTerm, {
+        gross: pieTotal, match: pieWtsScholarshipSupport, raised: fundsApplied,
+        net: totalOutOfPocket, sbc: sbcRecognitionScholarship, sbcFee: sbcRecognitionFee
+      });
       renderEnrollmentToggle(program, creditsPerTerm);
 
       const raisedRatio = gross > 0 ? fundsApplied / gross : 0;
@@ -1395,6 +1417,13 @@
       if (!el) return;
       el.addEventListener("input", calculate);
       el.addEventListener("change", calculate);
+    });
+
+    els.costView?.querySelectorAll(".cost-view-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        costView = btn.dataset.view;
+        calculate();
+      });
     });
 
     els.fullTimeBtn?.addEventListener("click", () => selectEnrollmentStatus("full"));
