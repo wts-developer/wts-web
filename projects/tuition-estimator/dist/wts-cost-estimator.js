@@ -934,9 +934,12 @@
     // same tiles averaged per term.
     let costView = "total";
 
+    const MIX_TITLE = "Cost & Savings Breakdown";
+
     function hideCostView() {
       if (els.costView) els.costView.hidden = true;
       if (els.perTermNote) els.perTermNote.hidden = true;
+      if (els.mixTitle) els.mixTitle.textContent = MIX_TITLE;
     }
 
     // Per-term view: each tile is its full-program figure divided by the
@@ -952,11 +955,15 @@
       });
       const perTerm = costView === "term" && rows.length > 0;
       els.perTermNote.hidden = !perTerm;
+      // Every slice divides by the same term count, so the pie's shares
+      // are unchanged; its title and legend amounts switch to per term.
+      if (els.mixTitle) els.mixTitle.textContent = perTerm ? `${MIX_TITLE} Per Term` : MIX_TITLE;
       if (!perTerm) return;
       const n = rows.length;
       const unit = '<span class="per-term-unit"> / term</span>';
       [[els.miniGross, tiles.gross], [els.miniMatch, tiles.match], [els.miniRemaining, tiles.raised],
-        [els.netPrice, tiles.net], [els.miniSbcScholarship, tiles.sbc]].forEach(([el, value]) => {
+        [els.netPrice, tiles.net], [els.miniSbcScholarship, tiles.sbc],
+        [els.legendStudent, tiles.net], [els.legendRaised, tiles.raised], [els.legendMatch, tiles.match]].forEach(([el, value]) => {
         if (el) el.innerHTML = money(value / n) + unit;
       });
       const status = enrollmentStatusFor(program, creditsPerTerm);
