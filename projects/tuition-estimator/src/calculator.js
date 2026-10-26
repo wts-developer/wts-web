@@ -916,11 +916,30 @@
       if (els.mixTitle) els.mixTitle.textContent = MIX_TITLE;
     }
 
-    // Per-term view: each tile is its full-program figure divided by the
-    // number of terms. Terms differ (the $750 rate from June/Summer 2027,
-    // a short final term), so these are blended averages, not list
-    // rates. Rounded half-up to whole
-    // dollars by money(), like every other figure.
+    // Per-term view: a full term's figures, not an average, since no
+    // one pays the average of a short final term or of two rates. A plan
+    // that crosses the rate change (the $750 rate from June/Summer 2027)
+    // shows one figure per rate. A term gets its share of every tile in
+    // proportion to its tuition, so support covers the same share of
+    // every term and the pie's shares hold in both phases. Rounded half-up to whole dollars like
+    // every other figure; the student's cost is the rounded tuition less
+    // the rounded support, so each phase's tiles still add up.
+    function costPhases(rows) {
+      const groups = [rows.filter(row => row.rate === CONFIG.currentRate),
+        rows.filter(row => row.rate !== CONFIG.currentRate)].filter(group => group.length);
+      const tuition = rows.reduce((sum, row) => sum + row.tuition, 0);
+      return groups.map((group, idx) => {
+        const count = group.length;
+        const termWord = count === 1 ? "term" : "terms";
+        const when = groups.length === 1 ? ""
+          : count === 1 ? `${group[0].label} only`
+          : idx === 0 ? `${count} ${termWord} through ${group[count - 1].label}`
+          : `${count} ${termWord} from ${group[0].label}`;
+        // The phase's first term is a full one; only the plan's last can be short.
+        return { share: tuition > 0 ? group[0].tuition / tuition : 1 / rows.length, when };
+      });
+    }
+
     function renderCostView(program, rows, creditsPerTerm, tiles) {
       if (!els.costView) return;
       els.costView.hidden = rows.length === 0;
@@ -929,28 +948,46 @@
       });
       const perTerm = costView === "term" && rows.length > 0;
       els.perTermNote.hidden = !perTerm;
-      // Every slice divides by the same term count, so the pie's shares
-      // are unchanged; its title and legend amounts switch to per term.
       if (els.mixTitle) els.mixTitle.textContent = perTerm ? `${MIX_TITLE} Per Term` : MIX_TITLE;
       if (!perTerm) return;
-      const n = rows.length;
       const unit = '<span class="per-term-unit"> / term</span>';
-      [[els.miniGross, tiles.gross], [els.miniMatch, tiles.match], [els.miniRemaining, tiles.raised],
-        [els.netPrice, tiles.net], [els.miniSbcScholarship, tiles.sbc],
-        [els.legendStudent, tiles.net], [els.legendRaised, tiles.raised], [els.legendMatch, tiles.match]].forEach(([el, value]) => {
-        if (el) el.innerHTML = money(value / n) + unit;
+      const phases = costPhases(rows).map(phase => {
+        const gross = Math.round(tiles.gross * phase.share);
+        const match = Math.round(tiles.match * phase.share);
+        const raised = Math.round(tiles.raised * phase.share);
+        return {
+          when: phase.when, gross, match, raised,
+          net: Math.max(0, gross - match - raised),
+          sbc: Math.round(tiles.sbc * phase.share)
+        };
       });
+      const split = phases.length > 1;
+      const tileHtml = key => split
+        ? phases.map(phase =>
+          `<span class="phase-line">${money(phase[key])}${unit}</span><span class="phase-when">${phase.when}</span>`).join("")
+        : money(phases[0][key]) + unit;
+      const legendHtml = key => split
+        ? `${money(phases[0][key])}${unit}<span class="phase-then">then ${money(phases[1][key])}</span>`
+        : money(phases[0][key]) + unit;
+      [[els.miniGross, "gross"], [els.miniMatch, "match"], [els.miniRemaining, "raised"],
+        [els.netPrice, "net"], [els.miniSbcScholarship, "sbc"]].forEach(([el, key]) => {
+        if (el) el.innerHTML = tileHtml(key);
+      });
+      [[els.legendStudent, "net"], [els.legendRaised, "raised"], [els.legendMatch, "match"]].forEach(([el, key]) => {
+        if (el) el.innerHTML = legendHtml(key);
+      });
+      const n = rows.length;
       const status = enrollmentStatusFor(program, creditsPerTerm);
-      const termWord = n === 1 ? "term" : "terms";
-      const blended = rows.some(row => row.rate !== rows[0].rate);
+      const pace = `${n} ${n === 1 ? "term" : "terms"} at ${num(creditsPerTerm)} credits per term` +
+        (status ? ` (${status})` : "");
       const boundary = program.termSystem === "residential" ? "Summer 2027" : "June 2027";
-      els.perTermNote.textContent = (
-        `Averaged over ${n} ${termWord} at ${num(creditsPerTerm)} credits per term` +
-        (status ? ` (${status})` : "") + ". " +
-        (tiles.sbcFee > 0 ? "The SBC recognition fee is spread across terms. " : "") +
-        (blended
-          ? `Credits cost ${money(CONFIG.currentRate)} before ${boundary} and ${money(CONFIG.futureRate)} from then on.`
-          : "")).trim();
+      const fee = tiles.sbcFee > 0 ? " The SBC recognition fee is spread across terms." : "";
+      const last = rows[n - 1];
+      const shortLast = n > 1 && last.credits < rows[0].credits
+        ? ` Your last term has ${num(last.credits)} credits, so it costs less.` : "";
+      els.perTermNote.textContent = split
+        ? `${pace}. Credits cost ${money(CONFIG.currentRate)} before ${boundary} and ${money(CONFIG.futureRate)} from then on, so terms on each rate are shown separately. Support covers the same share of every term.${shortLast}${fee}`
+        : `${pace}.${shortLast}${fee}`;
     }
 
     function calculate() {

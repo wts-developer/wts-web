@@ -742,6 +742,32 @@
       opacity: .8;
     }
 
+    /* A plan crossing the June/Summer 2027 rate change shows one line
+       per rate, each with the terms it covers. */
+    .mini-value .phase-line {
+      display: block;
+    }
+
+    .mini-value .phase-when {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .62rem;
+      font-weight: 400;
+      line-height: 1.3;
+      opacity: .8;
+    }
+
+    .mini-value .phase-when:last-child {
+      margin-bottom: 0;
+    }
+
+    .legend .amount .phase-then {
+      display: block;
+      font-size: .85em;
+      font-weight: 400;
+      opacity: .8;
+    }
+
     .per-term-note {
       margin: 12px 0 0;
       font-size: .85rem;
