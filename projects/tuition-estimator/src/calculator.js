@@ -12,6 +12,10 @@
           credits: 36,
           matchType: "fixedCap",
           fixedCap: 5000,
+          // Enrollment status by credits per term, from the 2026-2027
+          // academic catalog's Enrollment Status table: full time at
+          // fullTime credits or more, half time from halfTime credits.
+          enrollmentStatus: { fullTime: 6, halfTime: 2 },
           bucket: "online",
           termSystem: "online",
           theme: ONLINE_THEME,
@@ -26,6 +30,10 @@
           // by up to 50% (25% raised + 25% matched).
           matchType: "percentCap",
           percentCap: 0.25,
+          // Enrollment status by credits per term, from the 2026-2027
+          // academic catalog's Enrollment Status table: full time at
+          // fullTime credits or more, half time from halfTime credits.
+          enrollmentStatus: { fullTime: 6, halfTime: 2 },
           bucket: "online",
           termSystem: "online",
           theme: ONLINE_THEME,
@@ -46,6 +54,10 @@
           // The match needs at least 4 credits a term (see its detail text).
           // Below that it is not included, and the default pace holds it.
           minCreditsPerTerm: 4,
+          // Enrollment status by credits per term, from the 2026-2027
+          // academic catalog's Enrollment Status table: full time at
+          // fullTime credits or more, half time from halfTime credits.
+          enrollmentStatus: { fullTime: 8, halfTime: 4 },
           termSystem: "residential",
           theme: ONLINE_THEME,
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
@@ -61,6 +73,10 @@
           // The match needs at least 4 credits a term (see its detail text).
           // Below that it is not included, and the default pace holds it.
           minCreditsPerTerm: 4,
+          // Enrollment status by credits per term, from the 2026-2027
+          // academic catalog's Enrollment Status table: full time at
+          // fullTime credits or more, half time from halfTime credits.
+          enrollmentStatus: { fullTime: 8, halfTime: 4 },
           termSystem: "residential",
           theme: ONLINE_THEME,
           description: "dollar-for-dollar match, $675 per term now, up to 25% of tuition from Summer 2027 (AY27-28)"
@@ -342,6 +358,9 @@
       sbcDetails: $("sbcDetails"), sbcCourseList: $("sbcCourseList"), sbcSelectionNote: $("sbcSelectionNote"), sbcCoverage: $("sbcCoverage"), sbcCoverageLabel: $("sbcCoverageLabel"), sbcFeeNote: $("sbcFeeNote"),
       netPrice: $("netPrice"),
       miniMatch: $("miniMatch"), miniRemaining: $("miniRemaining"), miniRemainingCard: $("miniRemainingCard"), miniGross: $("miniGross"), miniGrossLabel: $("miniGrossLabel"),
+      enrollmentField: $("enrollmentField"), fullTimeBtn: $("fullTimeBtn"), partTimeBtn: $("partTimeBtn"),
+      fullTimeDetail: $("fullTimeDetail"), partTimeDetail: $("partTimeDetail"),
+      costView: $("costView"), perTermNote: $("perTermNote"),
       miniCreditsCard: $("miniCreditsCard"), miniCreditsRemaining: $("miniCreditsRemaining"),
       miniSbcCard: $("miniSbcCard"), miniSbcScholarship: $("miniSbcScholarship"),
       summaryModeLabel: $("summaryModeLabel"),
@@ -461,9 +480,33 @@
 
     // Once someone picks a pace, switching programs keeps it.
     let paceChosen = false;
+    // "full" or "part" once someone uses the full/part-time toggle, so a
+    // program switch keeps the status (full time is 6 credits for MATS
+    // but 8 for the online MDiv); picking an exact pace clears it.
+    let statusChosen = null;
+
+    // The fewest whole courses a term that the catalog counts as full time.
+    function fullTimeCreditsPerTerm(program) {
+      return Math.ceil(program.enrollmentStatus.fullTime / 3) * 3;
+    }
+
+    function paceForStatus(program, status) {
+      return status === "full" ? fullTimeCreditsPerTerm(program) : defaultCreditsPerTerm(program);
+    }
+
+    function paceText(credits) {
+      const courses = credits / 3;
+      return `${num(courses)} ${courses === 1 ? "course" : "courses"} (${num(credits)} credits) per term`;
+    }
 
     function applyDefaultPace(program) {
-      if (paceChosen || !els.creditsPerTerm) return;
+      if (!els.creditsPerTerm) return;
+      if (statusChosen && program.enrollmentStatus) {
+        els.creditsPerTerm.value = String(paceForStatus(program, statusChosen));
+        els.customCreditsField.style.display = "none";
+        return;
+      }
+      if (paceChosen) return;
       els.creditsPerTerm.value = String(defaultCreditsPerTerm(program));
       els.customCreditsField.style.display = "none";
     }
@@ -827,6 +870,126 @@
       els.maxMatchBtn.textContent = `Maximum Matching Scholarship amount: ${money(cap)}`;
     }
 
+    // The full/part-time toggle shows for programs with catalog
+    // thresholds and reflects the current pace, however it was set.
+    function renderEnrollmentToggle(program, creditsPerTerm) {
+      if (!els.enrollmentField) return;
+      const show = !!program.enrollmentStatus && !program.funded && !program.coursePriced;
+      els.enrollmentField.hidden = !show;
+      if (!show) return;
+      const isFullTime = creditsPerTerm >= program.enrollmentStatus.fullTime;
+      els.fullTimeBtn.setAttribute("aria-pressed", String(isFullTime));
+      els.partTimeBtn.setAttribute("aria-pressed", String(!isFullTime));
+      els.fullTimeDetail.textContent = paceText(fullTimeCreditsPerTerm(program));
+      els.partTimeDetail.textContent = paceText(defaultCreditsPerTerm(program));
+    }
+
+    function selectEnrollmentStatus(status) {
+      const program = CONFIG.programs[selectedProgram];
+      if (!program.enrollmentStatus) return;
+      statusChosen = status;
+      paceChosen = true;
+      els.creditsPerTerm.value = String(paceForStatus(program, status));
+      els.customCreditsField.style.display = "none";
+      calculate();
+    }
+
+    // Enrollment status for a pace, per the catalog thresholds in
+    // CONFIG; null when the catalog gives none (certificates).
+    function enrollmentStatusFor(program, creditsPerTerm) {
+      const status = program.enrollmentStatus;
+      if (!status) return null;
+      if (creditsPerTerm >= status.fullTime) return "full time";
+      if (creditsPerTerm >= status.halfTime) return "half time";
+      return "less than half time";
+    }
+
+    // "term" (the default) shows the tiles averaged per term; "total"
+    // shows them for the full program.
+    let costView = "term";
+
+    const MIX_TITLE = "Cost & Savings Breakdown";
+
+    function hideCostView() {
+      if (els.costView) els.costView.hidden = true;
+      if (els.perTermNote) els.perTermNote.hidden = true;
+      if (els.mixTitle) els.mixTitle.textContent = MIX_TITLE;
+    }
+
+    // Per-term view: a full term's figures, not an average, since no
+    // one pays the average of a short final term or of two rates. A plan
+    // that crosses the rate change (the $750 rate from June/Summer 2027)
+    // shows one figure per rate. A term gets its share of every tile in
+    // proportion to its tuition, so support covers the same share of
+    // every term and the pie's shares hold in both phases. Rounded half-up to whole dollars like
+    // every other figure; the student's cost is the rounded tuition less
+    // the rounded support, so each phase's tiles still add up.
+    function costPhases(rows) {
+      const groups = [rows.filter(row => row.rate === CONFIG.currentRate),
+        rows.filter(row => row.rate !== CONFIG.currentRate)].filter(group => group.length);
+      const tuition = rows.reduce((sum, row) => sum + row.tuition, 0);
+      return groups.map((group, idx) => {
+        const count = group.length;
+        const termWord = count === 1 ? "term" : "terms";
+        const when = groups.length === 1 ? ""
+          : count === 1 ? `${group[0].label} only`
+          : idx === 0 ? `${count} ${termWord} through ${group[count - 1].label}`
+          : `${count} ${termWord} from ${group[0].label}`;
+        // The phase's first term is a full one; only the plan's last can be short.
+        return { share: tuition > 0 ? group[0].tuition / tuition : 1 / rows.length, when };
+      });
+    }
+
+    function renderCostView(program, rows, creditsPerTerm, tiles) {
+      if (!els.costView) return;
+      els.costView.hidden = rows.length === 0;
+      els.costView.querySelectorAll(".cost-view-btn").forEach(btn => {
+        btn.setAttribute("aria-pressed", String(btn.dataset.view === costView));
+      });
+      const perTerm = costView === "term" && rows.length > 0;
+      els.perTermNote.hidden = !perTerm;
+      if (els.mixTitle) els.mixTitle.textContent = perTerm ? `${MIX_TITLE} Per Term` : MIX_TITLE;
+      if (!perTerm) return;
+      const unit = '<span class="per-term-unit"> / term</span>';
+      const phases = costPhases(rows).map(phase => {
+        const gross = Math.round(tiles.gross * phase.share);
+        const match = Math.round(tiles.match * phase.share);
+        const raised = Math.round(tiles.raised * phase.share);
+        return {
+          when: phase.when, gross, match, raised,
+          net: Math.max(0, gross - match - raised),
+          sbc: Math.round(tiles.sbc * phase.share)
+        };
+      });
+      const split = phases.length > 1;
+      const tileHtml = key => split
+        ? phases.map(phase =>
+          `<span class="phase-line">${money(phase[key])}${unit}</span><span class="phase-when">${phase.when}</span>`).join("")
+        : money(phases[0][key]) + unit;
+      const legendHtml = key => split
+        ? `${money(phases[0][key])}${unit}<span class="phase-then">then ${money(phases[1][key])}</span>`
+        : money(phases[0][key]) + unit;
+      [[els.miniGross, "gross"], [els.miniMatch, "match"], [els.miniRemaining, "raised"],
+        [els.netPrice, "net"], [els.miniSbcScholarship, "sbc"]].forEach(([el, key]) => {
+        if (el) el.innerHTML = tileHtml(key);
+      });
+      [[els.legendStudent, "net"], [els.legendRaised, "raised"], [els.legendMatch, "match"]].forEach(([el, key]) => {
+        if (el) el.innerHTML = legendHtml(key);
+      });
+      const n = rows.length;
+      const status = enrollmentStatusFor(program, creditsPerTerm);
+      const pace = `${n} ${n === 1 ? "term" : "terms"} at ${num(creditsPerTerm)} credits per term` +
+        (status ? ` (${status})` : "");
+      const boundary = program.termSystem === "residential" ? "Summer 2027" : "June 2027";
+      const fee = tiles.sbcFee > 0 ? " The SBC recognition fee is spread across terms." : "";
+      const last = rows[n - 1];
+      const shortLast = n > 1 && last.credits < rows[0].credits
+        ? ` Your last term has ${num(last.credits)} credits, so it costs less.` : "";
+      els.perTermNote.textContent = split
+        ? `${pace}. Credits cost ${money(CONFIG.currentRate)} before ${boundary} and ${money(CONFIG.futureRate)} from then on, so terms on each rate are shown separately. Support covers the same share of every term.${shortLast}${fee}`
+        : `${pace}.${shortLast}${fee}`;
+    }
+
     function calculate() {
       updateMacOnlyVisibility();
       const program = CONFIG.programs[selectedProgram];
@@ -857,6 +1020,8 @@
         lastMatchCap = 0;
         updateMaxMatchButton();
         updatePieChart(fundedNet, 0, gross, gross + fundedNet);
+        hideCostView();
+        renderEnrollmentToggle(program, 0);
         els.netPrice.textContent = money(fundedNet);
         const yearsWord = { 3: "three", 4: "four" }[program.years] || String(program.years);
         setResultFootnote([
@@ -906,6 +1071,8 @@
         const remainingEligibleMatch = Math.max(0, matchCap - match);
 
         updatePieChart(totalOutOfPocket, fundsApplied, totalWtsAid, gross);
+        hideCostView();
+        renderEnrollmentToggle(program, 0);
 
         els.netPrice.textContent = money(totalOutOfPocket);
         const communityFeeSentence = `Residential students also pay a ${money(CONFIG.residentialTermFee)} per-term Community Life Fee, not included in this estimate.`;
@@ -1029,6 +1196,11 @@
       els.legendMatch.textContent = money(pieWtsScholarshipSupport);
 
       els.termCountLabel.textContent = `${rows.length} ${rows.length === 1 ? "term" : "terms"}`;
+      renderCostView(program, rows, creditsPerTerm, {
+        gross: pieTotal, match: pieWtsScholarshipSupport, raised: fundsApplied,
+        net: totalOutOfPocket, sbc: sbcRecognitionScholarship, sbcFee: sbcRecognitionFee
+      });
+      renderEnrollmentToggle(program, creditsPerTerm);
 
       const raisedRatio = gross > 0 ? fundsApplied / gross : 0;
       const matchRatio = gross > 0 ? totalWtsAid / gross : 0;
@@ -1302,8 +1474,19 @@
       el.addEventListener("change", calculate);
     });
 
+    els.costView?.querySelectorAll(".cost-view-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        costView = btn.dataset.view;
+        calculate();
+      });
+    });
+
+    els.fullTimeBtn?.addEventListener("click", () => selectEnrollmentStatus("full"));
+    els.partTimeBtn?.addEventListener("click", () => selectEnrollmentStatus("part"));
+
     els.creditsPerTerm.addEventListener("change", () => {
       paceChosen = true;
+      statusChosen = null;
       els.customCreditsField.style.display = els.creditsPerTerm.value === "custom" ? "block" : "none";
       calculate();
     });
